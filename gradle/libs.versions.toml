@@ -1,0 +1,21 @@
+[versions]
+"spring-boot" = "4.0.6"
+"spring-dependency-management" = "1.1.7"
+
+[libraries]
+spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "spring-boot" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "spring-boot" }
+spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
+spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "spring-boot" }
+spring-boot-starter-thymeleaf-test= { module = "org.springframework.boot:spring-boot-starter-thymeleaf-test", version.ref = "spring-boot" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+
+[bundles]
+spring-boot-web = [ "spring-boot-starter-webmvc", "spring-boot-starter-thymeleaf" ]
+spring-boot-web-test = [ "spring-boot-starter-webmvc-test", "spring-boot-starter-thymeleaf-test" ]
+spring-boot-application = [ "spring-boot-starter" ]
+spring-boot-application-test = [ "spring-boot-starter-test" ]
