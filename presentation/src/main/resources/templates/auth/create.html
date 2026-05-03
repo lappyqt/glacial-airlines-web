@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Glacial Airlines</title>
+    <link rel="stylesheet" th:href="@{/dist/index.css}">
+</head>
+<body>
+    <div class="wrapper auth">
+        <div class="account-create-form">
+            <div class="poster">
+                <div class="top">
+                    <span class="company-name">Glacial Airlines</span>
+                    <div class="rounded-button">
+                        <a href="/">На главную</a>
+                        <img src="/images/icons/arrow_icon.svg" alt="Arrow icon">
+                    </div>
+                </div>
+                <div class="center">
+                    <span class="text">
+                        Пройдя регистрацию в программе лояльности авиакомпании,
+                        вы получите доступ к специальным предложениям и возможность
+                        накапливать бонусные баллы за совершенные полеты.
+                    </span>
+                </div>
+                <div class="bottom">
+                    <a class="learn-more-link" href="#">Узнать больше</a>
+                </div>
+            </div>
+            <div class="content">
+                <form class="form-container">
+                    <div class="title-block">
+                        <h1 class="title">Создание аккаунта</h1>
+                        <p class="redirect">Уже есть аккаунт? <a th:href="@{login}">Войти</a></p>
+                    </div>
+
+                    <div class="inputs">
+                        <div class="input-group">
+                            <input name="lastname" type="text" class="input" placeholder="Фамилия" autocomplete="off">
+                            <input name="firstname" type="text" class="input" placeholder="Имя" autocomplete="off">
+                        </div>
+
+                        <input name="middlename" type="text" class="input" placeholder="Отчество" autocomplete="off">
+                        <input name="email" type="email" class="input" placeholder="Почта" autocomplete="off">
+                        <input name="phone" type="tel" class="input" placeholder="Номер телефона" autocomplete="off">
+                        <input name="password" type="password" class="input" placeholder="Пароль" autocomplete="off">
+                    </div>
+
+                    <input class="default-button submit" type="submit" value="Создать аккаунт">
+
+                    <div class="alternative-signup-methods">
+                        <div class="divider">
+                            <div class="line"></div>
+                            <span class="text">Зарегистрироваться другим способом</span>
+                            <div class="line"></div>
+                        </div>
+
+                        <div class="methods">
+                            <div class="method google"></div>
+                            <div class="method apple"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

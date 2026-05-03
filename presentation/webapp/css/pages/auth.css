@@ -1,0 +1,198 @@
+.wrapper.auth {
+    align-items: center;
+    justify-content: center;
+    background-image: url("/images/content/auth/background.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    .rounded-button.outside {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+    }
+
+    .form-container {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+
+        .title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 50px;
+
+            .title {
+                font-weight: 500;
+            }
+
+            .redirect {
+                color: rgb(138, 138, 138);
+                font-weight: 500;
+
+                a {
+                    color: var(--color-black);
+                }
+            }
+        }
+
+        .inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+
+            .input-group {
+                width: 100%;
+                display: flex;
+                gap: 15px;
+            }
+        }
+
+        .default-button.submit {
+            margin-bottom: 20px;
+        }
+
+        .alternative-signup-methods {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+
+            .divider {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+
+                .line {
+                    background-color: rgb(138, 138, 138);
+                    width: 100%;
+                    height: 1px;
+                    flex: 1 1 0;
+                }
+
+                .text {
+                    font-weight: 500;
+                    color: rgb(138, 138, 138);
+                }
+            }
+
+            .methods {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 15px;      
+
+                .method {
+                    width: 46;
+                    aspect-ratio: 1 / 1;
+                    border: 1px solid rgb(204, 204, 204);
+                    border-radius: 100%;
+                }
+
+                .apple, .google {
+                    background-size: 24px;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                }
+
+                .apple {
+                    background-image: url("/images/icons/apple_icon.svg");
+                }
+
+                .google {
+                    background-image: url("/images/icons/google_icon.svg");
+                }
+            }
+        }
+    }
+
+    .login-form {
+        width: 535px;
+        padding: 30px;
+        box-sizing: border-box;
+        min-height: 470px;
+        background-color: var(--color-white);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .form-container {
+            width: 100%;
+        }
+    }
+
+    .account-create-form {
+        width: 1280px;
+        height: 760px;
+        background-color: var(--color-white);
+        border-radius: 16px;
+        display: flex;
+        box-sizing: border-box;
+        padding: 15px;
+        gap: 30px;
+
+        .poster {
+            width: 50%;
+            height: 100%;
+            border-radius: 12px;
+            background-image: url("/images/content/auth/poster_container.png");
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+            padding: 20px;
+            color: var(--color-white);
+
+            .top, .bottom {
+                width: 100%;
+                text-align: center;
+            }
+
+            .top {
+                display: flex;
+                justify-content: space-between;
+
+                .company-name {
+                    font-size: 24px;
+                    font-weight: 500;
+                }
+            }
+
+            .center {
+                width: 80%;
+                text-align: center;
+
+                .text {
+                    font-size: 24px;
+                    font-weight: 500;
+                    color: rgb(221, 221, 221);
+                }
+            }
+
+            .bottom {
+                .learn-more-link {
+                    text-decoration: underline;
+                    color: var(--color-white);
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .content {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}

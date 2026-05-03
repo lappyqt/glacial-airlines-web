@@ -1,0 +1,12 @@
+.input {
+    width: 100%;
+    height: 46px;
+    outline: none;
+    border: 1px solid rgb(160, 160, 160);
+    border-radius: 12px;
+    box-sizing: border-box;
+    padding: 0 15px 0 15px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
+    font-weight: 500;   
+}

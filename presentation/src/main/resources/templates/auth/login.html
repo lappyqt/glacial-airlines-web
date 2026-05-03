@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Glacial Airlines</title>
+    <link rel="stylesheet" th:href="@{/dist/index.css}">
+</head>
+<body>
+    <div class="wrapper auth">
+        <div class="rounded-button outside">
+            <a href="/">На главную</a>
+            <img src="/images/icons/arrow_icon.svg" alt="Arrow icon">
+        </div>
+
+        <div class="login-form">
+            <form class="form-container">
+                <div class="title-block">
+                    <h1 class="title">Вход в аккаунт</h1>
+                    <p class="redirect">Нет аккаунта? <a th:href="@{create}">Регистрация</a></p>
+                </div>
+
+                <div class="inputs">
+                    <input name="login" type="text" class="input" placeholder="Почта или номер телефона" autocomplete="off">
+                    <input name="password" type="password" class="input" placeholder="Пароль" autocomplete="off">
+                </div>
+
+                <input class="default-button submit" type="submit" value="Войти">
+
+                <div class="alternative-signup-methods">
+                    <div class="divider">
+                        <div class="line"></div>
+                        <span class="text">Войти другим способом</span>
+                        <div class="line"></div>
+                    </div>
+
+                    <div class="methods">
+                        <div class="method google"></div>
+                        <div class="method apple"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

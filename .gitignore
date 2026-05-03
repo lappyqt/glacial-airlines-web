@@ -39,3 +39,7 @@ out/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+### WebApp ###
+node_modules
+/presentation/src/main/resources/static/dist
