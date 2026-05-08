@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование — Оплата | Glacial Airlines</title>
+    <link rel="stylesheet" th:href="@{/dist/index.css}">
+</head>
+<body>
+    <header th:replace="~{fragments/common.html :: header}"></header>
+
+    <div class="wrapper booking">
+        <div class="content-wrapper booking">
+            <div class="step-indicator-container booking-section" th:insert="~{/fragments/booking.html :: step-indicator(3)}"></div>
+
+            <div class="booking-section two-columns">
+                <div class="main">
+                    <div class="content-block">
+                        <div class="header">
+                            <span class="title">Детали заказа</span>
+                        </div>
+
+                        <div class="content column-flex-container medium-gap">
+                            <div th:replace="~{fragments/booking.html :: flight-card-checkout('Туда')}"></div>
+                            <div th:replace="~{fragments/booking.html :: flight-card-checkout('Обратно')}"></div>
+
+                            <h3>Пассажиры и места</h3>
+
+                            <div class="passengers-info flex-column">
+                                <div th:replace="~{fragments/booking.html :: passenger-info-checkout}"></div>
+                            </div>
+
+                            <h3>Дополнительные услуги</h3>
+
+                            <div class="additional-services flex-column" style="gap: 15px;">
+                                <div class="price-line">
+                                    <div class="label">Питание на борту</div>
+                                    <div class="price">800 RUB</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aside">
+                    <div class="content-block">
+                        <div class="header">
+                            <span class="title">Оплата</span>
+                        </div>
+
+                        <div class="content column-flex-container medium-gap">
+                            <div class="final-services flex-column">
+                                <div class="price-line">
+                                    <div class="label">Билеты</div>
+                                    <div class="price">200 000 RUB</div>
+                                </div>
+                                <div class="price-line">
+                                    <div class="label">Места</div>
+                                    <div class="price">0 RUB</div>
+                                </div>
+                                <div class="price-line">
+                                    <div class="label">Доп. услуги</div>
+                                    <div class="price">0 RUB</div>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="expense-item flex-column">
+                                <div class="price-line black">
+                                    <div class="label">Стоимость без скидки</div>
+                                    <div class="price">200 000 RUB</div>
+                                </div>
+                                <div class="price-line black">
+                                    <div class="label">Списано миль</div>
+                                    <div class="price">-</div>
+                                </div>
+                                <div class="price-line final bold">
+                                    <div class="label">К оплате</div>
+                                    <div class="price">200 000 RUB</div>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <form id="payment-form" th:action="@{/booking/success}" method="get" class="flight-payment flex-column" style="gap: 15px;">
+                                <input class="input" type="text" name="card-number" placeholder="Номер карты">
+                                <div class="row">
+                                    <input class="input" type="text" name="validityPeriod" placeholder="Сроки действия">
+                                    <input class="input" type="text" name="cvv" placeholder="CVV">
+                                </div>
+                                <input class="input" type="text" name="cardholder" placeholder="Имя держателя карты">
+                            </form>
+
+                            <div class="checkbox-line">
+                                <div class="label">Списать мили</div>
+                                <input type="checkbox" name="payWithMiles" form="payment-form">
+                            </div>
+
+                            <input type="submit" value="Оплатить" class="default-button" form="payment-form">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common.html :: footer}"></footer>
+</body>
+</html>

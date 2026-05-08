@@ -13,7 +13,17 @@
     cursor: pointer;
 }
 
-.rounded-button {
+.rounded-button-primary {
+    padding: 9.5px 31px;
+    font-size: var(--font-main);
+    font-weight: 600;
+    outline: none;
+    border-radius: 50px;
+    color: white;
+    background-color: var(--color-blue);
+}
+
+.rounded-button-auth {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -33,5 +43,21 @@
         font-size: 15px;
         font-weight: 600;
         text-decoration: none;
+    }
+}
+
+.outline-button {
+    font-weight: 500;
+    padding: 0 30px;
+    height: 42px;
+    border: 1px solid rgb(140, 140, 140);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &.no-padding {
+        padding: 0;
     }
 }

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование — Пассажиры | Glacial Airlines</title>
+    <link rel="stylesheet" th:href="@{/dist/index.css}">
+</head>
+<body>
+    <header th:replace="~{fragments/common.html :: header}"></header>
+
+    <div class="wrapper booking">
+        <div class="content-wrapper booking passengers">
+            <div class="step-indicator-container booking-section" th:insert="~{/fragments/booking.html :: step-indicator(1)}"></div>
+
+            <div class="order-brief-info booking-section">
+                <div class="header-row">
+                    <span class="flight-route">Екатеринбург (SVX) → Москва (MOW)</span>
+                    <span class="price-title">Стоимость</span>
+                </div>
+                <div class="content-row">
+                    <span class="brief-flight-info">Рейс EK 132 • Туда и обратно • 1 Пассажир</span>
+                    <span class="price">200 000 RUB</span>
+                </div>
+            </div>
+
+            <div class="passengers-data booking-section">
+                <div class="content-block">
+                    <div class="header">
+                        <span class="title">Пассажир 1</span>
+                        <span class="subtitle">Взрослый</span>
+                    </div>
+                    
+                    <div class="content column-flex-container">
+                        <div class="row">
+                            <input type="text" class="input" placeholder="Фамилия" autocomplete="off">
+                            <input type="text" class="input" placeholder="Имя" autocomplete="off">
+                            <input type="text" class="input" placeholder="Отчество" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <select class="select" id="sex">
+                                <option value="male">Мужской</option>
+                                <option value="female">Женский</option>
+                            </select>
+
+                            <input type="text" class="input" placeholder="Дата рождения" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <select class="select" id="document-type">
+                                <option value="passport">Паспорт РФ</option>
+                                <option value="international-passport">Загранпаспорт</option>
+                                <option value="birth-certificate">Свидетельство о рождении</option>
+                            </select>
+
+                            <input type="text" class="input" placeholder="Серия и номер" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="content-block">
+                    <div class="header">
+                        <span class="title">Контактные данные заказа</span>
+                        <span class="subtitle"></span>
+                    </div>
+                    
+                    <div class="content column-flex-container">
+                        <div class="information-note">
+                            На данную почту придёт маршрутная квитанция и уведомления об изменении рейса
+                        </div>
+
+                        <div class="row">
+                            <input type="text" class="input" placeholder="Контактная почта" autocomplete="off">
+                            <input type="text" class="input" placeholder="Контактный телефон" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-row">
+                    <a th:href="@{/booking/return-flight}" class="outline-button">
+                        Назад к рейсам
+                    </a>
+                    <a th:href="@{/booking/services}" class="outline-button">
+                        Перейти к услугам
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common.html :: footer}"></footer>
+</body>
+</html>

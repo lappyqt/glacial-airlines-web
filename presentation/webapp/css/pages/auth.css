@@ -6,7 +6,7 @@
     background-size: cover;
     background-repeat: no-repeat;
 
-    .rounded-button.outside {
+    .rounded-button-auth.outside {
         position: absolute;
         top: 20px;
         left: 20px;

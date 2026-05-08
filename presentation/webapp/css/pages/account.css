@@ -1,0 +1,189 @@
+.content-wrapper.booking.account {
+    gap: 50px;
+
+    .greeting-message {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .text {
+            font-size: 36px;
+            font-weight: 500;
+        }
+    }
+
+    .passenger-card {
+        width: 100%;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--color-white);
+        border-radius: 12px;
+        box-sizing: border-box;
+        padding: 20px;
+
+        .left-side {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+
+            .profile-icon {
+                width: 60px;
+                aspect-ratio: 1 / 1;
+                background-color: rgb(29, 29, 29);
+                border-radius: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                font-weight: 500;
+                color: var(--color-white);
+            }
+
+            .user-credentials {
+                display: flex;
+                flex-direction: column;
+                gap: 0px;
+                font-weight: 500;
+
+                .fullname {
+                    font-size: 18px;
+                }
+
+                .email {
+                    font-size: 14px;
+                    color: rgb(141, 141, 141);
+                }
+            }
+        }
+
+        .right-side {
+            text-align: right;
+
+            .miles-accumulated {
+                display: flex;
+                flex-direction: column;
+                gap: 0px;
+
+                .amount-of-miles {
+                    font-size: 18px;
+                    font-weight: 700;
+                }
+
+                .underline-label {
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: rgb(141, 141, 141);
+                }
+            }
+        }
+    }
+
+    .tabs-container {
+        display: flex;
+        justify-content: center;
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+
+            .tab {
+                width: 210px;
+                height: 43px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+                font-weight: 600;
+                border-radius: 100px;
+                border: 1px solid rgb(140, 140, 140);
+                user-select: none;
+                cursor: pointer;
+
+                &.active {
+                    border: none;
+                    background-color: var(--color-white);
+                }
+            }
+        }
+    }
+
+
+    .order-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 65px;
+
+        .order-card {
+            .content-block {
+                .content {
+                    .divider.dashed {
+                        width: 100%;
+                        border: none;
+                        border-top: 1px dashed var(--color-black);
+                        background-color: transparent;
+                        height: 0;
+                    }
+
+                    .flight-segment {
+                        width: auto;
+                        gap: 10px;
+
+                        .row.first {
+                            justify-content: space-between;
+
+                            .route {
+                                flex: 1;
+
+                                .line {
+                                    flex: 1;
+                                }
+                            }
+                        }
+
+                        .row.second {
+                            .text {
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .services {
+        display: flex;
+        gap: 15px;
+
+        .service {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            padding: 0 10px;
+            background-color: rgb(232, 232, 232);
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+    }
+    
+    .button-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .service-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .default-button {
+            max-width: 300px;
+        }
+    }
+}

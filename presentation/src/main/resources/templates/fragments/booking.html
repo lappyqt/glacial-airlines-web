@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <form th:fragment="booking-search-form" class="booking-search-form" method="get" action="/search">
+        <div class="inputs-container">
+            <input class="search-input left" type="text" name="from" placeholder="Откуда" disabled>
+            <input class="search-input" type="text" name="to" placeholder="Куда" disabled>
+            <input class="search-input date" type="text" name="there" placeholder="Туда" disabled>
+            <input class="search-input date" type="text" name="back" placeholder="Обратно" disabled>
+            <input class="search-input passengers" type="text" name="back" placeholder="Количество пассажиров" value="1 Пассажир" disabled>
+            <input class="search-input right" type="text" name="back" placeholder="Класс обслуживания" value="Эконом" disabled>
+        </div>
+
+        <div class="bottom-row">
+            <div class="miles-checkbox-container">
+                <input type="checkbox" name="payWithMiles" id="pay-with-miles">
+                <label for="pay-with-miles">Оплатить милями</label>
+            </div>
+            
+            <input type="submit" value="Поиск рейсов" class="default-button">
+        </div>
+    </form>
+
+    <div th:fragment="cheapest-flight-info-block(title, flightRoute)" class="cheapest-flight-info-block">
+        <div class="content">
+            <div class="left-side">
+                <p class="title" th:text="${title}"></p>
+                <p class="flight-route" th:text="${flightRoute}"></p>
+            </div>
+            <div class="right-side">
+                <div class="offered-lowest-price">
+                    <p class="description">Самая низкая суммарная стоимость для 1 Пассажира:</p>
+                    <p class="price">200 000 RUB</p>
+                </div>
+                <p class="offer-note">Включая тариф, налоги, пошлины и сборы перевозчика</p>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="offer-cards-filters" class="offer-cards-filters">
+        <p class="title">Сортировать по:</p>
+
+        <div class="filter-buttons">
+            <input type="radio" name="orderBy" id="price" checked>
+            <label for="price">Цена</label>
+
+            <input type="radio" name="orderBy" id="duration">
+            <label for="duration">Длительность</label>
+
+            <input type="radio" name="orderBy" id="departureTime">
+            <label for="departureTime">Время вылета</label>
+
+            <input type="radio" name="orderBy" id="arrivalTime">
+            <label for="arrivalTime">Время прибытия</label>
+        </div>
+    </div>
+
+    <div th:fragment="flight-segment" class="flight-segment">
+        <div class="row first">
+            <span class="time departure">23:24</span>
+
+            <div class="route">
+                <span class="airport-code departure">SVX</span>
+                <div class="line"></div>
+                <span class="airport-code arrival">MOW</span>
+            </div>
+
+            <span class="time arrival">01:24</span>
+        </div>
+
+        <div class="row second">
+            <span class="text date departure">14 Мая, Чт</span>
+            <span class="text travel-time">в пути 2ч</span>
+            <span class="text date arrival">15 Мая, Пт</span>
+        </div>
+    </div>
+
+    <div th:fragment="flight-offer-card (url)" class="flight-offer-card">
+        <div class="item" th:insert="~{fragments/booking.html :: flight-segment}"></div>
+
+        <div class="item price-and-loyalty-program">
+            <p class="price">От 90000 RUB</p>
+
+            <div class="loyalty-program">
+                <p class="item price-discount">Цена с учетом миль: 90000 RUB</p>
+                <span class="item potential-miles">Получите миль: 1500</span>
+            </div>
+        </div>
+
+        <div class="item included-tariff-services">
+            <div class="included-service aircraft-model">
+                <img class="icon" src="/images/icons/booking/aircraft_icon.svg" alt="Aircraft Icon">
+                <span class="text">Airbus A320</span>
+                <span class="subtext">EK 132</span>
+            </div>
+            <div class="included-service luggage-size">
+                <img class="icon" src="/images/icons/booking/luggage_icon.svg" alt="Luggage Icon">
+                <span class="text">23 кг</span>
+            </div>
+            <div class="included-service seat-select">
+                <img class="icon" src="/images/icons/booking/seat_select_icon.svg" alt="Seat Select Icon">
+                <span class="text">Бесплатно</span>
+            </div>
+        </div>
+
+        <a th:href="${url}" class="item outline-button">Выбрать</a>
+    </div>
+
+    <div th:fragment="flight-card-checkout (direction)" class="flight-card-checkout">
+        <div class="information-line">
+            <div class="direction" th:text="${direction}"></div>
+            <div class="route">Екатеринбург - Москва</div>
+            <div class="flight-name">EK 132</div>
+        </div>
+
+        <div th:replace="~{fragments/booking.html :: flight-segment}"></div>
+    </div>
+
+    <div th:fragment="passenger-info-checkout" class="passenger-info-checkout">
+        <div class="info-line">
+            <div class="text-left black">Фамилия Имя Отчество</div>
+            <div class="text-right">Туда • 5B</div>
+        </div>
+        <div class="info-line">
+            <div class="text-left">Паспорт РФ • 6545 465656</div>
+            <div class="text-right">Обратно • Авто</div>
+        </div>
+    </div>
+
+    <div th:fragment="step-indicator(activeIndex)" class="step-indicator" 
+        th:style="'--active-step: ' + ${activeIndex} + ';'"
+        th:with="inscriptions = ${ { 'Рейсы', 'Пассажиры', 'Услуги', 'Оплата' } }">
+
+        <div class="progress-bar"></div>
+
+        <div class="step-items">
+            <div th:each="i : ${#numbers.sequence(0, 3)}"
+                th:class="${i == activeIndex} ? 'step-item active' : 'step-item'">
+                <div class="step"></div>
+                <span class="inscription" th:text="${inscriptions[i]}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="seat-row (rowNumber)" class="seat-row">
+        <div class="row-number" th:text="${rowNumber}"></div>
+
+        <div class="seat-column">
+            <div class="seat free">A</div>
+            <div class="seat free">B</div>
+            <div class="seat free">C</div>
+        </div>
+        
+        <div class="aisle"></div>
+            
+        <div class="seat-column">
+            <div class="seat free">D</div>
+            <div class="seat free">E</div>
+            <div class="seat free">F</div>
+        </div>
+    </div>
+
+    <div th:fragment="seat-selection-block" class="seat-selection-block">
+        <div class="information-group">
+            <div class="text-content">
+                <div class="fullname">Фамилия И.</div>
+                <div class="flight-class">Эконом</div>
+            </div>
+
+            <div class="seat-number">5B</div>
+        </div>
+
+        <div class="seat-select-button">
+            Изменить место
+        </div>
+    </div>
+</body>
+</html>
