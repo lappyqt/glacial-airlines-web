@@ -1,11 +1,81 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glacial Airlines</title>
+    <link rel="stylesheet" th:href="@{dist/index.css}">
 </head>
 <body>
-    <p>Glacial Airlines</p>
+    <header th:replace="~{fragments/common.html :: header}"></header>
+
+    <div class="wrapper">
+        <section id="booking-section">
+            <div class="content-wrapper">
+                <h1 class="title">Куда отправимся в этот раз?</h1>
+
+                <div class="tabs">
+                    <div class="booking-tab ticket active">Купить билет</div>
+                    <div class="booking-tab registration">Регистрация на рейс</div>
+                </div>
+
+                <div class="form-container" th:insert="~{fragments/booking.html :: booking-search-form}"></div>
+            </div>
+        </section>
+
+        <section id="about-company">
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <p class="title">О нас</p>
+                    <span class="text">
+                        <b>Glacial Airlines</b> — авиакомпания, работающая по модели простых маршрутов «точка-точка» без
+                        сложных стыковок и хабов, что позволяет сокращать время в пути и операционные расходы.
+                        Современный авиапарк находится в операционном лизинге: мы не приобретаем самолёты в собственность,
+                        а арендуем их, благодаря чему постоянно обновляем флот и не замораживаем капитал в дорогостоящих
+                        активах — это напрямую снижает цену билета для пассажира. Программа лояльности даёт клиентам гибкость:
+                        накопленными милями можно оплатить как весь перелёт целиком, так и любую его часть.
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq">
+            <div class="content-wrapper">
+                <p class="section-title">Ответы на самые популярные вопросы</p>
+
+                <div class="details-list">
+                    <details class="question">
+                        <summary class="title">Нужно ли скачивать приложение, чтобы зарегистрироваться на рейс?</summary>
+                        <div class="content">
+                            <p>
+                                Нет, Glacial Airlines не требует установки приложений. Онлайн-регистрация открывается за 24 часа до вылета прямо
+                                на главной странице нашего сайта. Вы просто вводите номер бронирования и фамилию. Посадочный талон придет на email,
+                                а также сохранится в браузере.
+                            </p>
+                        </div>
+                    </details>
+                     <details class="question">
+                        <summary class="title">Как получить посадочный талон, если у меня нет смартфона?</summary>
+                        <div class="content">
+                            <p>
+                                Вы можете распечатать талон дома на обычном принтере или получить бумажную версию бесплатно на стойке регистрации
+                                в аэропорту. Если вы прошли онлайн-регистрацию, но забыли талон дома, мы перевыпустим его на стойке без штрафов.
+                            </p>
+                        </div>
+                    </details>
+                    <details class="question">
+                        <summary class="title">Что такое маршруты «точка-точка» и почему нет стыковок?</summary>
+                        <div class="content">
+                            Мы не используем хабовую систему с пересадками в центральном аэропорту. Летая по модели «точка-точка», мы выбираем кратчайший
+                            путь между городами. Это сокращает время в пути и снижает риск потери багажа, так как его не нужно перегружать с рейса на рейс.
+                            Отсутствие сложной логистики снижает наши расходы, позволяя держать тарифы доступными.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer th:replace="~{fragments/common.html :: footer}"></footer>
 </body>
 </html>

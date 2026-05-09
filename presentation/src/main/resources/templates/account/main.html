@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет | Glacial Airlines</title>
+    <link rel="stylesheet" th:href="@{/dist/index.css}">
+</head>
+<body>
+    <header th:replace="~{fragments/common.html :: header}"></header>
+
+    <div class="wrapper booking">
+        <div class="content-wrapper booking account">
+            <div class="greeting-message booking-section">
+                <span class="text">Добрый вечер, _____</span>
+            </div>
+            
+            <div class="passenger-card-container booking-section" th:insert="~{fragments/account.html :: passenger-card}"></div>
+
+            <div class="tabs-container booking-section">
+                <div class="tabs">
+                    <a class="tab active">Мои заказы</a>
+                    <a class="tab">Профиль и документы</a>
+                    <a class="tab">История миль</a>
+                </div>
+            </div>
+
+            <div class="order-cards-container booking-section">
+                <div class="order-cards">
+                    <div th:replace="~{fragments/account.html :: order-card}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common.html :: footer}"></footer>
+</body>
+</html>

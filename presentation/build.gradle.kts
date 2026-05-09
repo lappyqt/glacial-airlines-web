@@ -33,7 +33,7 @@ val buildUILibrary = tasks.register<Exec>("buildUILibrary") {
     commandLine("bun", "run", "build.ts")
 
     inputs.dir("webapp")
-    outputs.dir("${projectDir}/src/main/resources")
+    outputs.dir("${projectDir}/src/main/resources/static")
 
     doLast {
         println("Build finished successfully...")

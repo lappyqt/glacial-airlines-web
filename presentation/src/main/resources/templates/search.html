@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск рейсов | Glacial Airlines</title>
+    <link rel="stylesheet" th:href="@{dist/index.css}">
+</head>
+<body>
+    <header th:replace="~{fragments/common.html :: header}"></header>
+
+    <div class="wrapper booking">
+        <div class="content-wrapper booking">
+            <div class="form-container booking-section" th:insert="~{fragments/booking.html :: booking-search-form}"></div>
+            <div class="flight-info booking-section-wide" 
+                th:insert="~{fragments/booking.html :: cheapest-flight-info-block('Выберите вылетающий рейс', 'Екатеринбург - Москва')}">
+            </div>
+            <div class="offer-cards-filters booking-section" th:insert="~{fragments/booking.html :: offer-cards-filters}"></div>
+            <div class="offer-flight-cards booking-section">
+                <div th:replace="~{fragments/booking.html :: flight-offer-card('/booking/return-flight')}"></div>
+                <div th:replace="~{fragments/booking.html :: flight-offer-card('/booking/return-flight')}"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common.html :: footer}"></footer>
+</body>
+</html>

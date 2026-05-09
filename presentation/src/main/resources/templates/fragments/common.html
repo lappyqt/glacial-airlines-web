@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <header th:fragment="header" class="page-header">
+        <div class="header-content">
+            <span class="company-name"><a href="/">Glacial Airlines</a></span>
+
+            <div class="interactive-elements">
+                <div class="links">
+                    <a href="#">Программа лояльности</a>
+                </div>
+
+                <div class="divider"></div>
+
+                <a th:href="@{auth/login}" class="rounded-button-primary">Войти</a>
+            </div>
+        </div>
+    </header>
+
+    <footer th:fragment="footer" class="page-footer">
+        <div class="content-wrapper">
+            <div class="left-side">
+                <span class="branding-title">
+                    Glacial Airlines © 2026. Все права защищены
+                </span>
+            </div>
+            <div class="right-side">
+                <span class="support-email">
+                    Почта поддержки: <b>glacialairlines@gmail.com</b>
+                </span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

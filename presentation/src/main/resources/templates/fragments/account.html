@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="passenger-card" class="passenger-card">
+        <div class="left-side">
+            <div class="profile-icon">И</div>
+
+            <div class="user-credentials">
+                <div class="fullname">Фамилия Имя Отчество</div>
+                <div class="email">passenger@gmail.com</div>
+            </div>
+        </div>
+        <div class="right-side">
+            <div class="miles-accumulated">
+                <div class="amount-of-miles">1644</div>
+                <div class="underline-label">бонусных миль</div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="order-card" class="order-card">
+        <div class="content-block">
+            <div class="header">
+                <span class="title">Заказ №5434</span>
+                <span class="subtitle">Оплачен 02.05.2026</span>
+            </div>
+
+            <div class="content column-flex-container medium-gap">
+                <div th:replace="~{/fragments/booking.html :: flight-segment}"></div>
+                <div class="divider dashed"></div>
+                <div th:replace="~{/fragments/booking.html :: flight-segment}"></div>
+                
+                <div class="services">
+                    <div class="service">Фамилия И. • 6А</div>
+                    <div class="service">Питание на борту</div>
+                    <div class="service">Возврат</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="button-row">
+                    <div class="service-buttons">
+                        <div class="outline-button">Добавить услуги</div>
+                        <div class="outline-button">Оформить возврат</div>
+                    </div>
+
+                    <input type="button" class="default-button" value="Скачать маршрутную квитанцию" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
