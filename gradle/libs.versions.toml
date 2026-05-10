@@ -1,6 +1,8 @@
 [versions]
 "spring-boot" = "4.0.6"
 "spring-dependency-management" = "1.1.7"
+"postgresql" = "42.7.11"
+"lombok" = "1.18.46"
 
 [libraries]
 spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "spring-boot" }
@@ -9,6 +11,10 @@ spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-st
 spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
 spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "spring-boot" }
 spring-boot-starter-thymeleaf-test= { module = "org.springframework.boot:spring-boot-starter-thymeleaf-test", version.ref = "spring-boot" }
+spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
+postgresql-jdbc-driver = { module = "org.postgresql:postgresql", version.ref="postgresql" }
+project-lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
