@@ -21,6 +21,7 @@ public class FlightInventory {
     @JoinColumn(name = "flight_id")
     private Flight flight;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "seat_class", nullable = false, length = 20)
     private SeatClass seatClass;
 
@@ -30,6 +31,6 @@ public class FlightInventory {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "child_price", nullable = false, precision = 4, scale = 2)
-    private BigDecimal childDiscount;
+    @Column(name = "child_seat_discount", nullable = false, precision = 4, scale = 2)
+    private BigDecimal childSeatDiscount;
 }
