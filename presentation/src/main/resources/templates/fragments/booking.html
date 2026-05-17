@@ -3,8 +3,8 @@
 <body>
     <form th:fragment="booking-search-form" class="booking-search-form" method="get" action="/search">
         <div class="inputs-container">
-            <input class="search-input left" type="text" name="from" placeholder="Откуда" disabled>
-            <input class="search-input" type="text" name="to" placeholder="Куда" disabled>
+            <input class="search-input left" type="text" name="from" data-popup="city-select" placeholder="Откуда">
+            <input class="search-input" type="text" name="to" data-popup="city-select" placeholder="Куда">
             <input class="search-input date" type="text" name="there" placeholder="Туда" disabled>
             <input class="search-input date" type="text" name="back" placeholder="Обратно" disabled>
             <input class="search-input passengers" type="text" name="back" placeholder="Количество пассажиров" value="1 Пассажир" disabled>
@@ -18,6 +18,17 @@
             </div>
             
             <input type="submit" value="Поиск рейсов" class="default-button">
+        </div>
+
+        <div class="city-select-popup">
+            <p class="popup-title">Список городов</p>
+            
+            <ul class="destinations">
+                <li class="row">
+                    <span class="city">Екатеринбург</span>
+                    <span class="airport">SVX</span>
+                </li>
+            </ul>
         </div>
     </form>
 

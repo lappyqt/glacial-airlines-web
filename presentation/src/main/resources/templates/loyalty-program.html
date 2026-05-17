@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Программа лояльности | Glacial Airlines</title>
+    <link rel="stylesheet" th:href="@{dist/index.css}">
+</head>
+<body>
+    <header th:replace="~{fragments/common.html :: header}"></header>
+
+    <div class="wrapper">
+        <div class="content-wrapper booking loyalty-program">
+           <div class="information-block booking-section-wide">
+                <img src="/images/content/loyalty-program/background.jpg" class="background-image" alt="Background Image">
+
+                <div class="content">
+                    <p class="title">Программа лояльности Glacial Airlines</p>
+                    <p class="text">
+                        Подписка действует ровно год без обязательных покупок для её продления. Условия не меняются
+                        в течение всего срока, а возврат возможен только в рамках законодательства. Стоимость на данный момент: <b>15 000 RUB</b>.
+                    </p>
+                </div>
+           </div>
+
+           <div class="terms-and-conditions booking-section">
+                <p class="block-title">Подробнее об условиях</p>
+
+                <div class="condition-cards">
+                    <div class="condition-card">
+                        <img src="/images/icons/loyalty-program/percent_condition_icon.svg" alt="Icon" class="condition-icon">
+
+                        <p class="title">Кэшбек на всё</p>
+                        <span class="card-content">
+                            Получайте кэшбек с каждой покупки билета, включая услуги. Процент с покупки билетов
+                            класса эконом <span class="color-green">2,5%</span>, бизнес-класс <span class="color-green">8,5%</span>. 
+                        </span>
+                    </div>
+                    <div class="condition-card">
+                        <img src="/images/icons/loyalty-program/incomplete_condition_icon.svg" alt="Icon" class="condition-icon">
+
+                        <p class="title">Гибность оплаты</p>
+                        <span class="card-content">
+                            Вы можете оплатить милями до 100% стоимости билета. Со счета всегда списывается
+                            максимально доступное количество миль.<br> <b>1 миля = 1 рублю.</b>
+                        </span>
+                    </div>
+                    <div class="condition-card">
+                        <img src="/images/icons/loyalty-program/shiled_condition_icon.svg" alt="Icon" class="condition-icon">
+
+                        <p class="title">Мили навсегда</p>
+                        <span class="card-content">
+                            При отмене подписки мили не сгорают. Вы можете вернуться в программу лояльности
+                            когда угодно — весь баланс сохранится.
+                        </span>
+                    </div>
+                </div>
+           </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/common.html :: footer}"></footer>
+</body>
+</html>

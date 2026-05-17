@@ -33,9 +33,18 @@
                     
                     <div class="content column-flex-container">
                         <div class="row">
-                            <input type="text" class="input" placeholder="Фамилия" autocomplete="off">
-                            <input type="text" class="input" placeholder="Имя" autocomplete="off">
-                            <input type="text" class="input" placeholder="Отчество" autocomplete="off">
+                            <div class="floating-input-group">
+                                <input id="lastname" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="lastname" class="floating-label">Фамилия</label>
+                            </div>
+                            <div class="floating-input-group">
+                                <input id="firstname" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="firstname" class="floating-label">Имя</label>
+                            </div>
+                            <div class="floating-input-group">
+                                <input id="middlename" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="middlename" class="floating-label">Отчество</label>
+                            </div>
                         </div>
 
                         <div class="row">
@@ -44,7 +53,10 @@
                                 <option value="female">Женский</option>
                             </select>
 
-                            <input type="text" class="input" placeholder="Дата рождения" autocomplete="off">
+                            <div class="floating-input-group">
+                                <input id="birthDate" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="birthDate" class="floating-label">Дата рождения</label>
+                            </div>
                         </div>
 
                         <div class="row">
@@ -54,12 +66,15 @@
                                 <option value="birth-certificate">Свидетельство о рождении</option>
                             </select>
 
-                            <input type="text" class="input" placeholder="Серия и номер" autocomplete="off">
+                            <div class="floating-input-group">
+                                <input id="documentNumber" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="documentNumber" class="floating-label">Серия и номер</label>
+                            </div>                            
                         </div>
                     </div>
                 </div>
 
-                 <div class="content-block">
+                <div class="content-block">
                     <div class="header">
                         <span class="title">Контактные данные заказа</span>
                         <span class="subtitle"></span>
@@ -71,8 +86,14 @@
                         </div>
 
                         <div class="row">
-                            <input type="text" class="input" placeholder="Контактная почта" autocomplete="off">
-                            <input type="text" class="input" placeholder="Контактный телефон" autocomplete="off">
+                            <div class="floating-input-group">
+                                <input id="contact-email" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="contact-email" class="floating-label">Контактная почта</label>
+                            </div>
+                            <div class="floating-input-group">
+                                <input id="contact-phone" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="contact-phone" class="floating-label">Контактный телефон</label>
+                            </div>
                         </div>
                     </div>
                 </div>

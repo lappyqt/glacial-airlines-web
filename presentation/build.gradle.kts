@@ -6,7 +6,9 @@ plugins {
 
 dependencies {
     implementation(project(":application"))
+
     developmentOnly(libs.spring.boot.docker.compose)
+    developmentOnly(libs.spring.boot.dev.tools)
 
     implementation(libs.bundles.spring.boot.web)
     testImplementation(libs.bundles.spring.boot.web.test)

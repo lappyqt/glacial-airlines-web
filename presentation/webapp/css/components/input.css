@@ -1,16 +1,69 @@
-.input {
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-white) inset !important;
+    -webkit-text-fill-color: var(--color-black) !important;
+}
+
+.floating-input-group {
+    position: relative;
     width: 100%;
-    height: 46px;
-    outline: none;
-    border: 1px solid rgb(160, 160, 160);
-    border-radius: 12px;
-    box-sizing: border-box;
-    padding: 0 15px 0 15px;
-    font-family: 'Raleway', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    font-variant-numeric: lining-nums;
-    font-feature-settings: "lnum" 1;
+
+    .input {
+        width: 100%;
+        height: 46px;
+        outline: none;
+        border: 1px solid rgb(160, 160, 160);
+        border-radius: 12px;
+        box-sizing: border-box;
+        padding: 0 15px 0 15px;
+        font-family: 'Raleway', sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        font-variant-numeric: lining-nums;
+        font-feature-settings: "lnum" 1;
+        background: transparent;
+        transition: border-color 200ms ease;
+    }
+
+    .floating-label {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-family: var(--font-main);
+        font-size: 16px;
+        font-weight: 500;
+        color: rgb(140, 140, 140);
+        pointer-events: none;
+        transition: all 200ms ease-in-out;
+        background: var(--color-white);
+        padding: 0 4px;
+    }
+
+    .input:focus ~ .floating-label,
+    .input:not(:placeholder-shown) ~ .floating-label {
+        top: 0;
+        transform: translateY(-50%);
+        font-size: 12px;
+    }
+
+    .input:not(:focus):not(:placeholder-shown) ~ .floating-label {
+        color: rgb(140, 140, 140);
+    }
+
+    .input:focus:not(.error) ~ .floating-label {
+        color: var(--color-blue);
+    }
+
+    .input.error ~ .floating-label {
+        color: rgb(255, 56, 60);
+    }
+
+    .input.error {
+        border-color: rgb(255, 56, 60);
+    }
 }
 
 .select {

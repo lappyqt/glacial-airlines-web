@@ -39,4 +39,10 @@ public class Passenger {
 
     @Column(name = "document_number", length = 50)
     private String documentNumber;
+
+    @Column(name = "contact_email", length = 150)
+    private String contactEmail;
+
+    @Column(name = "contact_phone", length = 20)
+    private String contactPhone;
 }

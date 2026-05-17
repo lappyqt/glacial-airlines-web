@@ -45,7 +45,7 @@ public class BookingOrder {
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
-    @Column(name = "miles_spend", nullable = false)
+    @Column(name = "miles_spent", nullable = false)
     private Integer milesSpent = 0;
 
     @Column(name = "miles_earned", nullable = false)

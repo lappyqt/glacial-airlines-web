@@ -37,14 +37,37 @@
 
                     <div class="inputs">
                         <div class="input-group">
-                            <input name="lastname" type="text" class="input" placeholder="Фамилия" autocomplete="off">
-                            <input name="firstname" type="text" class="input" placeholder="Имя" autocomplete="off">
+                            
+                            <div class="floating-input-group">
+                                <input id="lastname" name="lastname" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="lastname" class="floating-label">Фамилия</label>
+                            </div>
+
+                            <div class="floating-input-group">
+                                <input id="firstname" name="firstname" type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="firstname" class="floating-label">Имя</label>
+                            </div>
                         </div>
 
-                        <input name="middlename" type="text" class="input" placeholder="Отчество" autocomplete="off">
-                        <input name="email" type="email" class="input" placeholder="Почта" autocomplete="off">
-                        <input name="phone" type="tel" class="input" placeholder="Номер телефона" autocomplete="off">
-                        <input name="password" type="password" class="input" placeholder="Пароль" autocomplete="off">
+                        <div class="floating-input-group">
+                            <input id="middlename" name="middlename" type="text" class="input" placeholder=" " autocomplete="off">
+                            <label for="middlename" class="floating-label">Отчество</label>
+                        </div>
+
+                        <div class="floating-input-group">
+                            <input id="email" name="email" type="email" class="input" placeholder=" " autocomplete="off">
+                            <label for="email" class="floating-label">Почта</label>
+                        </div>
+
+                        <div class="floating-input-group">
+                            <input id="phone" name="phone" type="tel" class="input" placeholder=" " autocomplete="off">
+                            <label for="phone" class="floating-label">Номер телефона</label>
+                        </div>
+
+                        <div class="floating-input-group">
+                            <input id="password" name="password" type="password" class="input" placeholder=" " autocomplete="off">
+                            <label for="password" class="floating-label">Пароль</label>
+                        </div>
                     </div>
 
                     <input class="default-button submit" type="submit" value="Создать аккаунт">

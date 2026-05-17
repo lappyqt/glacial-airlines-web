@@ -1,0 +1,98 @@
+.content-wrapper.booking.loyalty-program {
+    .booking-section-wide.information-block {
+        width: 100%;
+        height: 575px;
+        position: relative;
+
+        .background-image {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        .content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            backdrop-filter: blur(10px) brightness(0.9);
+            color: var(--color-white);
+
+            .title {
+                font-size: 40px;
+                font-weight: 600;
+                text-align: center;
+            }
+
+            .text {
+                max-width: var(--booking-content-width);
+                font-size: 20px;
+                font-weight: 500;
+                text-align: center;
+            }
+        }
+    }
+
+    .booking-section.terms-and-conditions {
+        display: flex;
+        flex-direction: column;
+        gap: 65px;
+
+        .block-title {
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .condition-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(335px, 370px));
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 65px;
+
+            .condition-card {
+                height: 450px;
+                border-radius: 12px;
+                box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.25);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 20px;
+
+                .condition-icon {
+                    width: 100px;
+                    height: 100px;
+                    user-select: none;
+                }
+
+                .title {
+                    font-size: 24px;
+                    font-weight: 600;
+                }
+
+                .card-content {
+                    width: 100%;
+                    font-size: 18px;
+                    box-sizing: border-box;
+                    padding: 0 40px;
+                    text-align: center;
+                    font-weight: 500;
+
+                    span.color-green {
+                        color: var(--color-green);
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -14,3 +14,10 @@ services:
 volumes:
   postgres-data:
     name: postgres-dev-data
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24

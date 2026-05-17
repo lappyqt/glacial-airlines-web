@@ -84,12 +84,27 @@
                             <div class="divider"></div>
 
                             <form id="payment-form" th:action="@{/booking/success}" method="get" class="flight-payment flex-column" style="gap: 15px;">
-                                <input class="input" type="text" name="card-number" placeholder="Номер карты">
-                                <div class="row">
-                                    <input class="input" type="text" name="validityPeriod" placeholder="Сроки действия">
-                                    <input class="input" type="text" name="cvv" placeholder="CVV">
+                                <div class="floating-input-group">
+                                    <input id="card-number" class="input" type="text" name="card-number" placeholder=" ">
+                                    <label for="card-number" class="floating-label">Номер карты</label>
                                 </div>
-                                <input class="input" type="text" name="cardholder" placeholder="Имя держателя карты">
+                                
+                                <div class="row">
+                                    <div class="floating-input-group">
+                                        <input id="validity-period" class="input" type="text" name="validityPeriod" placeholder=" ">
+                                        <label for="validity-period" class="floating-label">Сроки действия</label>
+                                    </div>
+
+                                    <div class="floating-input-group">
+                                        <input id="cvv" class="input" type="text" name="cvv" placeholder=" ">
+                                        <label for="cvv" class="floating-label">CVV</label>
+                                    </div>
+                                </div>
+
+                                <div class="floating-input-group">
+                                    <input id="cardholder" class="input" type="text" name="cardholder" placeholder=" ">
+                                    <label for="cardholder" class="floating-label">Имя держателя карты</label>
+                                </div>
                             </form>
 
                             <div class="checkbox-line">

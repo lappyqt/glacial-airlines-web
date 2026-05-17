@@ -50,5 +50,86 @@
             </div>
         </div>
     </div>
+
+    <div th:fragment="documents-form-group" class="documents-form-group">
+        <div class="content-block">
+            <div class="header">
+                <span class="title">Пассажир 1</span>
+                <span class="subtitle">Взрослый</span>
+            </div>
+            
+            <div class="content column-flex-container">
+                <div class="row">
+                     <div class="floating-input-group">
+                        <input id="lastname" type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="lastname" class="floating-label">Фамилия</label>
+                    </div>
+                    <div class="floating-input-group">
+                        <input id="firstname" type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="firstname" class="floating-label">Имя</label>
+                    </div>
+                    <div class="floating-input-group">
+                        <input id="middlename" type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="middlename" class="floating-label">Отчество</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <select class="select" id="sex">
+                        <option value="male">Мужской</option>
+                        <option value="female">Женский</option>
+                    </select>
+
+                    <div class="floating-input-group">
+                        <input id="birthDate" type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="birthDate" class="floating-label">Дата рождения</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <select class="select" id="document-type">
+                        <option value="passport">Паспорт РФ</option>
+                        <option value="international-passport">Загранпаспорт</option>
+                        <option value="birth-certificate">Свидетельство о рождении</option>
+                    </select>
+
+                    <div class="floating-input-group">
+                        <input id="documentNumber" type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="documentNumber" class="floating-label">Серия и номер</label>
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+        <div class="content-block">
+            <div class="header">
+                <span class="title">Контактные данные заказа</span>
+                <span class="subtitle"></span>
+            </div>
+        
+            <div class="content">
+                <div class="row">
+                    <div class="floating-input-group">
+                        <input id="contact-email" type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="contact-email" class="floating-label">Контактная почта</label>
+                    </div>
+                    <div class="floating-input-group">
+                        <input id="contact-phone" type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="contact-phone" class="floating-label">Контактный телефон</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="miles-transaction-row" class="miles-transaction-row">
+        <div class="left-side">
+            <p class="order-id">Заказ №5434</p>
+            <p class="payment-date">Оплачен 2.05.2026</p>
+        </div>
+        <div class="right-side">
+            <p class="miles-amount top-upped">+ 354 мили</p>
+        </div>
+    </div>
 </body>
 </html>

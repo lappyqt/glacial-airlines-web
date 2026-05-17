@@ -19,16 +19,34 @@
 
             <div class="tabs-container booking-section">
                 <div class="tabs">
-                    <a class="tab active">Мои заказы</a>
-                    <a class="tab">Профиль и документы</a>
-                    <a class="tab">История миль</a>
+                    <a class="tab" th:href="@{/account}" th:classappend="${activeTab == 'orders' ? 'active' : ''}">Мои заказы</a>
+                    <a class="tab" th:href="@{/account/documents}" th:classappend="${activeTab == 'documents' ? 'active' : ''}">Профиль и документы</a>
+                    <a class="tab" th:href="@{/account/history}" th:classappend="${activeTab == 'history' ? 'active' : ''}">История миль</a>
                 </div>
             </div>
 
-            <div class="order-cards-container booking-section">
+            <div th:if="${activeTab == 'orders'}" class="order-cards-container booking-section">
                 <div class="order-cards">
                     <div th:replace="~{fragments/account.html :: order-card}"></div>
                 </div>
+            </div>
+
+            <div th:if="${activeTab == 'documents'}" class="document-group-container booking-section">
+                <div class="information-note">
+                    Данные из этих форм будут автоматически вставлены при заказе. Чтобы не использовать автозаполнение, оставьте поля пустыми.
+                </div>
+
+                <div th:replace="~{fragments/account.html :: documents-form-group}"></div>
+
+                <div class="form-buttons">
+                    <input type="reset" value="Очистить" class="outline-button">
+                    <input type="submit" value="Сохранить" class="outline-button">
+                </div>
+            </div>
+
+            <div th:if="${activeTab == 'history'}" class="miles-history-container booking-section">
+                <div th:replace="~{fragments/account.html :: miles-transaction-row}"></div>
+                <div th:replace="~{fragments/account.html :: miles-transaction-row}"></div>
             </div>
         </div>
     </div>
