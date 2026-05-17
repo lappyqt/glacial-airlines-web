@@ -278,20 +278,41 @@ WHERE flight_id = 10 AND seat_class = 'EMERGENCY';
 INSERT INTO account.loyalty_account(id, miles, created_at) VALUES
    (1, 1644, '2026-01-15 10:00:00+00'),
    (2, 320,  '2026-03-22 14:00:00+00'),
-   (3, 5429, '2026-05-21 17:43:00+00');
+   (3, 5429, '2026-05-21 17:43:00+00'),
+   (4, 0,    '2026-02-10 09:15:00+00'),
+   (5, 2100, '2026-01-28 11:30:00+00'),
+   (6, 780,  '2026-04-05 16:20:00+00'),
+   (7, 0,    '2026-05-01 08:00:00+00'),
+   (8, 3300, '2025-12-10 12:00:00+00'),
+   (9, 150,  '2026-03-17 19:45:00+00'),
+   (10, 0,   '2026-05-10 14:00:00+00');
 
 INSERT INTO account.passenger(id, first_name, last_name, middle_name, gender, birth_date, document_type, document_number, contact_email, contact_phone)
     VALUES
-    (1, 'Воронов', 'Матвей', 'Денисович', 'MALE', '1993-04-21', 'PASSPORT_RUSSIAN', '4323 544217', 'm.voronov@gmail.com', '+79164328811'),
-    (2, 'Савицкая', 'Элина', 'Романовна', 'FEMALE', '1989-06-01', 'PASSPORT_RUSSIAN', '5676 457568', 'e.savitskaya@outlook.com', '+79257113455'),
-    (3, 'Кравцов', 'Родион', 'Игоревич', 'MALE', '2001-11-07', 'PASSPORT_RUSSIAN', '9667 369343', 'r.kravtsov@gmail.com', '+79031456699');
+    (1,  'Матвей',    'Воронов',    'Денисович',  'MALE',   '1993-04-21', 'PASSPORT_RUSSIAN', '4323 544217', 'm.voronov@gmail.com',       '+79164328811'),
+    (2,  'Элина',     'Савицкая',   'Романовна',  'FEMALE', '1989-06-01', 'PASSPORT_RUSSIAN', '5676 457568', 'e.savitskaya@outlook.com',  '+79257113455'),
+    (3,  'Родион',    'Кравцов',    'Игоревич',   'MALE',   '2001-11-07', 'PASSPORT_RUSSIAN', '9667 369343', 'r.kravtsov@gmail.com',      '+79031456699'),
+    (4,  'Анастасия', 'Белова',     'Олеговна',   'FEMALE', '1997-03-14', 'PASSPORT_RUSSIAN', '7712 334521', 'a.belova@gmail.com',        '+79652341122'),
+    (5,  'Дмитрий',   'Орлов',      'Павлович',   'MALE',   '1985-09-30', 'PASSPORT_RUSSIAN', '3341 887654', 'd.orlov@yandex.ru',         '+79031122334'),
+    (6,  'Юлия',      'Морозова',   'Александровна','FEMALE','1992-12-05','PASSPORT_RUSSIAN', '6654 221133', 'yu.morozova@gmail.com',     '+79167788990'),
+    (7,  'Артём',     'Соколов',    'Витальевич', 'MALE',   '2000-07-19', 'INTERNATIONAL',    '75 1234567',  'a.sokolov@gmail.com',       '+79993344556'),
+    (8,  'Наталья',   'Громова',    'Сергеевна',  'FEMALE', '1978-02-28', 'PASSPORT_RUSSIAN', '2298 556677', 'n.gromova@outlook.com',     '+79251234567'),
+    (9,  'Кирилл',    'Захаров',    'Михайлович', 'MALE',   '1995-10-11', 'PASSPORT_RUSSIAN', '5543 112233', 'k.zakharov@gmail.com',      '+79671122334'),
+    (10, 'Виктория',  'Лебедева',   'Андреевна',  'FEMALE', '2003-05-22', 'PASSPORT_RUSSIAN', '8821 998877', 'v.lebedeva@yandex.ru',      '+79031987654');
 
 INSERT INTO
     account.user_account(id, email, phone_number, last_name, first_name, middle_name, password_hash, created_at, email_verified, auth_provider, loyalty_account_id, passenger_id)
     VALUES
-    (1, 'm.voronov@gmail.com', '+79164328811', 'Воронов', 'Матвей', 'Денисович', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-01-15 10:00:00+00', true, 'EMAIL', 1, 1),
-    (2, 'e.savitskaya@outlook.com', '+79257113455', 'Савицкая', 'Элина', 'Романовна', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-03-22 14:00:00+00', true, 'EMAIL', 2, 2),
-    (3, 'r.kravtsov@gmail.com', '+79031456699', 'Кравцов', 'Родион', 'Игоревич', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-05-21 17:43:00+00', true, 'EMAIL', 3, 3);
+    (1,  'm.voronov@gmail.com',     '+79164328811', 'Воронов',  'Матвей',    'Денисович',     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-01-15 10:00:00+00', true,  'EMAIL', 1,  1),
+    (2,  'e.savitskaya@outlook.com','+79257113455', 'Савицкая', 'Элина',     'Романовна',     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-03-22 14:00:00+00', true,  'EMAIL', 2,  2),
+    (3,  'r.kravtsov@gmail.com',    '+79031456699', 'Кравцов',  'Родион',    'Игоревич',      '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-05-21 17:43:00+00', true,  'EMAIL', 3,  3),
+    (4,  'a.belova@gmail.com',      '+79652341122', 'Белова',   'Анастасия', 'Олеговна',      '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-02-10 09:15:00+00', true,  'EMAIL', 4,  4),
+    (5,  'd.orlov@yandex.ru',       '+79031122334', 'Орлов',    'Дмитрий',   'Павлович',      '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-01-28 11:30:00+00', true,  'EMAIL', 5,  5),
+    (6,  'yu.morozova@gmail.com',   '+79167788990', 'Морозова', 'Юлия',      'Александровна', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-04-05 16:20:00+00', true,  'EMAIL', 6,  6),
+    (7,  'a.sokolov@gmail.com',     '+79993344556', 'Соколов',  'Артём',     'Витальевич',    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-05-01 08:00:00+00', false, 'EMAIL', 7,  7),
+    (8,  'n.gromova@outlook.com',   '+79251234567', 'Громова',  'Наталья',   'Сергеевна',     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2025-12-10 12:00:00+00', true,  'EMAIL', 8,  8),
+    (9,  'k.zakharov@gmail.com',    '+79671122334', 'Захаров',  'Кирилл',    'Михайлович',    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-03-17 19:45:00+00', true,  'EMAIL', 9,  9),
+    (10, 'v.lebedeva@yandex.ru',    '+79031987654', 'Лебедева', 'Виктория',  'Андреевна',     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhy', '2026-05-10 14:00:00+00', true,  'EMAIL', 10, 10);
 
 -- Схема booking
 INSERT INTO booking.additional_service(id, additional_service_type, name, description, price, is_active) VALUES
@@ -302,20 +323,40 @@ INSERT INTO booking.additional_service(id, additional_service_type, name, descri
 INSERT INTO
     booking.booking_order(id, user_account_id, outbound_flight_id, return_flight_id, seat_class, status, total_price, miles_spent, miles_earned, contact_email, contact_phone, created_at, booking_expires_at)
     VALUES
-    (1, 1, 1, 2, 'BUSINESS', 'BOOKED', 17000.00, 1644, 34, 'm.voronov@gmail.com', '+79164328811', NOW(), NOW() + INTERVAL '1 hour'),
-    (2, 2, 9, 11, 'ECONOMY', 'PAID', 90000.00, 320, 563, 'e.savitskaya@outlook.com', '+79257113455', NOW(), NOW() + INTERVAL '1 hour'),
-    (3, 3, 2, 1, 'ECONOMY', 'BOOKED', 17800.00, 0, 35, 'r.kravtsov@gmail.com', '+79031456699', NOW(), NOW() + INTERVAL '1 hour');
+    (1, 1,  1,  2,    'BUSINESS', 'BOOKED',    17000.00,  1644, 34,  'm.voronov@gmail.com',     '+79164328811', '2026-05-01 10:00:00+00', '2026-05-01 11:00:00+00'),
+    (2, 2,  9,  11,   'ECONOMY',  'PAID',      90000.00,  320,  563, 'e.savitskaya@outlook.com','+79257113455', '2026-04-20 14:00:00+00', '2026-04-20 15:00:00+00'),
+    (3, 3,  2,  1,    'ECONOMY',  'BOOKED',    17800.00,  0,    35,  'r.kravtsov@gmail.com',    '+79031456699', '2026-05-10 09:00:00+00', '2026-05-10 10:00:00+00'),
+    (4, 4,  3,  4,    'ECONOMY',  'PAID',      17000.00,  0,    34,  'a.belova@gmail.com',      '+79652341122', '2026-04-15 11:00:00+00', '2026-04-15 12:00:00+00'),
+    (5, 5,  5,  6,    'BUSINESS', 'PAID',      50000.00,  0,    250, 'd.orlov@yandex.ru',       '+79031122334', '2026-04-10 08:00:00+00', '2026-04-10 09:00:00+00'),
+    (6, 6,  9,  NULL, 'ECONOMY',  'PAID',      45000.00,  0,    225, 'yu.morozova@gmail.com',   '+79167788990', '2026-05-05 16:00:00+00', '2026-05-05 17:00:00+00'),
+    (7, 8,  10, 12,   'BUSINESS', 'COMPLETED', 230000.00, 0,    1150, 'n.gromova@outlook.com',   '+79251234567', '2026-03-01 12:00:00+00', '2026-03-01 13:00:00+00');
 
 INSERT INTO
     booking.order_passenger(id, order_id, passenger_id, passenger_type, last_name, first_name, middle_name, gender, birth_date, document_type, document_number, outbound_seat_id)
     VALUES
-    (1, 1, 1, 'ADULT', 'Воронов', 'Матвей', 'Денисович', 'MALE', '1993-04-21', 'PASSPORT_RUSSIAN', '4323 544217', 34),
-    (2, 2, 2, 'ADULT', 'Савицкая', 'Элина', 'Романовна', 'FEMALE', '1989-06-01', 'PASSPORT_RUSSIAN', '5676 457568', 3),
-    (3, 3, 3, 'ADULT', 'Кравцов', 'Родион', 'Игоревич', 'MALE', '2001-11-07', 'PASSPORT_RUSSIAN', '9667 369343', 56);
+    (1, 1, 1, 'ADULT', 'Воронов',  'Матвей',    'Денисович',     'MALE',   '1993-04-21', 'PASSPORT_RUSSIAN', '4323 544217', 34),
+    (2, 2, 2, 'ADULT', 'Савицкая', 'Элина',     'Романовна',     'FEMALE', '1989-06-01', 'PASSPORT_RUSSIAN', '5676 457568', 3),
+    (3, 3, 3, 'ADULT', 'Кравцов',  'Родион',    'Игоревич',      'MALE',   '2001-11-07', 'PASSPORT_RUSSIAN', '9667 369343', 56),
+    (4, 4, 4, 'ADULT', 'Белова',   'Анастасия', 'Олеговна',      'FEMALE', '1997-03-14', 'PASSPORT_RUSSIAN', '7712 334521', 78),
+    (5, 5, 5, 'ADULT', 'Орлов',    'Дмитрий',   'Павлович',      'MALE',   '1985-09-30', 'PASSPORT_RUSSIAN', '3341 887654', 12),
+    (6, 6, 6, 'ADULT', 'Морозова', 'Юлия',      'Александровна', 'FEMALE', '1992-12-05', 'PASSPORT_RUSSIAN', '6654 221133', 42),
+    (7, 7, 8, 'ADULT', 'Громова',  'Наталья',   'Сергеевна',     'FEMALE', '1978-02-28', 'PASSPORT_RUSSIAN', '2298 556677', 116);
+
+INSERT INTO booking.order_services(order_id, service_id) VALUES
+    (2, 1),
+    (2, 3),
+    (5, 1),
+    (6, 2),
+    (7, 1),
+    (7, 3);
 
 INSERT INTO account.loyalty_transaction(id, loyalty_account_id, order_id, transaction_type, miles, created_at) VALUES
-    (1, 1, 1, 'SPENT', 1644, NOW()),
-    (2, 1, 1, 'EARNED', 34, NOW()),
-    (3, 2, 2, 'SPENT', 320, NOW()),
-    (4, 2, 2, 'EARNED', 563, NOW()),
-    (5, 3, 3, 'EARNED', 35, NOW());
+    (1, 1, 1, 'SPENT', 1644, '2026-05-01 10:00:00+00'),
+    (2, 1, 1, 'EARNED', 34,  '2026-05-01 10:00:00+00'),
+    (3, 2, 2, 'SPENT', 320,  '2026-04-20 14:00:00+00'),
+    (4, 2, 2, 'EARNED', 563, '2026-04-20 14:00:00+00'),
+    (5, 3, 3, 'EARNED', 35,  '2026-05-10 09:00:00+00'),
+    (6, 4, 4, 'EARNED', 34,  '2026-04-15 11:00:00+00'),
+    (7, 5, 5, 'EARNED', 250, '2026-04-10 08:00:00+00'),
+    (8, 6, 6, 'EARNED', 225, '2026-05-05 16:00:00+00'),
+    (9, 8, 7, 'EARNED', 1150,'2026-03-01 12:00:00+00');
