@@ -38,7 +38,7 @@ section#booking-section {
                 &.active {
                     color: var(--color-white);
                     background-color: var(--color-blue);
-                    border: none;
+                    border: 1px solid var(--color-blue);
                 }
             }
         }

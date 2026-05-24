@@ -94,7 +94,7 @@ div.booking-section-wide {
     .inputs-container {
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(2, 1.25fr) repeat(4, 1fr);
+        grid-template-columns: repeat(2, 1.25fr) repeat(2, 1fr) repeat(1, 1.5fr);
         gap: 5px;
 
         .search-input {
@@ -108,6 +108,15 @@ div.booking-section-wide {
             font-weight: 600;
             box-sizing: border-box;
             padding: 0 20px;
+            background-position: right 20px center;
+            background-repeat: no-repeat;
+            background-size: 20px;
+            font-variant-numeric: lining-nums;
+            font-feature-settings: "lnum" 1;
+
+            &.visible-input {
+                cursor: pointer;
+            }
 
             &.left {
                 border-radius: 16px 0 0 16px;
@@ -115,6 +124,10 @@ div.booking-section-wide {
 
             &.right {
                 border-radius: 0 16px 16px 0;
+            }
+
+            &.passengers {
+                background-image: url('/images/icons/booking/person_icon.svg');
             }
         }
     }
@@ -146,12 +159,12 @@ div.booking-section-wide {
         }
     }
 
-    .city-select-popup {
+    .booking-form-popup {
         display: flex;
         flex-direction: column;
         gap: 15px;
-        width: 250px;
-        min-height: 300px;
+        width: 300px;
+        min-height: 360px;
         height: auto;
         box-sizing: border-box;
         padding: 20px;
@@ -162,18 +175,24 @@ div.booking-section-wide {
         position: absolute;
         pointer-events: none;
         z-index: 1000;
+        max-height: 350px;
         transition: opacity 200ms ease;
 
-        &.open {
+        &.popup-visible {
             opacity: 1;
-            pointer-events: all;
+            pointer-events: auto;
         }
 
         .popup-title {
             font-weight: 600;
         }
+    }
 
+    .city-select-popup {
         .destinations {
+            flex: 1;
+            overflow-y: auto;
+
             .row {
                 border-radius: 12px;
                 padding: 15px;
@@ -184,6 +203,106 @@ div.booking-section-wide {
                 &:hover {
                     background-color: rgb(240, 240, 240);
                 }
+
+                .city {
+                    font-weight: 500;
+                }
+
+                .airport {
+                    color: rgb(141, 141, 141);
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
+    .passengers-popup {
+        width: 300px;
+        min-height: auto;
+        gap: 20px;
+
+        .rows {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .passenger-row {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                
+                .text-content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+
+                    .group-title {
+                        font-size: 16px;
+                        font-weight: 600;
+                    }
+
+                    .subtitle {
+                        font-weight: 500;
+                        font-size: 14px;
+                        color: rgb(140, 140, 140);
+                    }
+                }
+
+                .counter {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+
+                    .minus-button, .plus-button {
+                        width: 30px;
+                        height: 30px;
+                        background-color: rgb(240, 240, 240);
+                        border-radius: 100%;
+                        background-position: center center;
+                        background-repeat: no-repeat;
+                        background-size: 16px;
+                        cursor: pointer;
+                    }
+
+                    .count {
+                        width: 15px;
+                    }
+
+                    .minus-button {
+                        background-image: url('/images/icons/booking/remove_icon.svg');
+                    }
+
+                    .plus-button {
+                        background-image: url('/images/icons/booking/add_icon.svg');
+                    }
+                }
+            }
+        }
+
+        .class-toggle {
+            display: flex;
+            border: 1px solid rgb(240, 240, 240);
+            border-radius: 8px;
+            overflow: hidden;
+
+            input[type="radio"] {
+                display: none;
+            }
+
+            label {
+                flex: 1;
+                text-align: center;
+                padding: 8px 16px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: background-color 200ms ease, color 200ms ease;
+                user-select: none;
+            }
+
+            input[type="radio"]:checked + label {
+                background-color: var(--color-blue);
+                color: var(--color-white);
             }
         }
     }

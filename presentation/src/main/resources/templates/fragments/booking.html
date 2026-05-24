@@ -3,12 +3,23 @@
 <body>
     <form th:fragment="booking-search-form" class="booking-search-form" method="get" action="/search">
         <div class="inputs-container">
-            <input class="search-input left" type="text" name="from" data-popup="city-select" placeholder="Откуда">
-            <input class="search-input" type="text" name="to" data-popup="city-select" placeholder="Куда">
-            <input class="search-input date" type="text" name="there" placeholder="Туда" disabled>
-            <input class="search-input date" type="text" name="back" placeholder="Обратно" disabled>
-            <input class="search-input passengers" type="text" name="back" placeholder="Количество пассажиров" value="1 Пассажир" disabled>
-            <input class="search-input right" type="text" name="back" placeholder="Класс обслуживания" value="Эконом" disabled>
+            <input class="search-input visible-input left" id="from-visible" type="text" readonly data-popup="city-select" data-target="from" placeholder="Откуда">
+            <input name="from" id="from" type="hidden">
+
+            <input class="search-input visible-input" type="text" readonly id="to-visible" data-popup="city-select" data-target="to" placeholder="Куда">
+            <input name="to" id="to" type="hidden">
+
+            <input class="search-input date" type="date" name="there"
+                th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
+                         max=${#temporals.format(#temporals.createNow().plusMonths(2), 'yyyy-MM-dd')}">
+
+            <input class="search-input date" type="date" name="back"
+                th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
+                         max=${#temporals.format(#temporals.createNow().plusMonths(2), 'yyyy-MM-dd')}">
+
+            <input class="search-input visible-input passengers right" readonly type="text" id="passengers-count-visible" placeholder="Количество пассажиров" value="1 Пассажир">
+            <input type="hidden" name="adults" id="adults" value="1">
+            <input type="hidden" name="children" id="children" value="0">
         </div>
 
         <div class="bottom-row">
@@ -20,15 +31,57 @@
             <input type="submit" value="Поиск рейсов" class="default-button">
         </div>
 
-        <div class="city-select-popup">
+        <div class="booking-form-popup city-select-popup">
             <p class="popup-title">Список городов</p>
             
             <ul class="destinations">
-                <li class="row">
+                <li class="row" data-airport-id="1">
                     <span class="city">Екатеринбург</span>
                     <span class="airport">SVX</span>
                 </li>
+                <li class="row" data-airport-id="2">
+                    <span class="city">Москва</span>
+                    <span class="airport">DME</span>
+                </li>
             </ul>
+        </div>
+
+        <div class="booking-form-popup passengers-popup">
+            <div class="rows">
+                <div class="passenger-row adult">
+                    <div class="text-content">
+                        <p class="group-title">Взрослые</p>
+                        <p class="subtitle">12 лет и старше</p>
+                    </div>
+
+                    <div class="counter">
+                        <div class="minus-button"></div>
+                        <span class="count" id="adult-passenger-count">1</span>
+                        <div class="plus-button"></div>
+                    </div>
+                </div>
+
+                <div class="passenger-row child">
+                    <div class="text-content">
+                        <p class="group-title">Дети</p>
+                        <p class="subtitle">До 12 лет</p>
+                    </div>
+
+                    <div class="counter">
+                        <div class="minus-button"></div>
+                        <span class="count" id="child-passenger-count">0</span>
+                        <div class="plus-button"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="class-toggle">
+                <input type="radio" name="serviceClass" id="economy" value="ECONOMY" checked>
+                <label for="economy">Эконом</label>
+
+                <input type="radio" name="serviceClass" id="business" value="BUSINESS">
+                <label for="business">Бизнес</label>
+            </div>
         </div>
     </form>
 
