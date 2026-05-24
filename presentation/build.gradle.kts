@@ -6,12 +6,16 @@ plugins {
 
 dependencies {
     implementation(project(":application"))
+    implementation(project(":domain"))
 
     developmentOnly(libs.spring.boot.docker.compose)
     developmentOnly(libs.spring.boot.dev.tools)
 
     implementation(libs.bundles.spring.boot.web)
     testImplementation(libs.bundles.spring.boot.web.test)
+
+    compileOnly(libs.project.lombok)
+    annotationProcessor(libs.project.lombok)
 }
 
 tasks {

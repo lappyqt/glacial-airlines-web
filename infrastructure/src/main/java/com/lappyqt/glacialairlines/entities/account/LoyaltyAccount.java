@@ -2,6 +2,7 @@ package com.lappyqt.glacialairlines.entities.account;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -12,6 +13,7 @@ import java.util.List;
 @Table(name = "loyalty_account", schema = "account")
 @Getter
 @Setter
+@NoArgsConstructor
 public class LoyaltyAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loyalty_account_seq")
@@ -26,4 +28,9 @@ public class LoyaltyAccount {
 
     @OneToMany(mappedBy = "loyaltyAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LoyaltyTransaction> transactions = new ArrayList<>();
+
+    @PrePersist
+    private void prePersist() {
+        createdAt = Instant.now();
+    }
 }

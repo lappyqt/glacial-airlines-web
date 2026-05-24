@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="content">
-                <form class="form-container">
+                <form class="form-container" th:action="@{/auth/create}" th:object="${createAccountDto}" method="post">
                     <div class="title-block">
                         <h1 class="title">Создание аккаунта</h1>
                         <p class="redirect">Уже есть аккаунт? <a th:href="@{login}">Войти</a></p>
@@ -39,34 +39,52 @@
                         <div class="input-group">
                             
                             <div class="floating-input-group">
-                                <input id="lastname" name="lastname" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="lastname" class="floating-label">Фамилия</label>
+                                <input id="lastname" th:field="*{lastName}"
+                                       th:classappend="${#fields.hasErrors('lastName')} ? 'error'"
+                                       type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="lastname" class="floating-label"
+                                       th:text="${#fields.hasErrors('lastName')} ? ${#fields.errors('lastName')[0]} : 'Фамилия'"></label>
                             </div>
 
                             <div class="floating-input-group">
-                                <input id="firstname" name="firstname" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="firstname" class="floating-label">Имя</label>
+                                <input id="firstname" th:field="*{firstName}"
+                                       th:classappend="${#fields.hasErrors('firstName')} ? 'error'"
+                                       type="text" class="input" placeholder=" " autocomplete="off">
+                                <label for="firstname" class="floating-label"
+                                       th:text="${#fields.hasErrors('firstName')} ? ${#fields.errors('firstName')[0]} : 'Имя'"></label>
                             </div>
                         </div>
 
                         <div class="floating-input-group">
-                            <input id="middlename" name="middlename" type="text" class="input" placeholder=" " autocomplete="off">
-                            <label for="middlename" class="floating-label">Отчество</label>
+                            <input id="middlename" th:field="*{middleName}"
+                                   th:classappend="${#fields.hasErrors('middleName')} ? 'error'" 
+                                   type="text" class="input" placeholder=" " autocomplete="off">
+                            <label for="middlename" class="floating-label"
+                                   th:text="${#fields.hasErrors('middleName')} ? ${#fields.errors('middleName')[0]} : 'Отчество'"></label>
                         </div>
 
                         <div class="floating-input-group">
-                            <input id="email" name="email" type="email" class="input" placeholder=" " autocomplete="off">
-                            <label for="email" class="floating-label">Почта</label>
+                            <input id="email" th:field="*{email}"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'error'"
+                                   type="email" class="input" placeholder=" " autocomplete="off">
+                            <label for="email" class="floating-label"
+                                   th:text="${#fields.hasErrors('email')} ? ${#fields.errors('email')[0]} : 'Почта'"></label>
                         </div>
 
                         <div class="floating-input-group">
-                            <input id="phone" name="phone" type="tel" class="input" placeholder=" " autocomplete="off">
-                            <label for="phone" class="floating-label">Номер телефона</label>
+                            <input id="phone" th:field="*{phoneNumber}"
+                                   th:classappend="${#fields.hasErrors('phoneNumber')} ? 'error'"
+                                   type="tel" class="input" placeholder=" " autocomplete="chrome-off">
+                            <label for="phone" class="floating-label"
+                                   th:text="${#fields.hasErrors('phoneNumber')} ? ${#fields.errors('phoneNumber')[0]} : 'Номер телефона'"></label>
                         </div>
 
                         <div class="floating-input-group">
-                            <input id="password" name="password" type="password" class="input" placeholder=" " autocomplete="off">
-                            <label for="password" class="floating-label">Пароль</label>
+                            <input id="password" th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'error'"
+                                   type="password" class="input" placeholder=" " autocomplete="off">
+                            <label for="password" class="floating-label"
+                                   th:text="${#fields.hasErrors('password')} ? ${#fields.errors('password')[0]} : 'Пароль'"></label>
                         </div>
                     </div>
 

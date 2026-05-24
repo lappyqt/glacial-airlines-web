@@ -360,3 +360,20 @@ INSERT INTO account.loyalty_transaction(id, loyalty_account_id, order_id, transa
     (7, 5, 5, 'EARNED', 250, '2026-04-10 08:00:00+00'),
     (8, 6, 6, 'EARNED', 225, '2026-05-05 16:00:00+00'),
     (9, 8, 7, 'EARNED', 1150,'2026-03-01 12:00:00+00');
+
+SELECT setval('public.loyalty_account_id_seq',       (SELECT MAX(id) FROM account.loyalty_account));
+SELECT setval('public.passenger_id_seq',             (SELECT MAX(id) FROM account.passenger));
+SELECT setval('public.account_id_seq',               (SELECT MAX(id) FROM account.user_account));
+SELECT setval('public.loyalty_transaction_seq',      (SELECT MAX(id) FROM account.loyalty_transaction));
+
+SELECT setval('public.airport_id_seq',               (SELECT MAX(id) FROM flight.airport));
+SELECT setval('public.route_id_seq',                 (SELECT MAX(id) FROM flight.route));
+SELECT setval('public.aircraft_id_seq',              (SELECT MAX(id) FROM flight.aircraft));
+SELECT setval('public.seat_id_seq',                  (SELECT MAX(id) FROM flight.seat));
+SELECT setval('public.flight_id_seq',                (SELECT MAX(id) FROM flight.flight));
+SELECT setval('public.flight_inventory_id_seq',      (SELECT MAX(id) FROM flight.flight_inventory));
+SELECT setval('public.seat_availability_id_seq',     (SELECT MAX(id) FROM flight.seat_availability));
+
+SELECT setval('public.additional_service_id_seq',    (SELECT MAX(id) FROM booking.additional_service));
+SELECT setval('public.booking_order_id_seq',         (SELECT MAX(id) FROM booking.booking_order));
+SELECT setval('public.order_passenger_id_seq',       (SELECT MAX(id) FROM booking.order_passenger));

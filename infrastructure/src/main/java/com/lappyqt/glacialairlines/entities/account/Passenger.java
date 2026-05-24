@@ -4,6 +4,7 @@ import com.lappyqt.glacialairlines.enums.DocumentType;
 import com.lappyqt.glacialairlines.enums.Gender;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -11,10 +12,11 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "passenger", schema = "account")
 @Getter @Setter
+@NoArgsConstructor
 public class Passenger {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passenger_seq")
-    @SequenceGenerator(name = "passenger_seq", sequenceName = "passenger_id_seq")
+    @SequenceGenerator(name = "passenger_seq", sequenceName = "passenger_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "first_name", length = 100)

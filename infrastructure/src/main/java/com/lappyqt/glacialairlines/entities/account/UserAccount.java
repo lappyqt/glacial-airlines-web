@@ -2,14 +2,16 @@ package com.lappyqt.glacialairlines.entities.account;
 
 import com.lappyqt.glacialairlines.enums.AuthProvider;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
 @Entity
 @Table(name = "user_account", schema = "account")
 @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_seq")
@@ -51,4 +53,17 @@ public class UserAccount {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
+
+    @PrePersist
+    private void prePersist() {
+        createdAt = Instant.now();
+
+        if (loyaltyAccount == null) {
+            loyaltyAccount = new LoyaltyAccount();
+        }
+
+        if (passenger == null) {
+            passenger = new Passenger();
+        }
+    }
 }

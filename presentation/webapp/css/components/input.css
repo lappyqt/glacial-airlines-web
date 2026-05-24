@@ -58,6 +58,9 @@ input:-webkit-autofill:active {
     }
 
     .input.error ~ .floating-label {
+        top: 0;
+        transform: translateY(-50%);
+        font-size: 12px;
         color: rgb(255, 56, 60);
     }
 

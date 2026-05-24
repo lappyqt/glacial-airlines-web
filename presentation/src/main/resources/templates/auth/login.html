@@ -14,20 +14,26 @@
         </div>
 
         <div class="login-form">
-            <form class="form-container">
-                <div class="title-block">
+            <form class="form-container" th:action="@{/auth/login}" method="post">
+                <div class="title-block" th:classappend="${param.error != null} ? 'error'">
                     <h1 class="title">Вход в аккаунт</h1>
                     <p class="redirect">Нет аккаунта? <a th:href="@{create}">Регистрация</a></p>
                 </div>
 
+                <p th:if="${param.error}" class="error-message">Неверный логин или пароль</p>
+
                 <div class="inputs">
                     <div class="floating-input-group">
-                        <input id="login" name="login" type="text" class="input" placeholder=" " autocomplete="off">
-                        <label for="login" class="floating-label">Почта или номер телефона</label>
+                        <input id="username"
+                               th:classappend="${param.error != null} ? 'error'"
+                               name="username" type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="username" class="floating-label">Почта или номер телефона</label>
                     </div>
                     
                     <div class="floating-input-group">
-                        <input id="password" name="password" type="password" class="input" placeholder=" " autocomplete="off">
+                        <input id="password"
+                               th:classappend="${param.error != null} ? 'error'"
+                               name="password" type="password" class="input" placeholder=" " autocomplete="off">
                         <label for="password" class="floating-label">Пароль</label>
                     </div>
                 </div>

@@ -23,6 +23,10 @@
             gap: 15px;
             margin-bottom: 50px;
 
+            &.error {
+                margin-bottom: 10px;
+            }
+
             .title {
                 font-weight: 500;
             }
@@ -35,6 +39,12 @@
                     color: var(--color-black);
                 }
             }
+        }
+
+        .error-message {
+            margin: 20px 0 35px 0;
+            font-weight: 500;
+            color: rgb(255, 56, 60);
         }
 
         .inputs {
