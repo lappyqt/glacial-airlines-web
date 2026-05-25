@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${app.security.remember-me-key}")
+    @Value("${spring.security.remember-me-key}")
     private String rememberMeKey;
 
     @Bean
