@@ -91,13 +91,106 @@ div.booking-section-wide {
     gap: 30px;
     position: relative;
 
+    .global-error-container {
+        .global-error {
+            font-weight: 500;
+            color: rgb(255, 56, 60);
+        }
+    }
+
     .inputs-container {
         width: 100%;
         display: grid;
         grid-template-columns: repeat(2, 1.25fr) repeat(2, 1fr) repeat(1, 1.5fr);
         gap: 5px;
+        position: relative;
+
+        .input-wrapper {
+            display: block;
+            width: 100%;
+            position: relative;
+
+            &.left {
+                border-radius: 16px 0 0 16px;
+                .search-input { border-radius: 16px 0 0 16px; }
+            }
+
+            &.right {
+                border-radius: 0 16px 16px 0;
+                .search-input { border-radius: 0 16px 16px 0; }
+            }
+
+            &.error {
+                .search-input {
+                    border: 1px solid rgb(255, 56, 60);
+                    background-color: rgb(255, 245, 245);
+
+                    &::placeholder {
+                        color: rgb(255, 120, 120);
+                        opacity: 1;
+                    }
+                }
+            }
+
+            &::after, &::before {
+               position: absolute;
+               bottom: 100%;
+               z-index: 99;
+               opacity: 0;
+               visibility: hidden;
+               transform: translateY(5px);
+               transition: opacity 0.2s ease, transform 0.2s ease;
+               pointer-events: none;
+            }
+
+            &::after {
+               content: attr(data-title);
+               left: 15px;
+               margin-bottom: 10px;
+               background-color: rgb(240, 240, 240);
+               color: rgb(60, 60, 60);
+               border: 1px solid rgb(215, 215, 215);
+               padding: 8px 14px;
+               border-radius: 8px;
+               font-family: var(--font-main);
+               font-size: 14px;
+               font-weight: 500;
+               white-space: nowrap;
+               box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+            }
+
+            &::before {
+               content: '';
+               left: 35px;
+               margin-bottom: 2px;
+               border: 4px solid transparent;
+               border-top-color: rgb(215, 215, 215);
+               z-index: 100;
+            }
+
+            &:hover {
+               &::after, &::before {
+                   opacity: 1;
+                   visibility: visible;
+                   transform: translateY(0);
+               }
+            }
+
+            &.error:hover {
+               &::after {
+                   color: rgb(255, 56, 60);
+                   background-color: #fff5f5;
+                   border: 1px solid rgb(255, 56, 60);
+               }
+
+               &::before {
+                   border-top-color: rgb(255, 56, 60);
+               }
+            }
+        }
 
         .search-input {
+            width: 100%;
             min-width: 0;
             outline: none;
             border: none;
@@ -118,14 +211,6 @@ div.booking-section-wide {
                 cursor: pointer;
             }
 
-            &.left {
-                border-radius: 16px 0 0 16px;
-            }
-
-            &.right {
-                border-radius: 0 16px 16px 0;
-            }
-
             &.passengers {
                 background-image: url('/images/icons/booking/person_icon.svg');
             }
@@ -143,7 +228,7 @@ div.booking-section-wide {
             align-items: center;
             gap: 10px;
 
-            input[name="payWithMiles"] {
+            input#payWithMiles {
                 width: 18px;
                 aspect-ratio: 1 / 1;
             }

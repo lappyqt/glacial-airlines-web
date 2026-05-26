@@ -1,9 +1,9 @@
 import { Popup } from "./popup";
 
 export class PassengersPopup extends Popup {
-    private adults = 1;
-    private children = 0;
-    private currentClass = 'Эконом';
+    private adults;
+    private children;
+    private currentClass;
 
     private readonly visibleInput: HTMLInputElement;
 
@@ -29,9 +29,19 @@ export class PassengersPopup extends Popup {
         this.adultsHidden = document.getElementById('adults') as HTMLInputElement;
         this.childrenHidden = document.getElementById('children') as HTMLInputElement;
 
+        const parsedAdults = parseInt(this.adultsHidden?.value ?? '');
+        this.adults = !isNaN(parsedAdults) ? parsedAdults : 1;
+
+        const parsedChildren = parseInt(this.childrenHidden?.value ?? '');
+        this.children = !isNaN(parsedChildren) ? parsedChildren : 0;
+
+        const checkedRadio = document.querySelector('input[name="serviceClass"]:checked') as HTMLInputElement | null;
+        this.currentClass = checkedRadio?.labels?.[0]?.textContent?.trim() ?? checkedRadio?.value ?? 'Эконом';
+
         this.serviceClassRadioButtons = element.querySelectorAll('input[name="serviceClass"]');
 
         this.bindButtons();
+        this.bindPassengerCounters();
         this.bindServiceClassRadioButtons();
         this.updateInput();
         this.bindResize();
@@ -48,8 +58,15 @@ export class PassengersPopup extends Popup {
     }
 
     private setLocation() {
+        const wrapper = this.visibleInput?.parentElement;
+
         this.element.style.top = `${this.visibleInput.offsetHeight + 15}px`;
-        this.element.style.left = `${this.visibleInput.offsetLeft}px`;
+        this.element.style.left = `${wrapper?.offsetLeft ?? this.visibleInput?.offsetLeft ?? 0}px`;
+    }
+
+    private bindPassengerCounters() {
+        this.adultCount.textContent = String(this.adults);
+        this.childCount.textContent = String(this.children);
     }
 
     private bindButtons(): void {
@@ -82,8 +99,7 @@ export class PassengersPopup extends Popup {
             this.children = next;
         }
 
-        this.adultCount.textContent = String(this.adults);
-        this.childCount.textContent = String(this.children);
+        this.bindPassengerCounters();
 
         this.adultsHidden.value = String(this.adults);
         this.childrenHidden.value = String(this.children);

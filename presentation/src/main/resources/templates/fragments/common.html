@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <body>
     <header th:fragment="header" class="page-header">
         <div class="header-content">
             <span class="company-name"><a href="/">Glacial Airlines</a></span>
 
             <div class="interactive-elements">
-                <div class="links">
+                <div class="links" sec:authorize="isAuthenticated()">
+                    <a>0 миль</a>
+                </div>
+
+                <div class="links" sec:authorize="isAnonymous()">
                     <a th:href="@{/loyalty-program}">Программа лояльности</a>
                 </div>
 
                 <div class="divider"></div>
 
-                <a th:href="@{/auth/login}" class="rounded-button-primary">Войти</a>
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/account}" class="rounded-button-primary">Личный кабинет</a>
+                </div>
+
+                <div sec:authorize="isAnonymous()">
+                    <a th:href="@{/auth/login}" class="rounded-button-primary">Войти</a>
+                </div>
             </div>
         </div>
     </header>

@@ -11,9 +11,19 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql
 
+  redis:
+    image: redis:8.6.3-alpine
+    container_name: redis_dev
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass glacial_redis_password --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
 volumes:
   postgres-data:
     name: postgres-dev-data
+  redis-data:
+    name: redis-dev-data
 
 networks:
   default:

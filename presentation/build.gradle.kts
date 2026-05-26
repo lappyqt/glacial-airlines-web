@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation(project(":application"))
+    implementation(project(":infrastructure"))
     implementation(project(":domain"))
 
     developmentOnly(libs.spring.boot.docker.compose)

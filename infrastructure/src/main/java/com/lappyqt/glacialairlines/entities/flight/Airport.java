@@ -2,6 +2,7 @@ package com.lappyqt.glacialairlines.entities.flight;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity

@@ -3,6 +3,7 @@
 "spring-dependency-management" = "1.1.7"
 "postgresql" = "42.7.11"
 "lombok" = "1.18.46"
+"thymeleaf-extras" = "3.1.5.RELEASE"
 
 [libraries]
 spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "spring-boot" }
@@ -13,6 +14,9 @@ spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-bo
 spring-boot-starter-thymeleaf-test= { module = "org.springframework.boot:spring-boot-starter-thymeleaf-test", version.ref = "spring-boot" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
+spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "spring-boot" }
+
+thymeleaf-extras-springsecurity = { module = "org.thymeleaf.extras:thymeleaf-extras-springsecurity6", version.ref = "thymeleaf-extras" }
 
 spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
@@ -25,7 +29,10 @@ spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 
 [bundles]
-spring-boot-web = [ "spring-boot-starter-webmvc", "spring-boot-starter-thymeleaf", "spring-boot-starter-validation", "spring-boot-starter-security" ]
+spring-boot-web = [
+    "spring-boot-starter-webmvc", "spring-boot-starter-thymeleaf", "spring-boot-starter-validation",
+    "spring-boot-starter-security", "spring-boot-starter-data-jpa", "thymeleaf-extras-springsecurity"
+]
 spring-boot-web-test = [ "spring-boot-starter-webmvc-test", "spring-boot-starter-thymeleaf-test" ]
 spring-boot-application = [ "spring-boot-starter", "spring-boot-starter-validation", "spring-boot-starter-data-jpa", "spring-boot-starter-security" ]
 spring-boot-application-test = [ "spring-boot-starter-test" ]

@@ -18,8 +18,8 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/dist/**", "/images/**", "/favicon.ico").permitAll()
-                .requestMatchers("/", "/search", "/auth/create", "/booking/return-flight", "/loyalty-program").permitAll()
+                .requestMatchers("/dist/**", "/images/**", "/favicon.ico", "/.well-known/**").permitAll()
+                .requestMatchers("/", "/search", "/auth/create", "/booking/return-flight", "/loyalty-program", "/error").permitAll()
                 .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/auth/login").permitAll()

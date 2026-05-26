@@ -51,7 +51,7 @@
                                        th:classappend="${#fields.hasErrors('firstName')} ? 'error'"
                                        type="text" class="input" placeholder=" " autocomplete="off">
                                 <label for="firstname" class="floating-label"
-                                       th:text="${#fields.hasErrors('firstName')} ? ${#fields.errors('firstName')[0]} : 'Имя'"></label>
+                                       th:text="${#fields.hasErrors('firstName')} ? ${#fields.errors('firstName').get(0)} : 'Имя'"></label>
                             </div>
                         </div>
 
@@ -60,7 +60,7 @@
                                    th:classappend="${#fields.hasErrors('middleName')} ? 'error'" 
                                    type="text" class="input" placeholder=" " autocomplete="off">
                             <label for="middlename" class="floating-label"
-                                   th:text="${#fields.hasErrors('middleName')} ? ${#fields.errors('middleName')[0]} : 'Отчество'"></label>
+                                   th:text="${#fields.hasErrors('middleName')} ? ${#fields.errors('middleName').get(0)} : 'Отчество'"></label>
                         </div>
 
                         <div class="floating-input-group">
@@ -68,7 +68,7 @@
                                    th:classappend="${#fields.hasErrors('email')} ? 'error'"
                                    type="email" class="input" placeholder=" " autocomplete="off">
                             <label for="email" class="floating-label"
-                                   th:text="${#fields.hasErrors('email')} ? ${#fields.errors('email')[0]} : 'Почта'"></label>
+                                   th:text="${#fields.hasErrors('email')} ? ${#fields.errors('email').get(0)} : 'Почта'"></label>
                         </div>
 
                         <div class="floating-input-group">
@@ -76,7 +76,7 @@
                                    th:classappend="${#fields.hasErrors('phoneNumber')} ? 'error'"
                                    type="tel" class="input" placeholder=" " autocomplete="chrome-off">
                             <label for="phone" class="floating-label"
-                                   th:text="${#fields.hasErrors('phoneNumber')} ? ${#fields.errors('phoneNumber')[0]} : 'Номер телефона'"></label>
+                                   th:text="${#fields.hasErrors('phoneNumber')} ? ${#fields.errors('phoneNumber').get(0)} : 'Номер телефона'"></label>
                         </div>
 
                         <div class="floating-input-group">
@@ -84,7 +84,7 @@
                                    th:classappend="${#fields.hasErrors('password')} ? 'error'"
                                    type="password" class="input" placeholder=" " autocomplete="off">
                             <label for="password" class="floating-label"
-                                   th:text="${#fields.hasErrors('password')} ? ${#fields.errors('password')[0]} : 'Пароль'"></label>
+                                   th:text="${#fields.hasErrors('password')} ? ${#fields.errors('password').get(0)} : 'Пароль'"></label>
                         </div>
                     </div>
 

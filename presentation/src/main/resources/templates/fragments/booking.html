@@ -1,31 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <body>
-    <form th:fragment="booking-search-form" class="booking-search-form" method="get" action="/search">
+    <form th:fragment="booking-search-form(sourcePage)" class="booking-search-form" th:action="@{/search}" th:object="${searchRequestDto}" method="get">
+        <input type="hidden" id="source" name="source" th:value="${sourcePage}"/>
+
+        <div th:if="${#fields.hasGlobalErrors()}" class="global-error-container">
+            <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" class="global-error"></p>
+        </div>
+
         <div class="inputs-container">
-            <input class="search-input visible-input left" id="from-visible" type="text" readonly data-popup="city-select" data-target="from" placeholder="Откуда">
-            <input name="from" id="from" type="hidden">
+            <div class="input-wrapper left" th:classappend="${#fields.hasErrors('outboundAirportId')} ? 'error'"
+                 th:data-title="${#fields.hasErrors('outboundAirportId')} ? ${#fields.errors('outboundAirportId').get(0)} : 'Аэропорт отправления'">
+                <input class="search-input visible-input" id="from-visible" type="text" readonly data-popup="city-select" data-target="outboundAirportId" placeholder="Откуда">
+                <input th:field="*{outboundAirportId}" id="outboundAirportId" type="hidden">
+            </div>
 
-            <input class="search-input visible-input" type="text" readonly id="to-visible" data-popup="city-select" data-target="to" placeholder="Куда">
-            <input name="to" id="to" type="hidden">
+            <div class="input-wrapper" th:classappend="${#fields.hasErrors('returnAirportId')} ? 'error'"
+                 th:data-title="${#fields.hasErrors('returnAirportId')} ? ${#fields.errors('returnAirportId').get(0)} : 'Аэропорт прибытия'">
+                <input class="search-input visible-input" type="text" readonly id="to-visible" data-popup="city-select" data-target="returnAirportId" placeholder="Куда">
+                <input th:field="*{returnAirportId}" id="returnAirportId" type="hidden">
+            </div>
 
-            <input class="search-input date" type="date" name="there"
-                th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
-                         max=${#temporals.format(#temporals.createNow().plusMonths(2), 'yyyy-MM-dd')}">
+            <div class="input-wrapper" th:classappend="${#fields.hasErrors('outboundFlightDate')} ? 'error'"
+                 th:data-title="${#fields.hasErrors('outboundFlightDate')} ? ${#fields.errors('outboundFlightDate').get(0)} : 'Туда'">
+                <input class="search-input date" type="date" th:field="*{outboundFlightDate}"
+                    th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
+                             max=${#temporals.format(#temporals.createNow().plusMonths(2), 'yyyy-MM-dd')}">
+            </div>
 
-            <input class="search-input date" type="date" name="back"
-                th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
-                         max=${#temporals.format(#temporals.createNow().plusMonths(2), 'yyyy-MM-dd')}">
+            <div class="input-wrapper" th:classappend="${#fields.hasErrors('returnFlightDate')} ? 'error'"
+                 th:data-title="${#fields.hasErrors('returnFlightDate')} ? ${#fields.errors('returnFlightDate').get(0)} : 'Обратно'">
+                <input class="search-input date" type="date" th:field="*{returnFlightDate}"
+                    th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
+                             max=${#temporals.format(#temporals.createNow().plusMonths(2), 'yyyy-MM-dd')}">
+            </div>
 
-            <input class="search-input visible-input passengers right" readonly type="text" id="passengers-count-visible" placeholder="Количество пассажиров" value="1 Пассажир">
-            <input type="hidden" name="adults" id="adults" value="1">
-            <input type="hidden" name="children" id="children" value="0">
+            <div class="input-wrapper right" th:classappend="${#fields.hasErrors('adultsCount')} ? 'error'"
+                 th:data-title="${#fields.hasErrors('adultsCount')} ? ${#fields.errors('adultsCount').get(0)} : 'Количество пассажиров, класс полёта'">
+                <input class="search-input visible-input passengers" readonly type="text" id="passengers-count-visible" placeholder="Количество пассажиров" value="1 Пассажир">
+                <input type="hidden" th:field="*{adultsCount}" id="adults">
+                <input type="hidden" th:field="*{childrenCount}" id="children">
+            </div>
         </div>
 
         <div class="bottom-row">
-            <div class="miles-checkbox-container">
-                <input type="checkbox" name="payWithMiles" id="pay-with-miles">
+            <div class="miles-checkbox-container" sec:authorize="isAuthenticated()">
+                <input type="checkbox" th:field="*{milesIncluded}" id="pay-with-miles">
                 <label for="pay-with-miles">Оплатить милями</label>
+            </div>
+
+            <div class="miles-checkbox-container" sec:authorize="isAnonymous()">
+                <input type="checkbox" title="Войдите в аккаунт, чтобы потратить мили" id="pay-with-miles-disabled" disabled >
+                <label for="pay-with-miles-disabled">Оплатить милями (войдите в аккаунт)</label>
             </div>
             
             <input type="submit" value="Поиск рейсов" class="default-button">
@@ -35,13 +61,9 @@
             <p class="popup-title">Список городов</p>
             
             <ul class="destinations">
-                <li class="row" data-airport-id="1">
-                    <span class="city">Екатеринбург</span>
-                    <span class="airport">SVX</span>
-                </li>
-                <li class="row" data-airport-id="2">
-                    <span class="city">Москва</span>
-                    <span class="airport">DME</span>
+                <li class="row" th:each="airport: ${airports}" th:attr="data-airport-id=${airport.id}">
+                    <span class="city" th:text="${airport.city}"></span>
+                    <span class="airport" th:text="${airport.iataCode}"></span>
                 </li>
             </ul>
         </div>
@@ -76,16 +98,16 @@
             </div>
 
             <div class="class-toggle">
-                <input type="radio" name="serviceClass" id="economy" value="ECONOMY" checked>
+                <input type="radio" th:field="*{serviceClass}" id="economy" value="ECONOMY" checked>
                 <label for="economy">Эконом</label>
 
-                <input type="radio" name="serviceClass" id="business" value="BUSINESS">
+                <input type="radio" th:field="*{serviceClass}" id="business" value="BUSINESS">
                 <label for="business">Бизнес</label>
             </div>
         </div>
     </form>
 
-    <div th:fragment="cheapest-flight-info-block(title, flightRoute)" class="cheapest-flight-info-block">
+    <div th:fragment="cheapest-flight-info-block(title, flightRoute, minPrice)" class="cheapest-flight-info-block">
         <div class="content">
             <div class="left-side">
                 <p class="title" th:text="${title}"></p>
@@ -94,7 +116,7 @@
             <div class="right-side">
                 <div class="offered-lowest-price">
                     <p class="description">Самая низкая суммарная стоимость для 1 Пассажира:</p>
-                    <p class="price">200 000 RUB</p>
+                    <p class="price" th:text="|${#numbers.formatInteger(minPrice, 1)} RUB|"></p>
                 </div>
                 <p class="offer-note">Включая тариф, налоги, пошлины и сборы перевозчика</p>
             </div>
@@ -119,43 +141,45 @@
         </div>
     </div>
 
-    <div th:fragment="flight-segment" class="flight-segment">
+    <div th:fragment="flight-segment(flightOffer)" class="flight-segment">
         <div class="row first">
-            <span class="time departure">23:24</span>
+            <span class="time departure" title="Локальное время аэропорта отправления" th:text="${#temporals.format(flightOffer.departureTime, 'HH:mm')}"></span>
 
             <div class="route">
-                <span class="airport-code departure">SVX</span>
+                <span class="airport-code departure" th:text="${flightOffer.departureIataCode}"></span>
                 <div class="line"></div>
-                <span class="airport-code arrival">MOW</span>
+                <span class="airport-code arrival" th:text="${flightOffer.arrivalIataCode}"></span>
             </div>
 
-            <span class="time arrival">01:24</span>
+            <span class="time arrival" title="Локальное время аэропорта прибытия"  th:text="${#temporals.format(flightOffer.arrivalTime, 'HH:mm')}"></span>
         </div>
 
         <div class="row second">
-            <span class="text date departure">14 Мая, Чт</span>
-            <span class="text travel-time">в пути 2ч</span>
-            <span class="text date arrival">15 Мая, Пт</span>
+            <span class="text date departure" th:text="${#temporals.format(flightOffer.departureTime, 'd MMMM, E')}"></span>
+            <span class="text travel-time"
+                  th:text="|в пути ${flightOffer.flightDuration.toHours()}ч ${flightOffer.flightDuration.toMinutesPart()}м|">
+            </span>
+            <span class="text date arrival" th:text="${#temporals.format(flightOffer.arrivalTime, 'd MMMM, E')}"></span>
         </div>
     </div>
 
-    <div th:fragment="flight-offer-card (url)" class="flight-offer-card">
-        <div class="item" th:insert="~{fragments/booking.html :: flight-segment}"></div>
+    <div th:fragment="flight-offer-card (flightOffer, url)" class="flight-offer-card">
+        <div class="item" th:insert="~{fragments/booking.html :: flight-segment(${flightOffer})}"></div>
 
         <div class="item price-and-loyalty-program">
-            <p class="price">От 90000 RUB</p>
+            <p class="price" th:text="|От ${#numbers.formatInteger(flightOffer.totalPrice, 1)} RUB|"></p>
 
             <div class="loyalty-program">
                 <p class="item price-discount">Цена с учетом миль: 90000 RUB</p>
-                <span class="item potential-miles">Получите миль: 1500</span>
+                <span class="item potential-miles" th:text="|Получите миль: ${#numbers.formatInteger(flightOffer.milesEarned, 1)}|"></span>
             </div>
         </div>
 
         <div class="item included-tariff-services">
             <div class="included-service aircraft-model">
                 <img class="icon" src="/images/icons/booking/aircraft_icon.svg" alt="Aircraft Icon">
-                <span class="text">Airbus A320</span>
-                <span class="subtext">EK 132</span>
+                <span class="text" th:text="${flightOffer.aircraftModel}"></span>
+                <span class="subtext" th:text="${flightOffer.flightNumber}"></span>
             </div>
             <div class="included-service luggage-size">
                 <img class="icon" src="/images/icons/booking/luggage_icon.svg" alt="Luggage Icon">
