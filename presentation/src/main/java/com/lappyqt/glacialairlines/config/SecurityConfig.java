@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -19,11 +20,11 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/dist/**", "/images/**", "/favicon.ico", "/.well-known/**").permitAll()
-                .requestMatchers("/", "/search", "/auth/create", "/booking/return-flight", "/loyalty-program", "/error").permitAll()
+                .requestMatchers("/", "/search", "/search/**", "/auth/create", "/booking/return-flight",
+                        "/booking/return-flight/**", "/loyalty-program", "/error").permitAll()
                 .anyRequest().authenticated())
                 .formLogin((form) -> form
-                        .loginPage("/auth/login").permitAll()
-                        .defaultSuccessUrl("/"))
+                        .loginPage("/auth/login").permitAll())
                 .rememberMe(rememberMe -> rememberMe
                         .key(rememberMeKey)
                         .tokenValiditySeconds(86400 * 7)

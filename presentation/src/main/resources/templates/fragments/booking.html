@@ -8,6 +8,10 @@
             <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" class="global-error"></p>
         </div>
 
+        <div th:if="${param.sessionExpired}" class="global-error-container">
+            <p class="global-error">Сессия истекла, начните поиск заново</p>
+        </div>
+
         <div class="inputs-container">
             <div class="input-wrapper left" th:classappend="${#fields.hasErrors('outboundAirportId')} ? 'error'"
                  th:data-title="${#fields.hasErrors('outboundAirportId')} ? ${#fields.errors('outboundAirportId').get(0)} : 'Аэропорт отправления'">
@@ -115,7 +119,10 @@
             </div>
             <div class="right-side">
                 <div class="offered-lowest-price">
-                    <p class="description">Самая низкая суммарная стоимость для 1 Пассажира:</p>
+                    <p class="description"
+                       th:with="totalPassengers=${searchRequestDto.adultsCount + searchRequestDto.childrenCount}"
+                       th:text="|Самая низкая суммарная стоимость для ${totalPassengers} ${totalPassengers == 1 ? 'Пассажира:' : 'Пассажиров:'}|">
+                    </p>
                     <p class="price" th:text="|${#numbers.formatInteger(minPrice, 1)} RUB|"></p>
                 </div>
                 <p class="offer-note">Включая тариф, налоги, пошлины и сборы перевозчика</p>
@@ -163,7 +170,7 @@
         </div>
     </div>
 
-    <div th:fragment="flight-offer-card (flightOffer, url)" class="flight-offer-card">
+    <div th:fragment="flight-offer-card (flightOffer, action, buttonLabel)" class="flight-offer-card">
         <div class="item" th:insert="~{fragments/booking.html :: flight-segment(${flightOffer})}"></div>
 
         <div class="item price-and-loyalty-program">
@@ -191,7 +198,7 @@
             </div>
         </div>
 
-        <a th:href="${url}" class="item outline-button">Выбрать</a>
+        <a class="item outline-button" th:href="@{${action}}" th:text="${buttonLabel} ?: 'Выбрать'"></a>
     </div>
 
     <div th:fragment="flight-card-checkout (direction)" class="flight-card-checkout">

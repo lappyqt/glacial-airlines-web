@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface FlightInventoryRepository extends JpaRepository<Flight, Long> {
     @Query("""
@@ -33,5 +34,20 @@ public interface FlightInventoryRepository extends JpaRepository<Flight, Long> {
             @Param("totalPassengers")    int totalPassengers,
             @Param("status")             FlightStatus status,
             @Param("date")               LocalDate date
+    );
+
+    @Query("""
+        SELECT fi FROM FlightInventory fi
+        JOIN FETCH fi.flight f
+        JOIN FETCH f.aircraft
+        JOIN FETCH f.route r
+        JOIN FETCH r.departureAirport
+        JOIN FETCH r.arrivalAirport
+        WHERE f.id = :flightId
+          AND fi.seatClass = :seatClass
+    """)
+    Optional<FlightInventory> findByFlightIdAndSeatClass(
+            @Param("flightId") Long flightId,
+            @Param("seatClass") SeatClass seatClass
     );
 }

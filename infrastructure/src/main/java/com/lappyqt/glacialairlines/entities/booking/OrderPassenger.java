@@ -7,6 +7,7 @@ import com.lappyqt.glacialairlines.enums.Gender;
 import com.lappyqt.glacialairlines.enums.PassengerType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "order_passenger", schema = "booking")
 @Getter @Setter
+@NoArgsConstructor
 public class OrderPassenger {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_passenger_seq")
@@ -32,27 +34,27 @@ public class OrderPassenger {
     @Column(name = "passenger_type", nullable = false, length = 10)
     private PassengerType passengerType;
 
-    @Column(name = "first_name", nullable = false, length = 100)
+    @Column(name = "first_name", length = 100)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false, length = 100)
+    @Column(name = "last_name", length = 100)
     private String lastName;
 
     @Column(name = "middle_name", length = 100)
     private String middleName;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private Gender gender;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "document_type", nullable = false, length = 30)
+    @Column(name = "document_type", length = 30)
     private DocumentType documentType;
 
-    @Column(name = "document_number", nullable = false, length = 50)
+    @Column(name = "document_number", length = 50)
     private String documentNumber;
 
     @ManyToOne

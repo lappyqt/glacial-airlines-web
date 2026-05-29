@@ -5,7 +5,7 @@ import com.lappyqt.glacialairlines.exceptions.EmailAlreadyExistsException;
 import com.lappyqt.glacialairlines.exceptions.PhoneAlreadyExistsException;
 import com.lappyqt.glacialairlines.repositories.account.UserAccountRepository;
 import dto.CreateAccountDto;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class UserAccountService {
     private final UserAccountRepository repository;
     private final PasswordEncoder passwordEncoder;
 
@@ -44,5 +44,10 @@ public class AuthService {
 
         repository.save(userAccount);
         log.info("Аккаунт успешно создан для email: {}", createAccountDto.getEmail());
+    }
+
+    public UserAccount findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Аккаунт с id %d не найден", id)));
     }
 }

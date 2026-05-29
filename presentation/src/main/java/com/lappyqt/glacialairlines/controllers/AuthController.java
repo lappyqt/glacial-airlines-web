@@ -2,7 +2,7 @@ package com.lappyqt.glacialairlines.controllers;
 
 import com.lappyqt.glacialairlines.exceptions.EmailAlreadyExistsException;
 import com.lappyqt.glacialairlines.exceptions.PhoneAlreadyExistsException;
-import com.lappyqt.glacialairlines.services.AuthService;
+import com.lappyqt.glacialairlines.services.UserAccountService;
 import dto.CreateAccountDto;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    private final AuthService authService;
+    private final UserAccountService userAccountService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    public AuthController(UserAccountService userAccountService) {
+        this.userAccountService = userAccountService;
     }
 
     @GetMapping("/login")
@@ -41,7 +41,7 @@ public class AuthController {
         }
 
         try {
-            authService.createUserAccount(createAccountDto);
+            userAccountService.createUserAccount(createAccountDto);
         } catch (EmailAlreadyExistsException exception) {
             bindingResult.rejectValue("email", "error.email", exception.getMessage());
             return "auth/create";

@@ -13,13 +13,15 @@
     <div class="wrapper booking">
         <div class="content-wrapper booking">
             <div class="form-container booking-section" th:insert="~{fragments/booking.html :: booking-search-form('search')}"></div>
-            <div class="flight-info booking-section-wide"
-                th:insert="~{fragments/booking.html :: cheapest-flight-info-block('Выберите вылетающий рейс', ${departureAirport.city + ' - ' + arrivalAirport.city},  ${minPrice})}">
+            <div class="flight-info booking-section-wide" th:if="${not #lists.isEmpty(flightOffers)}"
+                th:insert="~{fragments/booking.html :: cheapest-flight-info-block('Выберите вылетающий рейс', ${departureCity + ' - ' + arrivalCity},  ${minPrice})}">
             </div>
-            <div class="offer-cards-filters booking-section" th:insert="~{fragments/booking.html :: offer-cards-filters}"></div>
-            <div class="offer-flight-cards booking-section">
+            <div class="offer-cards-filters booking-section" th:if="${not #lists.isEmpty(flightOffers)}" th:insert="~{fragments/booking.html :: offer-cards-filters}"></div>
+            <div class="offer-flight-cards booking-section" th:if="${not #lists.isEmpty(flightOffers)}">
                 <th:block th:each="flightOffer : ${flightOffers}">
-                    <div th:replace="~{fragments/booking.html :: flight-offer-card(${flightOffer}, '/booking/return-flight')}"></div>
+                    <div
+                        th:replace="~{fragments/booking.html :: flight-offer-card(${flightOffer}, '/search/select-outbound?outboundFlightId=' + ${flightOffer.flightId}, null)}">
+                    </div>
                 </th:block>
             </div>
         </div>

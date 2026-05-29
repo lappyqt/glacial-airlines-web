@@ -14,8 +14,6 @@ spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-bo
 spring-boot-starter-thymeleaf-test= { module = "org.springframework.boot:spring-boot-starter-thymeleaf-test", version.ref = "spring-boot" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
-spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "spring-boot" }
-
 thymeleaf-extras-springsecurity = { module = "org.thymeleaf.extras:thymeleaf-extras-springsecurity6", version.ref = "thymeleaf-extras" }
 
 spring-boot-docker-compose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "spring-boot" }

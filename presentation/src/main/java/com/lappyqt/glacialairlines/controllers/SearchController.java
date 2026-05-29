@@ -1,10 +1,10 @@
 package com.lappyqt.glacialairlines.controllers;
 
 import com.lappyqt.glacialairlines.entities.flight.Airport;
-import com.lappyqt.glacialairlines.entities.flight.Flight;
 import com.lappyqt.glacialairlines.exceptions.OutboundDateAfterReturnDateException;
 import com.lappyqt.glacialairlines.exceptions.PassengerLimitExceededException;
 import com.lappyqt.glacialairlines.services.FlightService;
+import com.lappyqt.glacialairlines.session.BookingSession;
 import dto.SearchRequestDto;
 import dto.SearchResponseDto;
 import jakarta.validation.Valid;
@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchController {
     private final FlightService flightService;
+    private final BookingSession bookingSession;
 
     @GetMapping
     public String searchPage(@Valid @ModelAttribute("searchRequestDto") SearchRequestDto searchRequestDto,
@@ -50,17 +51,9 @@ public class SearchController {
                         .min(BigDecimal::compareTo)
                         .orElse(BigDecimal.ZERO);
 
-                Airport departureAirport = airports.stream()
-                        .filter(a -> a.getId().equals(searchRequestDto.getOutboundAirportId()))
-                        .findFirst().orElse(null);
-
-                Airport arrivalAirport = airports.stream()
-                        .filter(a -> a.getId().equals(searchRequestDto.getReturnAirportId()))
-                        .findFirst().orElse(null);
-
                 model.addAttribute("minPrice", minPrice);
-                model.addAttribute("departureAirport", departureAirport);
-                model.addAttribute("arrivalAirport", arrivalAirport);
+                model.addAttribute("departureCity", flightOffers.getFirst().getDepartureCity());
+                model.addAttribute("arrivalCity", flightOffers.getFirst().getArrivalCity());
             }
         }
         catch (OutboundDateAfterReturnDateException exception) {
@@ -72,6 +65,21 @@ public class SearchController {
             return "index".equals(source) ? "index" : "search";
         }
 
+        bookingSession.setSearchRequest(searchRequestDto);
         return "search";
+    }
+
+    @GetMapping("select-outbound")
+    public String selectOutbound(@RequestParam Long outboundFlightId) {
+        bookingSession.setOutboundFlightId(outboundFlightId);
+
+        SearchRequestDto searchRequest = bookingSession.getSearchRequest();
+        boolean isRoundTrip = (searchRequest != null
+                && searchRequest.getReturnAirportId() != null
+                && searchRequest.getReturnFlightDate() != null);
+
+        return isRoundTrip
+                ? "redirect:/booking/return-flight"
+                : "redirect:/booking/passengers";
     }
 }

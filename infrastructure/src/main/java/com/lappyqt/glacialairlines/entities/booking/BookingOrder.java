@@ -5,8 +5,7 @@ import com.lappyqt.glacialairlines.entities.flight.Flight;
 import com.lappyqt.glacialairlines.enums.OrderStatus;
 import com.lappyqt.glacialairlines.enums.SeatClass;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,6 +15,9 @@ import java.util.List;
 @Entity
 @Table(name = "booking_order", schema = "booking")
 @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BookingOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_order_seq")
@@ -51,10 +53,10 @@ public class BookingOrder {
     @Column(name = "miles_earned", nullable = false)
     private Integer milesEarned = 0;
 
-    @Column(name = "contact_email", nullable = false, length = 150)
+    @Column(name = "contact_email", length = 150)
     private String contactEmail;
 
-    @Column(name = "contact_phone", nullable = false, length = 20)
+    @Column(name = "contact_phone", length = 20)
     private String contactPhone;
 
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamptz")

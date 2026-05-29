@@ -43,11 +43,35 @@ public class FlightService {
                 searchRequestDto.getOutboundAirportId(),
                 searchRequestDto.getReturnAirportId(),
                 searchRequestDto.getServiceClass(),
-                searchRequestDto.getAdultsCount() + searchRequestDto.getChildrenCount(),
+                adultsCount + childrenCount,
                 FlightStatus.SCHEDULED,
                 searchRequestDto.getOutboundFlightDate()
-        ).stream().map(flightInventory -> availableFlightsToDto(flightInventory, adultsCount, childrenCount)).toList();
+        ).stream().map(flightInventory -> mapFlightInventoryToDto(flightInventory, adultsCount, childrenCount)).toList();
     }
+
+    @Transactional(readOnly = true)
+    public SearchResponseDto getOutboundFlightOffer(Long flightId, SearchRequestDto searchRequestDto) {
+        FlightInventory flightInventory = flightInventoryRepository
+                .findByFlightIdAndSeatClass(flightId, searchRequestDto.getServiceClass())
+                .orElseThrow(() -> new IllegalArgumentException(String.format("FlightInventory c flight_id (%d) не найден", flightId)));
+        return mapFlightInventoryToDto(flightInventory, searchRequestDto.getAdultsCount(), searchRequestDto.getChildrenCount());
+    }
+
+    @Transactional(readOnly = true)
+    public List<SearchResponseDto> findAvailableReturnFlightOffers(SearchRequestDto searchRequestDto) {
+        int adultsCount = searchRequestDto.getAdultsCount();
+        int childrenCount = searchRequestDto.getChildrenCount();
+
+        return flightInventoryRepository.findAvailable(
+                searchRequestDto.getReturnAirportId(),
+                searchRequestDto.getOutboundAirportId(),
+                searchRequestDto.getServiceClass(),
+                adultsCount + childrenCount,
+                FlightStatus.SCHEDULED,
+                searchRequestDto.getReturnFlightDate()
+        ).stream().map(flightInventory -> mapFlightInventoryToDto(flightInventory, adultsCount, childrenCount)).toList();
+    }
+
 
     private void compareFlightDates(LocalDate outboundDate, LocalDate returnDate) throws OutboundDateAfterReturnDateException {
         if (returnDate == null) return;;
@@ -61,7 +85,7 @@ public class FlightService {
         if (totalCount > 9) throw new PassengerLimitExceededException(totalCount);
     }
 
-    private SearchResponseDto availableFlightsToDto(FlightInventory flightInventory, int adultCount, int childrenCount) {
+    private SearchResponseDto mapFlightInventoryToDto(FlightInventory flightInventory, int adultCount, int childrenCount) {
         Flight flight = flightInventory.getFlight();
         Route route = flight.getRoute();
 
@@ -90,6 +114,8 @@ public class FlightService {
                 .aircraftModel(flight.getAircraft().getModel())
                 .departureIataCode(route.getDepartureAirport().getIataCode())
                 .arrivalIataCode(route.getArrivalAirport().getIataCode())
+                .departureCity(route.getDepartureAirport().getCity())
+                .arrivalCity(route.getArrivalAirport().getCity())
                 .seatClass(flightInventory.getSeatClass())
                 .availableSeats(flightInventory.getAvailableSeats())
                 .pricePerAdult(adultPrice)

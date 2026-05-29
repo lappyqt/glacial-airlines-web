@@ -36,4 +36,15 @@ public class SearchRequestDto {
     private SeatClass serviceClass = SeatClass.ECONOMY;
 
     private Boolean milesIncluded;
+
+    public String toQueryString(String source) {
+        return  "source=" + source +
+                "&outboundAirportId=" + outboundAirportId +
+                "&returnAirportId=" + returnAirportId +
+                "&outboundFlightDate=" + outboundFlightDate +
+                "&returnFlightDate=" + (returnFlightDate != null ? returnFlightDate : "") +
+                "&adultsCount=" + adultsCount +
+                "&childrenCount=" + childrenCount +
+                "&serviceClass=" + serviceClass;
+    }
 }

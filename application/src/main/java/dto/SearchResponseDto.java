@@ -21,6 +21,8 @@ public class SearchResponseDto {
 
     private String departureIataCode;
     private String arrivalIataCode;
+    private String departureCity;
+    private String arrivalCity;
 
     private SeatClass seatClass;
     private Integer availableSeats;

@@ -1,5 +1,7 @@
 package dto;
 
+import dto.validation.FirstStep;
+import dto.validation.SecondStep;
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,9 +9,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-interface FirstStep {}
-interface SecondStep {}
 
 @Data
 @NoArgsConstructor

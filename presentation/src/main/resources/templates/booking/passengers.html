@@ -15,97 +15,141 @@
 
             <div class="order-brief-info booking-section">
                 <div class="header-row">
-                    <span class="flight-route">Екатеринбург (SVX) → Москва (MOW)</span>
+                    <span class="flight-route" th:text="${outboundFlight.departureCity} + ' (' + ${outboundFlight.departureIataCode} + ') → ' + ${outboundFlight.arrivalCity} + ' (' + ${outboundFlight.arrivalIataCode} + ')'"></span>
                     <span class="price-title">Стоимость</span>
                 </div>
                 <div class="content-row">
-                    <span class="brief-flight-info">Рейс EK 132 • Туда и обратно • 1 Пассажир</span>
-                    <span class="price">200 000 RUB</span>
+                    <span class="brief-flight-info"
+                          th:with="passengerCount=${#lists.size(passengersFormDto.passengers)},
+                                   passengerWord=${passengerCount == 1 ? 'Пассажир' : (passengerCount >= 2 && passengerCount <= 4 ? 'Пассажира' : 'Пассажиров')}"
+                          th:text="'Рейс ' + ${outboundFlight.flightNumber} + ' • ' +
+                                   (${isRoundTrip} ? 'Туда и обратно' : 'В одну сторону') + ' • ' +
+                                   ${passengerCount} + ' ' + ${passengerWord}">
+                    </span>
+                    <span class="price" th:text="|${#numbers.formatInteger(outboundFlight.totalPrice, 1)} RUB|"></span>
                 </div>
             </div>
 
-            <div class="passengers-data booking-section">
-                <div class="content-block">
-                    <div class="header">
-                        <span class="title">Пассажир 1</span>
-                        <span class="subtitle">Взрослый</span>
-                    </div>
-                    
-                    <div class="content column-flex-container">
-                        <div class="row">
-                            <div class="floating-input-group">
-                                <input id="lastname" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="lastname" class="floating-label">Фамилия</label>
-                            </div>
-                            <div class="floating-input-group">
-                                <input id="firstname" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="firstname" class="floating-label">Имя</label>
-                            </div>
-                            <div class="floating-input-group">
-                                <input id="middlename" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="middlename" class="floating-label">Отчество</label>
-                            </div>
+            <div class="booking-section">
+                <form th:action="@{/booking/passengers}" th:object="${passengersFormDto}" method="post" class="passengers-data booking-section">
+                    <div class="content-block">
+                        <div class="header">
+                            <span class="title">Контактные данные заказа</span>
+                            <span class="subtitle"></span>
                         </div>
 
-                        <div class="row">
-                            <select class="select" id="sex">
-                                <option value="male">Мужской</option>
-                                <option value="female">Женский</option>
-                            </select>
-
-                            <div class="floating-input-group">
-                                <input id="birthDate" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="birthDate" class="floating-label">Дата рождения</label>
+                        <div class="content column-flex-container">
+                            <div class="information-note">
+                                На данную почту придёт маршрутная квитанция и уведомления об изменении рейса
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <select class="select" id="document-type">
-                                <option value="passport">Паспорт РФ</option>
-                                <option value="international-passport">Загранпаспорт</option>
-                                <option value="birth-certificate">Свидетельство о рождении</option>
-                            </select>
-
-                            <div class="floating-input-group">
-                                <input id="documentNumber" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="documentNumber" class="floating-label">Серия и номер</label>
-                            </div>                            
-                        </div>
-                    </div>
-                </div>
-
-                <div class="content-block">
-                    <div class="header">
-                        <span class="title">Контактные данные заказа</span>
-                        <span class="subtitle"></span>
-                    </div>
-                    
-                    <div class="content column-flex-container">
-                        <div class="information-note">
-                            На данную почту придёт маршрутная квитанция и уведомления об изменении рейса
-                        </div>
-
-                        <div class="row">
-                            <div class="floating-input-group">
-                                <input id="contact-email" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="contact-email" class="floating-label">Контактная почта</label>
-                            </div>
-                            <div class="floating-input-group">
-                                <input id="contact-phone" type="text" class="input" placeholder=" " autocomplete="off">
-                                <label for="contact-phone" class="floating-label">Контактный телефон</label>
+                            <div class="row">
+                                <div class="floating-input-group">
+                                    <input id="contact-email" th:field="*{contactEmail}"
+                                           th:classappend="${#fields.hasErrors('contactEmail')} ? 'error'"
+                                           type="text" class="input" placeholder=" " autocomplete="off">
+                                    <label for="contact-email" class="floating-label"
+                                           th:text="${#fields.hasErrors('contactEmail')} ? ${#fields.errors('contactEmail').get(0)} : 'Контактная почта'"></label>
+                                </div>
+                                <div class="floating-input-group">
+                                    <input id="contact-phone" th:field="*{contactPhone}"
+                                           th:classappend="${#fields.hasErrors('contactPhone')} ? 'error'"
+                                           type="text" class="input" placeholder=" " autocomplete="off">
+                                    <label for="contact-phone" class="floating-label"
+                                           th:text="${#fields.hasErrors('contactPhone')} ? ${#fields.errors('contactPhone').get(0)} : 'Контактный телефон'"></label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="navigation-row">
-                    <a th:href="@{/booking/return-flight}" class="outline-button">
-                        Назад к рейсам
-                    </a>
-                    <a th:href="@{/booking/services}" class="outline-button">
-                        Перейти к услугам
-                    </a>
-                </div>
+                    <th:block th:each="passenger, stat : *{passengers}">
+                        <input type="hidden" th:name="'passengers[' + ${stat.index} + '].passengerType'"
+                               th:value="*{passengers[__${stat.index}__].passengerType}">
+
+                        <div class="content-block">
+                            <div class="header">
+                                <span class="title" th:text="'Пассажир ' + ${stat.index + 1}"></span>
+                                <span class="subtitle" th:text="*{passengers[__${stat.index}__].passengerType.name() == 'ADULT'} ? 'Взрослый' : 'Ребёнок'"></span>
+                            </div>
+
+                            <div class="content column-flex-container">
+                                <div class="row">
+                                    <div class="floating-input-group">
+                                        <input th:id="'lastname-' + ${stat.index}"
+                                               th:name="'passengers[' + ${stat.index} + '].lastName'"
+                                               th:value="*{passengers[__${stat.index}__].lastName}"
+                                               th:classappend="${#fields.hasErrors('passengers[__${stat.index}__].lastName')} ? 'error'"
+                                               type="text" class="input" placeholder=" " autocomplete="off">
+                                        <label th:for="'lastname-' + ${stat.index}" class="floating-label"
+                                               th:text="${#fields.hasErrors('passengers[__${stat.index}__].lastName')} ? ${#fields.errors('passengers[__${stat.index}__].lastName').get(0)} : 'Фамилия'"></label>
+                                    </div>
+                                    <div class="floating-input-group">
+                                        <input th:id="'firstname-' + ${stat.index}"
+                                               th:name="'passengers[' + ${stat.index} + '].firstName'"
+                                               th:value="*{passengers[__${stat.index}__].firstName}"
+                                               th:classappend="${#fields.hasErrors('passengers[__${stat.index}__].firstName')} ? 'error'"
+                                               type="text" class="input" placeholder=" " autocomplete="off">
+                                        <label th:for="'firstname-' + ${stat.index}" class="floating-label"
+                                               th:text="${#fields.hasErrors('passengers[__${stat.index}__].firstName')} ? ${#fields.errors('passengers[__${stat.index}__].firstName').get(0)} : 'Имя'"></label>
+                                    </div>
+                                    <div class="floating-input-group">
+                                        <input th:id="'middlename-' + ${stat.index}"
+                                               th:name="'passengers[' + ${stat.index} + '].middleName'"
+                                               th:value="*{passengers[__${stat.index}__].middleName}"
+                                               type="text" class="input" placeholder=" " autocomplete="off">
+                                        <label th:for="'middlename-' + ${stat.index}" class="floating-label">Отчество</label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <select th:id="'sex-' + ${stat.index}"
+                                            th:name="'passengers[' + ${stat.index} + '].gender'"
+                                            class="select">
+                                        <option value="MALE" th:selected="*{passengers[__${stat.index}__].gender?.name() == 'MALE'}">Мужской</option>
+                                        <option value="FEMALE" th:selected="*{passengers[__${stat.index}__].gender?.name() == 'FEMALE'}">Женский</option>
+                                    </select>
+                                    <div class="floating-input-group">
+                                        <input th:id="'birthDate-' + ${stat.index}"
+                                               th:name="'passengers[' + ${stat.index} + '].birthDate'"
+                                               th:value="*{passengers[__${stat.index}__].birthDate}"
+                                               th:classappend="${#fields.hasErrors('passengers[__${stat.index}__].birthDate')} ? 'error'"
+                                               type="text" class="input" placeholder=" " autocomplete="off">
+                                        <label th:for="'birthDate-' + ${stat.index}" class="floating-label"
+                                               th:text="${#fields.hasErrors('passengers[__${stat.index}__].birthDate')} ? ${#fields.errors('passengers[__${stat.index}__].birthDate').get(0)} : 'Дата рождения'"></label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <select th:id="'document-type-' + ${stat.index}"
+                                            th:name="'passengers[' + ${stat.index} + '].documentType'"
+                                            class="select">
+                                        <option value="PASSPORT_RUSSIAN" th:selected="*{passengers[__${stat.index}__].documentType?.name() == 'PASSPORT_RUSSIAN'}">Паспорт РФ</option>
+                                        <option value="INTERNATIONAL" th:selected="*{passengers[__${stat.index}__].documentType?.name() == 'INTERNATIONAL'}">Загранпаспорт</option>
+                                        <option value="BIRTH_CERTIFICATE" th:selected="*{passengers[__${stat.index}__].documentType?.name() == 'BIRTH_CERTIFICATE'}">Свидетельство о рождении</option>
+                                    </select>
+
+                                    <div class="floating-input-group">
+                                        <input th:id="'documentNumber-' + ${stat.index}"
+                                               th:name="'passengers[' + ${stat.index} + '].documentNumber'"
+                                               th:value="*{passengers[__${stat.index}__].documentNumber}"
+                                               th:classappend="${#fields.hasErrors('passengers[__${stat.index}__].documentNumber')} ? 'error'"
+                                               type="text" class="input" placeholder=" " autocomplete="off">
+                                        <label th:for="'documentNumber-' + ${stat.index}" class="floating-label"
+                                               th:text="${#fields.hasErrors('passengers[__${stat.index}__].documentNumber')} ? ${#fields.errors('passengers[__${stat.index}__].documentNumber').get(0)} : 'Серия и номер'"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+
+                    <div class="navigation-row">
+                        <a th:href="${isRoundTrip} ? @{/booking/return-flight} : @{'/search?' + ${searchRequestDto.toQueryString('search')}}" class="outline-button">
+                            Назад к рейсам
+                        </a>
+                        <button type="submit" class="outline-button">Перейти к услугам</button>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>

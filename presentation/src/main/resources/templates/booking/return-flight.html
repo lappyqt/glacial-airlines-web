@@ -14,21 +14,25 @@
             <div class="booking-section previous-flight">
                 <div class="text-info">
                     <p class="title">Вы выбрали перелёт туда</p>
-                    <p class="flight-route">Екатеринбург - Москва</p>
+                    <p class="flight-route" th:text="${outboundFlight.departureCity + ' - ' + outboundFlight.arrivalCity}"></p>
                 </div>
 
-                <div th:replace="~{fragments/booking.html :: flight-offer-card('/booking/return-flight')}"></div>
+                <div th:replace="~{fragments/booking.html :: flight-offer-card(${outboundFlight}, '/search?' + ${searchRequestDto.toQueryString('search')}, 'Изменить')}"></div>
             </div>
 
-            <div class="flight-info booking-section-wide" 
-                th:insert="~{fragments/booking.html :: cheapest-flight-info-block('Выберите обратный рейс', 'Москва - Екатеринбург')}">
+            <div class="flight-info booking-section-wide" th:if="${not #lists.isEmpty(flightOffers)}"
+                 th:with="returnRoute=${outboundFlight.arrivalCity + ' - ' + outboundFlight.departureCity}"
+                 th:insert="~{fragments/booking.html :: cheapest-flight-info-block('Выберите обратный рейс', ${returnRoute}, ${minPrice})}">
             </div>
 
-            <div class="offer-cards-filters booking-section" th:insert="~{fragments/booking.html :: offer-cards-filters}"></div>
+            <div class="offer-cards-filters booking-section" th:if="${not #lists.isEmpty(flightOffers)}" th:insert="~{fragments/booking.html :: offer-cards-filters}"></div>
 
-            <div class="offer-flight-cards booking-section">
-                <div th:replace="~{fragments/booking.html :: flight-offer-card('/booking/passengers')}"></div>
-                <div th:replace="~{fragments/booking.html :: flight-offer-card('/booking/passengers')}"></div>
+            <div class="offer-flight-cards booking-section" th:if="${not #lists.isEmpty(flightOffers)}">
+                <th:block th:each="flightOffer : ${flightOffers}">
+                    <div
+                        th:replace="~{fragments/booking.html :: flight-offer-card(${flightOffer}, '/booking/select-return?returnFlightId=' + ${flightOffer.flightId}, null)}">
+                    </div>
+                </th:block>
             </div>
         </div>
     </div>
