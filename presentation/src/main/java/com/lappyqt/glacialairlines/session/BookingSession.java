@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -26,4 +27,21 @@ public class BookingSession implements Serializable {
     private SearchRequestDto searchRequest;
 
     private Long orderId;
+
+    private BigDecimal outboundOfferPrice;
+    private BigDecimal returnOfferPrice;
+
+    private BigDecimal seatsSurcharge;
+    private BigDecimal servicesTotal;
+
+    public void clear() {
+        this.outboundFlightId = null;
+        this.returnFlightId = null;
+        this.searchRequest = null;
+        this.orderId = null;
+        this.outboundOfferPrice = null;
+        this.returnOfferPrice = null;
+        this.seatsSurcharge = null;
+        this.servicesTotal = null;
+    }
 }

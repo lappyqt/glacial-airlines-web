@@ -1,16 +1,16 @@
 package com.lappyqt.glacialairlines.services;
 
-import com.lappyqt.glacialairlines.entities.flight.Airport;
-import com.lappyqt.glacialairlines.entities.flight.Flight;
-import com.lappyqt.glacialairlines.entities.flight.FlightInventory;
-import com.lappyqt.glacialairlines.entities.flight.Route;
+import com.lappyqt.glacialairlines.entities.flight.*;
 import com.lappyqt.glacialairlines.enums.FlightStatus;
+import com.lappyqt.glacialairlines.enums.SeatClass;
 import com.lappyqt.glacialairlines.exceptions.OutboundDateAfterReturnDateException;
 import com.lappyqt.glacialairlines.exceptions.PassengerLimitExceededException;
 import com.lappyqt.glacialairlines.repositories.flight.AirportRepository;
 import com.lappyqt.glacialairlines.repositories.flight.FlightInventoryRepository;
+import com.lappyqt.glacialairlines.repositories.flight.SeatAvailabilityRepository;
 import dto.SearchRequestDto;
 import dto.SearchResponseDto;
+import dto.SeatGroupDto;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,15 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.*;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FlightService {
     private final AirportRepository airportRepository;
     private final FlightInventoryRepository flightInventoryRepository;
+    private final SeatAvailabilityRepository seatAvailabilityRepository;
 
     @Transactional(readOnly = true)
     public List<Airport> getAirportList() {
@@ -32,35 +34,41 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
-    public List<SearchResponseDto> findAvailableFlightOffers(SearchRequestDto searchRequestDto) {
+    public List<SearchResponseDto> findAvailableFlightOffers(SearchRequestDto searchRequestDto, int milesCount, String filter) {
         int adultsCount = searchRequestDto.getAdultsCount();
         int childrenCount = searchRequestDto.getChildrenCount();
+        int totalPassengerCount = adultsCount + childrenCount;
+
+        Comparator<SearchResponseDto> comparator = this.getComparatorForFlightOffers(filter);
 
         compareFlightDates(searchRequestDto.getOutboundFlightDate(), searchRequestDto.getReturnFlightDate());
-        checkPassengerLimit(adultsCount + childrenCount);
+        checkPassengerLimit(totalPassengerCount);
 
         return flightInventoryRepository.findAvailable(
                 searchRequestDto.getOutboundAirportId(),
                 searchRequestDto.getReturnAirportId(),
                 searchRequestDto.getServiceClass(),
-                adultsCount + childrenCount,
+                totalPassengerCount,
                 FlightStatus.SCHEDULED,
                 searchRequestDto.getOutboundFlightDate()
-        ).stream().map(flightInventory -> mapFlightInventoryToDto(flightInventory, adultsCount, childrenCount)).toList();
+        ).stream().map(flightInventory -> mapFlightInventoryToDto(flightInventory, milesCount, adultsCount, childrenCount))
+            .sorted(comparator).toList();
     }
 
     @Transactional(readOnly = true)
-    public SearchResponseDto getOutboundFlightOffer(Long flightId, SearchRequestDto searchRequestDto) {
+    public SearchResponseDto getFlightOffer(Long flightId, SearchRequestDto searchRequestDto) {
         FlightInventory flightInventory = flightInventoryRepository
                 .findByFlightIdAndSeatClass(flightId, searchRequestDto.getServiceClass())
                 .orElseThrow(() -> new IllegalArgumentException(String.format("FlightInventory c flight_id (%d) не найден", flightId)));
-        return mapFlightInventoryToDto(flightInventory, searchRequestDto.getAdultsCount(), searchRequestDto.getChildrenCount());
+        return mapFlightInventoryToDto(flightInventory, 0, searchRequestDto.getAdultsCount(), searchRequestDto.getChildrenCount());
     }
 
     @Transactional(readOnly = true)
-    public List<SearchResponseDto> findAvailableReturnFlightOffers(SearchRequestDto searchRequestDto) {
+    public List<SearchResponseDto> findAvailableReturnFlightOffers(SearchRequestDto searchRequestDto, int milesCount, String filter) {
         int adultsCount = searchRequestDto.getAdultsCount();
         int childrenCount = searchRequestDto.getChildrenCount();
+
+        Comparator<SearchResponseDto> comparator = this.getComparatorForFlightOffers(filter);
 
         return flightInventoryRepository.findAvailable(
                 searchRequestDto.getReturnAirportId(),
@@ -69,9 +77,55 @@ public class FlightService {
                 adultsCount + childrenCount,
                 FlightStatus.SCHEDULED,
                 searchRequestDto.getReturnFlightDate()
-        ).stream().map(flightInventory -> mapFlightInventoryToDto(flightInventory, adultsCount, childrenCount)).toList();
+        ).stream().map(flightInventory -> mapFlightInventoryToDto(flightInventory, milesCount, adultsCount, childrenCount))
+                .sorted(comparator).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<SeatGroupDto> getSeatGroups(Long flightId) {
+        List<SeatAvailability> seatAvailabilityList = seatAvailabilityRepository.findByFlightIdAndSeatClass(flightId);
+
+        if (seatAvailabilityList.isEmpty()) {
+            throw new IllegalArgumentException(String.format("Список доступных мест для рейса %d не найден", flightId));
+        }
+
+        // Формируем ряды
+        Map<Integer, List<SeatAvailability>> seatsByRow = seatAvailabilityList.stream()
+                .collect(Collectors.groupingBy(sa -> sa.getSeat().getRowNumber(), TreeMap::new, Collectors.toList()));
+
+        // Формируем группы
+        List<SeatGroupDto> seatGroups = new ArrayList<>();
+        SeatGroupDto currentGroup = null;
+        SeatClass previousClass = null;
+
+        for (Map.Entry<Integer, List<SeatAvailability>> entry : seatsByRow.entrySet()) {
+            Integer rowNumber = entry.getKey();
+            List<SeatAvailability> rowSeats = entry.getValue();
+
+            // Определяем класс текущего ряда
+            SeatClass currentClass = rowSeats.getFirst().getSeat().getSeatClass();
+
+            if (!currentClass.equals(previousClass)) {
+                currentGroup = new SeatGroupDto(SeatGroupDto.getGroupName(currentClass), new LinkedHashMap<>());
+                seatGroups.add(currentGroup);
+            }
+
+            // Добавляем ряд в текущую группу
+            currentGroup.getRows().put(rowNumber, rowSeats);
+            previousClass = currentClass;
+        }
+
+        return seatGroups;
+    }
+
+    private Comparator<SearchResponseDto> getComparatorForFlightOffers(String filter) {
+        return switch (filter) {
+            case "duration" -> Comparator.comparing(SearchResponseDto::getFlightDuration);
+            case "departureTime" -> Comparator.comparing(SearchResponseDto::getDepartureTime);
+            case "arrivalTime" -> Comparator.comparing(SearchResponseDto::getArrivalTime);
+            default -> Comparator.comparing(SearchResponseDto::getTotalPrice);
+        };
+    }
 
     private void compareFlightDates(LocalDate outboundDate, LocalDate returnDate) throws OutboundDateAfterReturnDateException {
         if (returnDate == null) return;;
@@ -85,7 +139,7 @@ public class FlightService {
         if (totalCount > 9) throw new PassengerLimitExceededException(totalCount);
     }
 
-    private SearchResponseDto mapFlightInventoryToDto(FlightInventory flightInventory, int adultCount, int childrenCount) {
+    private SearchResponseDto mapFlightInventoryToDto(FlightInventory flightInventory, int milesCount, int adultCount, int childrenCount) {
         Flight flight = flightInventory.getFlight();
         Route route = flight.getRoute();
 
@@ -96,6 +150,8 @@ public class FlightService {
         BigDecimal milesEarned = totalPrice.multiply(
             BigDecimal.valueOf(flightInventory.getSeatClass().getMilesPercent() / 100)
         ).setScale(0, RoundingMode.HALF_UP);
+
+        BigDecimal priceWithMiles = totalPrice.subtract(BigDecimal.valueOf(milesCount)).max(BigDecimal.ZERO);
 
         LocalDateTime departureUTC = flight.getDepartureTime()
                 .minusHours(route.getDepartureAirport().getOffsetUTC());
@@ -120,6 +176,7 @@ public class FlightService {
                 .availableSeats(flightInventory.getAvailableSeats())
                 .pricePerAdult(adultPrice)
                 .pricePerChild(childPrice)
+                .priceWithMiles(priceWithMiles)
                 .totalPrice(totalPrice)
                 .milesEarned(milesEarned)
                 .build();

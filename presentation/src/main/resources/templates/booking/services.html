@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Бронирование — Услуги | Glacial Airlines</title>
     <link rel="stylesheet" th:href="@{/dist/index.css}">
+    <script th:src="@{/dist/index.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common.html :: header}"></header>
@@ -13,172 +14,129 @@
         <div class="content-wrapper booking">
             <div class="step-indicator-container booking-section" th:insert="~{/fragments/booking.html :: step-indicator(2)}"></div>
 
-            <div class="booking-section two-columns">
-                <div class="main">
-                    <div class="content-block">
-                        <div class="header">
-                            <span class="title">Схема салона · Airbus A320 · EK 132 · Екатеринбург — Москва</span>
+            <form th:action="@{/booking/services}" th:object="${servicesForm}" method="post">
+                <input type="hidden" name="skipSeats" id="skipSeats" value="false">
+
+                <th:block th:each="passenger, stat : ${bookingOrder.passengers}">
+                    <input type="hidden"
+                           th:name="'outboundSeatIds[' + ${stat.index} + ']'"
+                           th:id="'outbound-seat-' + ${stat.index}"
+                           th:value="${passenger.outboundSeatAvailability != null ? passenger.outboundSeatAvailability.id : ''}">
+                </th:block>
+
+                <div class="booking-section two-columns">
+                    <div class="main">
+                        <div class="content-block">
+                            <div class="header">
+                                <span class="title" th:text="'Схема салона · ' + ${bookingOrder.outboundFlight.aircraft.model} + ' · ' + ${bookingOrder.outboundFlight.flightNumber}"></span>
+                            </div>
+
+                            <div class="content column-flex-container big-gap">
+                                <div class="clue-group">
+                                    <div class="clue">
+                                        <div class="color-indicator free"></div>
+                                        <span class="text">Свободное</span>
+                                    </div>
+                                    <div class="clue">
+                                        <div class="color-indicator taken"></div>
+                                        <span class="text">Занято</span>
+                                    </div>
+                                    <div class="clue">
+                                        <div class="color-indicator emergency"></div>
+                                        <span class="text">Аварийный ряд (+400)</span>
+                                    </div>
+                                    <div class="clue">
+                                        <div class="color-indicator selected"></div>
+                                        <span class="text">Ваш выбор</span>
+                                    </div>
+                                </div>
+
+                                <div class="seat-map">
+                                    <th:block th:each="group : ${seatGroups}">
+                                        <div th:replace="~{/fragments/booking.html :: seat-group(group=${group})}"></div>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aside" th:attr="data-base-price=${bookingOrder.basePrice}">
+                        <div class="content-block">
+                            <div class="header">
+                                <span class="title">Выбор мест</span>
+                            </div>
+
+                            <div class="content column-flex-container medium-gap">
+                                <th:block th:each="passenger, stat : ${bookingOrder.passengers}">
+                                    <div th:replace="~{/fragments/booking.html :: seat-selection-block(passenger=${passenger}, seatClassName=${seatClassName}, index=${stat.index})}"></div>
+                                </th:block>
+
+                            </div>
                         </div>
 
-                        <div class="content column-flex-container big-gap">
-                            <div class="clue-group">
-                                <div class="clue">
-                                    <div class="color-indicator free"></div>
-                                    <span class="text">Свободное</span>
-                                </div>
-                                <div class="clue">
-                                    <div class="color-indicator taken"></div>
-                                    <span class="text">Занято</span>
-                                </div>
-                                <div class="clue">
-                                    <div class="color-indicator emergency"></div>
-                                    <span class="text">Аварийный ряд (+400)</span>
-                                </div>
-                                <div class="clue">
-                                    <div class="color-indicator selected"></div>
-                                    <span class="text">Ваш выбор</span>
-                                </div>
+                        <div class="content-block">
+                            <div class="header">
+                                <span class="title">Услуги и итоговая стоимость</span>
                             </div>
 
-                            <div class="seat-map">
-                                <div class="seat-group">
-                                    <div class="title">Бизнес</div>
+                            <div class="content column-flex-container medium-gap">
+                                <div class="service-group flex-column">
+                                    <th:block th:each="service : ${availableServices}">
+                                        <div th:class="'service ' + ${service.serviceType.name().toLowerCase()}">
+                                            <div class="checkbox-line">
+                                                <div class="label" th:text="${service.name}"></div>
+                                                <input type="checkbox"
+                                                       th:id="${'service-' + service.id}"
+                                                       th:attr="data-price=${#numbers.formatInteger(service.price, 1)}"
+                                                       th:value="${service.id}"
+                                                       name="selectedServiceIds"
+                                                       th:checked="${#lists.contains(servicesForm.selectedServiceIds, service.id)}">
+                                            </div>
+                                            <div class="price-line">
+                                                <div class="label" th:text="${service.description}"></div>
+                                                <div class="price" th:text="|${#numbers.formatInteger(service.price, 1)} RUB|"></div>
+                                            </div>
+                                        </div>
+                                    </th:block>
+                                </div>
 
-                                    <div class="rows">
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(1)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(2)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(3)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(4)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(5)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(6)}"></div>
+                                <div class="divider"></div>
+
+                                <div class="prices flex-column">
+                                    <div class="price-line">
+                                        <div class="label">Билеты</div>
+                                        <div class="price" th:text="|${#numbers.formatInteger(bookingOrder.basePrice, 1)} RUB|"></div>
+                                    </div>
+                                    <div class="price-line">
+                                        <div class="label">Доплата за места</div>
+                                        <div class="price">0 RUB</div>
+                                    </div>
+                                    <div class="price-line">
+                                        <div class="label">Доп. услуги</div>
+                                        <div class="price">0 RUB</div>
                                     </div>
                                 </div>
 
-                                <div class="seat-group">
-                                    <div class="title">Эконом</div>
-                                        
-                                    <div class="rows">
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(7)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(8)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(9)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(10)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(11)}"></div>
-                                    </div>
-                                </div>
+                                <div class="divider"></div>
 
-                                <div class="seat-group">
-                                    <div class="title">Аварийный ряд</div>
-
-                                    <div class="rows">
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(12)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(14)}"></div>
-                                    </div>
-                                </div>
-                                
-                                <div class="seat-group">
-                                    <div class="title">Эконом</div>
-
-                                    <div class="rows">
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(15)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(16)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(17)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(18)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(19)}"></div>
-                                        <div th:replace="~{/fragments/booking.html :: seat-row(20)}"></div>
+                                <div class="final-price">
+                                    <div class="price-line final">
+                                        <div class="label">Итого</div>
+                                        <div class="price"></div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="button-group">
+                            <a th:href="@{/booking/passengers}" class="outline-button no-padding">К пассажирам</a>
+                            <button type="submit" class="outline-button no-padding">Перейти к оплате</button>
+                            <button type="submit" class="outline-button no-padding"
+                                    onclick="document.getElementById('skipSeats').value='true'">Пропустить выбор мест</button>
                         </div>
                     </div>
                 </div>
-
-                <div class="aside">
-                    <div class="content-block">
-                        <div class="header">
-                            <span class="title">Выбор мест</span>
-                        </div>
-
-                        <div class="content column-flex-container medium-gap">
-                            <div th:replace="~{/fragments/booking.html :: seat-selection-block}"></div>
-                        </div>
-                    </div>
-
-                    <div class="content-block">
-                        <div class="header">
-                            <span class="title">Услуги и итоговая стоимость</span>
-                        </div>
-
-                        <div class="content column-flex-container medium-gap">
-                            <div class="service-group flex-column">
-                                <div class="service meals">
-                                    <div class="checkbox-line">
-                                        <div class="label">Питание на борту</div>
-                                        <input type="checkbox" id="meal">
-                                    </div>
-                                    <div class="price-line">
-                                        <div class="label">Горячее блюдо и напиток</div>
-                                        <div class="price">800 RUB</div>
-                                    </div>
-                                </div>
-
-                                <div class="service tickets-refund">
-                                    <div class="checkbox-line">
-                                        <div class="label">Возврат билетов</div>
-                                        <input type="checkbox" id="ticketRefund">
-                                    </div>
-                                    <div class="price-line">
-                                        <div class="label">За 24 часа до вылета</div>
-                                        <div class="price">7600 RUB</div>
-                                    </div>
-                                </div>
-
-                                <div class="service increased-baggage-weight">
-                                    <div class="checkbox-line">
-                                        <div class="label">Увеличенный вес багажа</div>
-                                        <input type="checkbox" id="extraLuggage">
-                                    </div>
-                                    <div class="price-line">
-                                        <div class="label">+ 10 кг к весу одной сумки</div>
-                                        <div class="price">3400 RUB</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="divider"></div>
-
-                            <div class="prices flex-column">
-                                <div class="price-line">
-                                    <div class="label">Билеты</div>
-                                    <div class="price">200 000 RUB</div>
-                                </div>
-                                <div class="price-line">
-                                    <div class="label">Доплата за места</div>
-                                    <div class="price">0 RUB</div>
-                                </div>
-                                <div class="price-line">
-                                    <div class="label">Доп. услуги</div>
-                                    <div class="price">0 RUB</div>
-                                </div>
-                            </div>
-
-                            <div class="divider"></div>
-
-                            <div class="final-price">
-                                <div class="price-line final">
-                                    <div class="label">Итого</div>
-                                    <div class="price">200 000 RUB</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="button-group">
-                        <a th:href="@{/booking/passengers}" class="outline-button no-padding">К пассажирам</a>
-                        <a th:href="@{/booking/checkout}" class="outline-button no-padding">Перейти к оплате</a>
-                        <a th:href="@{/booking/checkout}" class="outline-button no-padding">Пропустить выбор мест</a>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 

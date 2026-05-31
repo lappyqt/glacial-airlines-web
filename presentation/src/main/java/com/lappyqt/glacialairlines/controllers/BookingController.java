@@ -1,16 +1,14 @@
 package com.lappyqt.glacialairlines.controllers;
 
 import com.lappyqt.glacialairlines.entities.account.UserAccount;
+import com.lappyqt.glacialairlines.entities.booking.AdditionalService;
 import com.lappyqt.glacialairlines.entities.booking.BookingOrder;
 import com.lappyqt.glacialairlines.services.BookingService;
 import com.lappyqt.glacialairlines.services.FlightService;
 import com.lappyqt.glacialairlines.services.UserAccountService;
 import com.lappyqt.glacialairlines.services.security.CustomUserDetails;
 import com.lappyqt.glacialairlines.session.BookingSession;
-import dto.PassengerDto;
-import dto.PassengersFormDto;
-import dto.SearchRequestDto;
-import dto.SearchResponseDto;
+import dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,14 +31,18 @@ public class BookingController {
     private final BookingSession bookingSession;
 
     @GetMapping("/return-flight")
-    public String returnFlightPage(Model model) {
+    public String returnFlightPage(Model model, @RequestParam(value = "filter", required = false, defaultValue = "price") String filter) {
         SearchRequestDto searchRequest = bookingSession.getSearchRequest();
         model.addAttribute("searchRequestDto", searchRequest);
+        model.addAttribute("filter", filter);
 
-        SearchResponseDto outboundFlight = flightService.getOutboundFlightOffer(bookingSession.getOutboundFlightId(), searchRequest);
+        SearchResponseDto outboundFlight = flightService.getFlightOffer(bookingSession.getOutboundFlightId(), searchRequest);
         model.addAttribute("outboundFlight", outboundFlight);
 
-        List<SearchResponseDto> returnFlights = flightService.findAvailableReturnFlightOffers(searchRequest);
+        Integer milesObject = (Integer) model.getAttribute("currentMiles");
+        int currentMiles = (milesObject != null) ? milesObject : 0;
+
+        List<SearchResponseDto> returnFlights = flightService.findAvailableReturnFlightOffers(searchRequest, currentMiles, filter);
 
         if (!returnFlights.isEmpty()) {
             BigDecimal minPrice = returnFlights.stream()
@@ -48,6 +50,8 @@ public class BookingController {
                     .min(BigDecimal::compareTo)
                     .orElse(BigDecimal.ZERO);
 
+            model.addAttribute("departureCity", outboundFlight.getDepartureCity());
+            model.addAttribute("arrivalCity", outboundFlight.getArrivalCity());
             model.addAttribute("minPrice", minPrice);
         }
 
@@ -59,6 +63,8 @@ public class BookingController {
     @GetMapping("select-return")
     public String selectReturn(@RequestParam Long returnFlightId) {
         bookingSession.setReturnFlightId(returnFlightId);
+        bookingSession.setReturnOfferPrice(flightService.getFlightOffer(returnFlightId, bookingSession.getSearchRequest()).getTotalPrice());
+
         return "redirect:/booking/passengers";
     }
 
@@ -75,8 +81,13 @@ public class BookingController {
                 userAccount);
         bookingSession.setOrderId(order.getId());
 
-        model.addAttribute("outboundFlight", flightService.getOutboundFlightOffer(
+        model.addAttribute("outboundFlight", flightService.getFlightOffer(
                 bookingSession.getOutboundFlightId(), bookingSession.getSearchRequest()
+        ));
+
+        BigDecimal returnFlightPrice = bookingSession.getReturnOfferPrice();
+        model.addAttribute("basePrice", bookingSession.getOutboundOfferPrice().add(
+                returnFlightPrice != null ? returnFlightPrice : BigDecimal.ZERO
         ));
 
         model.addAttribute("isRoundTrip", bookingSession.getReturnFlightId() != null);
@@ -108,25 +119,106 @@ public class BookingController {
                                  Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("searchRequestDto", bookingSession.getSearchRequest());
-            model.addAttribute("outboundFlight", flightService.getOutboundFlightOffer(
+            model.addAttribute("outboundFlight", flightService.getFlightOffer(
                     bookingSession.getOutboundFlightId(), bookingSession.getSearchRequest()));
             model.addAttribute("isRoundTrip", bookingSession.getReturnFlightId() != null);
+
+            BigDecimal returnFlightPrice = bookingSession.getReturnOfferPrice();
+            model.addAttribute("basePrice", bookingSession.getOutboundOfferPrice().add(
+                    returnFlightPrice != null ? returnFlightPrice : BigDecimal.ZERO
+            ));
 
             return "booking/passengers";
         }
 
-        bookingService.savePassengers(bookingSession.getOrderId(), form);
+        BigDecimal returnFlightPrice = bookingSession.getReturnOfferPrice();
+        BigDecimal basePrice = bookingSession.getOutboundOfferPrice().add(
+                returnFlightPrice != null ? returnFlightPrice : BigDecimal.ZERO
+        );
+
+        bookingService.savePassengersAndSetBasePrice(bookingSession.getOrderId(), basePrice, form);
         return "redirect:/booking/services";
     }
 
     @GetMapping("/services")
-    public String servicesPage() {
+    public String servicesPage(Model model) {
+        BookingOrder bookingOrder = bookingService.getOrder(bookingSession.getOrderId());
+        List<SeatGroupDto> seatGroups = flightService.getSeatGroups(bookingOrder.getOutboundFlight().getId());
+        List<AdditionalService> additionalServices = bookingService.getAdditionalServices();
+
+        List<Long> selectedServiceIds = bookingOrder.getSelectedServices().stream()
+                .map(AdditionalService::getId)
+                .toList();
+
+        ServicesFormDto form = new ServicesFormDto();
+        form.setSelectedServiceIds(selectedServiceIds);
+
+        model.addAttribute("seatClassName", SeatGroupDto.getGroupName(bookingOrder.getSeatClass()));
+        model.addAttribute("seatGroups", seatGroups);
+        model.addAttribute("bookingOrder", bookingOrder);
+        model.addAttribute("availableServices", additionalServices);
+        model.addAttribute("servicesForm", form);
+
         return "booking/services";
     }
 
+    @PostMapping("/services")
+    public String saveSelectedServices(@ModelAttribute ServicesFormDto servicesFormDto) {
+        PrepareCheckoutResponseDto prepareCheckoutResponseDto = bookingService.saveServicesAndPrepareCheckout(bookingSession.getOrderId(), servicesFormDto);
+        bookingSession.setSeatsSurcharge(prepareCheckoutResponseDto.getSeatsSurcharge());
+        bookingSession.setServicesTotal(prepareCheckoutResponseDto.getServicesTotal());
+
+        return "redirect:/booking/checkout";
+    }
+
     @GetMapping("/checkout")
-    public String checkoutPage() {
+    public String checkoutPage(Model model) {
+        BookingOrder order = bookingService.getFullOrder(bookingSession.getOrderId());
+        SearchRequestDto searchRequest = bookingSession.getSearchRequest();
+
+        model.addAttribute("bookingOrder", order);
+        model.addAttribute("outboundFlight", flightService.getFlightOffer(
+                order.getOutboundFlight().getId(), searchRequest));
+
+        if (order.getReturnFlight() != null) {
+            model.addAttribute("returnFlight", flightService.getFlightOffer(
+                    order.getReturnFlight().getId(), searchRequest));
+        }
+
+        model.addAttribute("paymentFormDto", new PaymentFormDto());
+        model.addAttribute("seatsSurcharge", bookingSession.getSeatsSurcharge());
+        model.addAttribute("servicesTotal", bookingSession.getServicesTotal());
+
         return "booking/checkout";
+    }
+
+    @PostMapping("/checkout")
+    public String processPayment(@Valid @ModelAttribute PaymentFormDto paymentFormDto,
+                                 BindingResult bindingResult,
+                                 Model model) {
+        if (bindingResult.hasErrors()) {
+            BookingOrder order = bookingService.getFullOrder(bookingSession.getOrderId());
+            SearchRequestDto searchRequest = bookingSession.getSearchRequest();
+
+            model.addAttribute("bookingOrder", order);
+            model.addAttribute("outboundFlight", flightService.getFlightOffer(
+                    order.getOutboundFlight().getId(), searchRequest));
+
+            if (order.getReturnFlight() != null) {
+                model.addAttribute("returnFlight", flightService.getFlightOffer(
+                        order.getReturnFlight().getId(), searchRequest));
+            }
+
+            model.addAttribute("seatsSurcharge", bookingSession.getSeatsSurcharge());
+            model.addAttribute("servicesTotal", bookingSession.getServicesTotal());
+
+            return "booking/checkout";
+        }
+
+        bookingService.processPayment(bookingSession.getOrderId(), paymentFormDto);
+        bookingSession.clear();
+
+        return "redirect:/booking/success";
     }
 
     @GetMapping("/success")

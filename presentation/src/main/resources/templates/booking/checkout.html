@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Бронирование — Оплата | Glacial Airlines</title>
     <link rel="stylesheet" th:href="@{/dist/index.css}">
+    <script th:src="@{/dist/index.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common.html :: header}"></header>
@@ -21,28 +22,39 @@
                         </div>
 
                         <div class="content column-flex-container medium-gap">
-                            <div th:replace="~{fragments/booking.html :: flight-card-checkout('Туда')}"></div>
-                            <div th:replace="~{fragments/booking.html :: flight-card-checkout('Обратно')}"></div>
+                            <div th:replace="~{fragments/booking.html :: flight-card-checkout(
+                                direction='Туда',
+                                flightOffer=${outboundFlight}
+                            )}"></div>
+
+                            <th:block th:if="${returnFlight != null}">
+                                <div th:replace="~{fragments/booking.html :: flight-card-checkout(
+                                    direction='Обратно',
+                                    flightOffer=${returnFlight}
+                                )}"></div>
+                            </th:block>
 
                             <h3>Пассажиры и места</h3>
 
                             <div class="passengers-info flex-column">
-                                <div th:replace="~{fragments/booking.html :: passenger-info-checkout}"></div>
+                                <th:block th:each="passenger : ${bookingOrder.passengers}">
+                                    <div th:replace="~{/fragments/booking.html :: passenger-info-checkout(${passenger})}"></div>
+                                </th:block>
                             </div>
 
                             <h3>Дополнительные услуги</h3>
 
                             <div class="additional-services flex-column" style="gap: 15px;">
-                                <div class="price-line">
-                                    <div class="label">Питание на борту</div>
-                                    <div class="price">800 RUB</div>
+                                <div class="price-line" th:each="service : ${bookingOrder.selectedServices}">
+                                    <div class="label" th:text="${service.name}">Питание на борту</div>
+                                    <div class="price" th:text="| ${#numbers.formatInteger(service.price, 1)} RUB|"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="aside">
+                <div class="aside checkout">
                     <div class="content-block">
                         <div class="header">
                             <span class="title">Оплата</span>
@@ -52,64 +64,80 @@
                             <div class="final-services flex-column">
                                 <div class="price-line">
                                     <div class="label">Билеты</div>
-                                    <div class="price">200 000 RUB</div>
+                                    <div class="price" th:text="|${#numbers.formatInteger(bookingOrder.basePrice, 1)} RUB|"></div>
                                 </div>
                                 <div class="price-line">
                                     <div class="label">Места</div>
-                                    <div class="price">0 RUB</div>
+                                    <div class="price" th:text="|${#numbers.formatInteger(seatsSurcharge, 1)} RUB|"></div>
                                 </div>
                                 <div class="price-line">
                                     <div class="label">Доп. услуги</div>
-                                    <div class="price">0 RUB</div>
+                                    <div class="price" th:text="|${#numbers.formatInteger(servicesTotal, 1)} RUB|"></div>
                                 </div>
                             </div>
 
                             <div class="divider"></div>
 
-                            <div class="expense-item flex-column">
+                            <div class="expense-item flex-column" th:attr="data-total-price=${#numbers.formatInteger(bookingOrder.totalPrice, 1)}, data-miles-count=${currentMiles}">
                                 <div class="price-line black">
                                     <div class="label">Стоимость без скидки</div>
-                                    <div class="price">200 000 RUB</div>
+                                    <div class="price" th:text="|${#numbers.formatInteger(bookingOrder.totalPrice, 1)} RUB|"></div>
                                 </div>
-                                <div class="price-line black">
+                                <div class="price-line miles-spent black">
                                     <div class="label">Списано миль</div>
                                     <div class="price">-</div>
                                 </div>
                                 <div class="price-line final bold">
                                     <div class="label">К оплате</div>
-                                    <div class="price">200 000 RUB</div>
+                                    <div class="price"></div>
                                 </div>
                             </div>
 
                             <div class="divider"></div>
 
-                            <form id="payment-form" th:action="@{/booking/success}" method="get" class="flight-payment flex-column" style="gap: 15px;">
+                            <form id="payment-form" th:action="@{/booking/checkout}" method="post" th:object="${paymentFormDto}" class="flight-payment flex-column" style="gap: 15px;">
                                 <div class="floating-input-group">
-                                    <input id="card-number" class="input" type="text" name="card-number" placeholder=" ">
-                                    <label for="card-number" class="floating-label">Номер карты</label>
+                                    <input id="card-number" class="input" type="text"
+                                           th:field="*{cardNumber}"
+                                           th:classappend="${#fields.hasErrors('cardNumber')} ? 'error'"
+                                           placeholder=" ">
+                                    <label for="card-number" class="floating-label"
+                                           th:text="${#fields.hasErrors('cardNumber')} ? ${#fields.errors('cardNumber')[0]} : 'Номер карты'"></label>
                                 </div>
                                 
                                 <div class="row">
                                     <div class="floating-input-group">
-                                        <input id="validity-period" class="input" type="text" name="validityPeriod" placeholder=" ">
-                                        <label for="validity-period" class="floating-label">Сроки действия</label>
+                                        <input id="validity-period" class="input" type="text"
+                                               th:field="*{validityPeriod}"
+                                               th:classappend="${#fields.hasErrors('validityPeriod')} ? 'error'"
+                                               placeholder=" ">
+                                        <label for="validity-period" class="floating-label"
+                                               th:text="${#fields.hasErrors('validityPeriod')} ? ${#fields.errors('validityPeriod')[0]} : 'Сроки действия'"></label>
                                     </div>
 
                                     <div class="floating-input-group">
-                                        <input id="cvv" class="input" type="text" name="cvv" placeholder=" ">
-                                        <label for="cvv" class="floating-label">CVV</label>
+                                        <input id="cvv" class="input" type="text"
+                                               th:field="*{cvv}"
+                                               th:classappend="${#fields.hasErrors('cvv')} ? 'error'"
+                                               placeholder=" ">
+                                        <label for="cvv" class="floating-label"
+                                               th:text="${#fields.hasErrors('cvv')} ? ${#fields.errors('cvv')[0]} : 'CVV'"></label>
                                     </div>
                                 </div>
 
                                 <div class="floating-input-group">
-                                    <input id="cardholder" class="input" type="text" name="cardholder" placeholder=" ">
-                                    <label for="cardholder" class="floating-label">Имя держателя карты</label>
+                                    <input id="cardholder" class="input" type="text"
+                                           th:field="*{cardholder}"
+                                           th:classappend="${#fields.hasErrors('cardholder')} ? 'error'"
+                                           placeholder=" ">
+                                    <label for="cardholder" class="floating-label"
+                                           th:text="${#fields.hasErrors('cardholder')} ? ${#fields.errors('cardholder')[0]} : 'Имя держателя карты'"></label>
                                 </div>
                             </form>
 
                             <div class="checkbox-line">
                                 <div class="label">Списать мили</div>
-                                <input type="checkbox" name="payWithMiles" form="payment-form">
+                                <input type="checkbox" id="payWithMiles" th:field="${paymentFormDto.payWithMiles}" form="payment-form">
                             </div>
 
                             <input type="submit" value="Оплатить" class="default-button" form="payment-form">

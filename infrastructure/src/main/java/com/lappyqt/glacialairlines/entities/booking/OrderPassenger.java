@@ -2,6 +2,7 @@ package com.lappyqt.glacialairlines.entities.booking;
 
 import com.lappyqt.glacialairlines.entities.account.Passenger;
 import com.lappyqt.glacialairlines.entities.flight.Seat;
+import com.lappyqt.glacialairlines.entities.flight.SeatAvailability;
 import com.lappyqt.glacialairlines.enums.DocumentType;
 import com.lappyqt.glacialairlines.enums.Gender;
 import com.lappyqt.glacialairlines.enums.PassengerType;
@@ -58,6 +59,6 @@ public class OrderPassenger {
     private String documentNumber;
 
     @ManyToOne
-    @JoinColumn(name = "outbound_seat_id")
-    private Seat outboundSeat;
+    @JoinColumn(name = "outbound_seat_availability_id")
+    private SeatAvailability outboundSeatAvailability;
 }

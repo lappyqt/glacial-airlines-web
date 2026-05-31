@@ -39,7 +39,7 @@ public class ValidPassengerValidator implements ConstraintValidator<ValidPasseng
             valid = false;
         }
 
-        // Проверяем соотвествие типа документа и типа пассадира
+        // Проверяем соотвествие типа документа и типа пассажира
         if (passengerDto.getDocumentType() != null) {
             if (passengerDto.getPassengerType() == PassengerType.CHILD &&
                     passengerDto.getDocumentType() != DocumentType.BIRTH_CERTIFICATE) {

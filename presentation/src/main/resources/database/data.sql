@@ -285,7 +285,7 @@ INSERT INTO account.loyalty_account(id, miles, created_at) VALUES
    (8, 3300, '2025-12-10 12:00:00+00'),
    (9, 150,  '2026-03-17 19:45:00+00'),
    (10, 0,   '2026-05-10 14:00:00+00'),
-   (11, 0,   '2026-05-10 14:00:00+00');
+   (11, 150,   '2026-05-10 14:00:00+00');
 
 INSERT INTO account.passenger(id, first_name, last_name, middle_name, gender, birth_date, document_type, document_number, contact_email, contact_phone)
     VALUES
@@ -318,9 +318,9 @@ INSERT INTO
 
 -- Схема booking
 INSERT INTO booking.additional_service(id, additional_service_type, name, description, price, is_active) VALUES
-    (1, 'MEAL', 'Питание на борту', 'Горячее блюдо и напиток', 800.00, false),
-    (2, 'REFUND', 'Возврат билетов', 'За 24 часа до вылета', 7600.00, false),
-    (3, 'EXTRA_BAGGAGE', 'Увеличенный вес багажа', '+10 кг к весу одной сумки', 3400.00, false);
+    (1, 'MEAL', 'Питание на борту', 'Горячее блюдо и напиток', 800.00, true),
+    (2, 'REFUND', 'Возврат билетов', 'За 24 часа до вылета', 7600.00, true),
+    (3, 'EXTRA_BAGGAGE', 'Увеличенный вес багажа', '+10 кг к весу одной сумки', 3400.00, true);
 
 INSERT INTO
     booking.booking_order(id, user_account_id, outbound_flight_id, return_flight_id, seat_class, status, total_price, miles_spent, miles_earned, contact_email, contact_phone, created_at, booking_expires_at)
@@ -334,15 +334,15 @@ INSERT INTO
     (7, 8,  10, 12,   'BUSINESS', 'COMPLETED', 230000.00, 0,    1150, 'n.gromova@outlook.com',   '+79251234567', '2026-03-01 12:00:00+00', '2026-03-01 13:00:00+00');
 
 INSERT INTO
-    booking.order_passenger(id, order_id, passenger_id, passenger_type, last_name, first_name, middle_name, gender, birth_date, document_type, document_number, outbound_seat_id)
+    booking.order_passenger(id, order_id, passenger_id, passenger_type, last_name, first_name, middle_name, gender, birth_date, document_type, document_number, outbound_seat_availability_id)
     VALUES
     (1, 1, 1, 'ADULT', 'Воронов',  'Матвей',    'Денисович',     'MALE',   '1993-04-21', 'PASSPORT_RUSSIAN', '4323 544217', 34),
-    (2, 2, 2, 'ADULT', 'Савицкая', 'Элина',     'Романовна',     'FEMALE', '1989-06-01', 'PASSPORT_RUSSIAN', '5676 457568', 3),
-    (3, 3, 3, 'ADULT', 'Кравцов',  'Родион',    'Игоревич',      'MALE',   '2001-11-07', 'PASSPORT_RUSSIAN', '9667 369343', 56),
-    (4, 4, 4, 'ADULT', 'Белова',   'Анастасия', 'Олеговна',      'FEMALE', '1997-03-14', 'PASSPORT_RUSSIAN', '7712 334521', 78),
-    (5, 5, 5, 'ADULT', 'Орлов',    'Дмитрий',   'Павлович',      'MALE',   '1985-09-30', 'PASSPORT_RUSSIAN', '3341 887654', 12),
-    (6, 6, 6, 'ADULT', 'Морозова', 'Юлия',      'Александровна', 'FEMALE', '1992-12-05', 'PASSPORT_RUSSIAN', '6654 221133', 42),
-    (7, 7, 8, 'ADULT', 'Громова',  'Наталья',   'Сергеевна',     'FEMALE', '1978-02-28', 'PASSPORT_RUSSIAN', '2298 556677', 116);
+    (2, 2, 2, 'ADULT', 'Савицкая', 'Элина',     'Романовна',     'FEMALE', '1989-06-01', 'PASSPORT_RUSSIAN', '5676 457568', 120),
+    (3, 3, 3, 'ADULT', 'Кравцов',  'Родион',    'Игоревич',      'MALE',   '2001-11-07', 'PASSPORT_RUSSIAN', '9667 369343', 300),
+    (4, 4, 4, 'ADULT', 'Белова',   'Анастасия', 'Олеговна',      'FEMALE', '1997-03-14', 'PASSPORT_RUSSIAN', '7712 334521', 360),
+    (5, 5, 5, 'ADULT', 'Орлов',    'Дмитрий',   'Павлович',      'MALE',   '1985-09-30', 'PASSPORT_RUSSIAN', '3341 887654', 500),
+    (6, 6, 6, 'ADULT', 'Морозова', 'Юлия',      'Александровна', 'FEMALE', '1992-12-05', 'PASSPORT_RUSSIAN', '6654 221133', 600),
+    (7, 7, 8, 'ADULT', 'Громова',  'Наталья',   'Сергеевна',     'FEMALE', '1978-02-28', 'PASSPORT_RUSSIAN', '2298 556677', 700);
 
 INSERT INTO booking.order_services(order_id, service_id) VALUES
     (2, 1),

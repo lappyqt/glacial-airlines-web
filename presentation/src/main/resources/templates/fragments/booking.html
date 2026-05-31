@@ -12,6 +12,10 @@
             <p class="global-error">Сессия истекла, начните поиск заново</p>
         </div>
 
+        <div th:if="${param.bookingOrderExpired}" class="global-error-container">
+            <p class="global-error">Вы оформляли заказ слишком долго, данные могли устареть, начните поиск заново</p>
+        </div>
+
         <div class="inputs-container">
             <div class="input-wrapper left" th:classappend="${#fields.hasErrors('outboundAirportId')} ? 'error'"
                  th:data-title="${#fields.hasErrors('outboundAirportId')} ? ${#fields.errors('outboundAirportId').get(0)} : 'Аэропорт отправления'">
@@ -134,17 +138,14 @@
         <p class="title">Сортировать по:</p>
 
         <div class="filter-buttons">
-            <input type="radio" name="orderBy" id="price" checked>
-            <label for="price">Цена</label>
-
-            <input type="radio" name="orderBy" id="duration">
-            <label for="duration">Длительность</label>
-
-            <input type="radio" name="orderBy" id="departureTime">
-            <label for="departureTime">Время вылета</label>
-
-            <input type="radio" name="orderBy" id="arrivalTime">
-            <label for="arrivalTime">Время прибытия</label>
+            <a class="filter-button" data-filter="price"
+                th:classappend="${filter == 'price'} ? 'active' : ''">Цена</a>
+            <a class="filter-button" data-filter="duration"
+               th:classappend="${filter == 'duration'} ? 'active' : ''">Длительность</a>
+            <a class="filter-button" data-filter="departureTime"
+               th:classappend="${filter == 'departureTime'} ? 'active' : ''">Время вылета</a>
+            <a class="filter-button" data-filter="arrivalTime"
+               th:classappend="${filter == 'arrivalTime'} ? 'active' : ''">Время прибытия</a>
         </div>
     </div>
 
@@ -177,7 +178,7 @@
             <p class="price" th:text="|От ${#numbers.formatInteger(flightOffer.totalPrice, 1)} RUB|"></p>
 
             <div class="loyalty-program">
-                <p class="item price-discount">Цена с учетом миль: 90000 RUB</p>
+                <p class="item price-discount" th:text="|Цена с учетом миль: ${#numbers.formatInteger(flightOffer.priceWithMiles, 1)} RUB|"></p>
                 <span class="item potential-miles" th:text="|Получите миль: ${#numbers.formatInteger(flightOffer.milesEarned, 1)}|"></span>
             </div>
         </div>
@@ -201,23 +202,23 @@
         <a class="item outline-button" th:href="@{${action}}" th:text="${buttonLabel} ?: 'Выбрать'"></a>
     </div>
 
-    <div th:fragment="flight-card-checkout (direction)" class="flight-card-checkout">
+    <div th:fragment="flight-card-checkout(direction, flightOffer)" class="flight-card-checkout">
         <div class="information-line">
             <div class="direction" th:text="${direction}"></div>
-            <div class="route">Екатеринбург - Москва</div>
-            <div class="flight-name">EK 132</div>
+            <div class="route" th:text="${flightOffer.departureCity + ' — ' + flightOffer.arrivalCity}"></div>
+            <div class="flight-name" th:text="${flightOffer.flightNumber}"></div>
         </div>
 
-        <div th:replace="~{fragments/booking.html :: flight-segment}"></div>
+        <div th:replace="~{fragments/booking.html :: flight-segment(${flightOffer})}"></div>
     </div>
 
-    <div th:fragment="passenger-info-checkout" class="passenger-info-checkout">
+    <div th:fragment="passenger-info-checkout(passenger)" class="passenger-info-checkout">
         <div class="info-line">
-            <div class="text-left black">Фамилия Имя Отчество</div>
-            <div class="text-right">Туда • 5B</div>
+            <div class="text-left black" th:text="|${passenger.lastName} ${passenger.firstName} ${(passenger.middleName != null) ? passenger.middleName : ''}|"></div>
+            <div class="text-right" th:text="|Туда • ${passenger.outboundSeatAvailability != null ? passenger.outboundSeatAvailability.seat.seatNumber : 'Авто'}|"></div>
         </div>
         <div class="info-line">
-            <div class="text-left">Паспорт РФ • 6545 465656</div>
+            <div class="text-left" th:text="${passenger.documentType.getValue() + ' • ' + passenger.documentNumber}"></div>
             <div class="text-right">Обратно • Авто</div>
         </div>
     </div>
@@ -237,32 +238,56 @@
         </div>
     </div>
 
-    <div th:fragment="seat-row (rowNumber)" class="seat-row">
+    <div th:fragment="seat-group(group)" class="seat-group">
+        <div class="title" th:text="${group.title}"></div>
+
+        <div class="rows">
+            <th:block th:each="entry : ${group.rows}">
+                <div th:replace="~{/fragments/booking.html :: seat-row(
+                rowNumber=${entry.key},
+                seats=${entry.value}
+            )}"></div>
+            </th:block>
+        </div>
+    </div>
+
+    <div th:fragment="seat-row (rowNumber, seats)" class="seat-row">
         <div class="row-number" th:text="${rowNumber}"></div>
 
         <div class="seat-column">
-            <div class="seat free">A</div>
-            <div class="seat free">B</div>
-            <div class="seat free">C</div>
+            <th:block th:each="sa : ${seats}" th:if="${sa.seat.seatLetter == 'A' || sa.seat.seatLetter == 'B' || sa.seat.seatLetter == 'C'}">
+                <div th:class="'seat ' +
+                (${sa.status.name() == 'AVAILABLE'} ? (${sa.seat.seatClass.name() == 'EMERGENCY'} ? 'emergency' : 'free') : 'taken') +
+                (${(bookingOrder.seatClass.name() == 'BUSINESS' && sa.seat.seatClass.name() != 'BUSINESS') ||
+                   (bookingOrder.seatClass.name() != 'BUSINESS' && sa.seat.seatClass.name() == 'BUSINESS')} ? ' disabled' : '')"
+                     th:attr="data-seat-id=${sa.id}, data-seat-label=${sa.seat.seatNumber}, data-emergency=${sa.seat.seatClass.name() == 'EMERGENCY'}"
+                     th:text="${sa.seat.seatLetter}"></div>
+            </th:block>
         </div>
         
         <div class="aisle"></div>
             
         <div class="seat-column">
-            <div class="seat free">D</div>
-            <div class="seat free">E</div>
-            <div class="seat free">F</div>
+            <th:block th:each="sa : ${seats}" th:if="${sa.seat.seatLetter == 'D' || sa.seat.seatLetter == 'E' || sa.seat.seatLetter == 'F'}">
+                <div th:class="'seat ' +
+                (${sa.status.name() == 'AVAILABLE'} ? (${sa.seat.seatClass.name() == 'EMERGENCY'} ? 'emergency' : 'free') : 'taken') +
+                (${(bookingOrder.seatClass.name() == 'BUSINESS' && sa.seat.seatClass.name() != 'BUSINESS') ||
+                   (bookingOrder.seatClass.name() != 'BUSINESS' && sa.seat.seatClass.name() == 'BUSINESS')} ? ' disabled' : '')"
+                     th:attr="data-seat-id=${sa.id}, data-seat-label=${sa.seat.seatNumber}, data-emergency=${sa.seat.seatClass.name() == 'EMERGENCY'}"
+                     th:text="${sa.seat.seatLetter}"></div>
+            </th:block>
         </div>
     </div>
 
-    <div th:fragment="seat-selection-block" class="seat-selection-block">
+    <div th:fragment="seat-selection-block (passenger, seatClassName, index)" class="seat-selection-block" th:attr="data-passenger-index=${index}">
         <div class="information-group">
             <div class="text-content">
-                <div class="fullname">Фамилия И.</div>
-                <div class="flight-class">Эконом</div>
+                <div class="fullname" th:text="|${passenger.lastName} ${passenger.firstName.charAt(0)}.|"></div>
+                <div class="flight-class" th:text="${seatClassName}"></div>
             </div>
 
-            <div class="seat-number">5B</div>
+            <div class="seat-number" th:id="'seat-label-' + ${index}"
+                 th:text="${passenger.outboundSeatAvailability != null ? passenger.outboundSeatAvailability.seat.seatNumber : '-'}"></div>
         </div>
 
         <div class="seat-select-button">

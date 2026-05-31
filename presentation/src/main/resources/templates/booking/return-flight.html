@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Бронирование — Обратный рейс | Glacial Airlines</title>
     <link rel="stylesheet" th:href="@{/dist/index.css}">
+    <script th:src="@{/dist/index.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common.html :: header}"></header>
@@ -22,7 +23,7 @@
 
             <div class="flight-info booking-section-wide" th:if="${not #lists.isEmpty(flightOffers)}"
                  th:with="returnRoute=${outboundFlight.arrivalCity + ' - ' + outboundFlight.departureCity}"
-                 th:insert="~{fragments/booking.html :: cheapest-flight-info-block('Выберите обратный рейс', ${returnRoute}, ${minPrice})}">
+                 th:insert="~{fragments/booking.html :: cheapest-flight-info-block('Выберите обратный рейс', ${arrivalCity + ' - ' + departureCity}, ${minPrice})}">
             </div>
 
             <div class="offer-cards-filters booking-section" th:if="${not #lists.isEmpty(flightOffers)}" th:insert="~{fragments/booking.html :: offer-cards-filters}"></div>

@@ -7,7 +7,7 @@
 
             <div class="interactive-elements">
                 <div class="links" sec:authorize="isAuthenticated()">
-                    <a>0 миль</a>
+                    <a th:text="|${currentMiles} миль|"></a>
                 </div>
 
                 <div class="links" sec:authorize="isAnonymous()">

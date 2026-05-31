@@ -4,11 +4,13 @@ import com.lappyqt.glacialairlines.entities.flight.Airport;
 import com.lappyqt.glacialairlines.exceptions.OutboundDateAfterReturnDateException;
 import com.lappyqt.glacialairlines.exceptions.PassengerLimitExceededException;
 import com.lappyqt.glacialairlines.services.FlightService;
+import com.lappyqt.glacialairlines.services.security.CustomUserDetails;
 import com.lappyqt.glacialairlines.session.BookingSession;
 import dto.SearchRequestDto;
 import dto.SearchResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,9 +30,12 @@ public class SearchController {
     public String searchPage(@Valid @ModelAttribute("searchRequestDto") SearchRequestDto searchRequestDto,
                              BindingResult bindingResult,
                              @RequestParam(value = "source", required = false) String source,
-                             Model model) {
+                             @RequestParam(value = "filter", required = false, defaultValue = "price") String filter,
+                             Model model,
+                             @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<Airport> airports = flightService.getAirportList();
         model.addAttribute("airports", airports);
+        model.addAttribute("filter", filter);
 
         if (searchRequestDto.getReturnAirportId() != null &&
                 searchRequestDto.getOutboundAirportId() != null &&
@@ -41,8 +46,11 @@ public class SearchController {
 
         if (bindingResult.hasErrors()) return "index".equals(source) ? "index" : "search";
 
+        Integer milesObject = (Integer) model.getAttribute("currentMiles");
+        int currentMiles = (milesObject != null) ? milesObject : 0;
+
         try {
-            List<SearchResponseDto> flightOffers = flightService.findAvailableFlightOffers(searchRequestDto);
+            List<SearchResponseDto> flightOffers = flightService.findAvailableFlightOffers(searchRequestDto, currentMiles, filter);
             model.addAttribute("flightOffers", flightOffers);
 
             if (!flightOffers.isEmpty()) {
@@ -74,9 +82,11 @@ public class SearchController {
         bookingSession.setOutboundFlightId(outboundFlightId);
 
         SearchRequestDto searchRequest = bookingSession.getSearchRequest();
-        boolean isRoundTrip = (searchRequest != null
-                && searchRequest.getReturnAirportId() != null
+        boolean isRoundTrip = (searchRequest.getReturnAirportId() != null
                 && searchRequest.getReturnFlightDate() != null);
+
+        SearchResponseDto outboundFlight = flightService.getFlightOffer(outboundFlightId, searchRequest);
+        bookingSession.setOutboundOfferPrice(outboundFlight.getTotalPrice());
 
         return isRoundTrip
                 ? "redirect:/booking/return-flight"

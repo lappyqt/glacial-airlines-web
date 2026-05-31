@@ -42,6 +42,7 @@ public class PassengerDto {
 
     @NotBlank(message = "Номер документа не может быть пустым", groups = FirstStep.class)
     @Size(min = 6, max = 50, message = "Номер документа: длина 6-50 символов", groups = SecondStep.class)
+    @Pattern(regexp = "^[0-9]*$", message = "Номер — только цифры", groups = SecondStep.class)
     private String documentNumber;
 
     @NotNull

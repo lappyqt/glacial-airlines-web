@@ -26,7 +26,7 @@
                                    (${isRoundTrip} ? 'Туда и обратно' : 'В одну сторону') + ' • ' +
                                    ${passengerCount} + ' ' + ${passengerWord}">
                     </span>
-                    <span class="price" th:text="|${#numbers.formatInteger(outboundFlight.totalPrice, 1)} RUB|"></span>
+                    <span class="price" th:text="|${#numbers.formatInteger(basePrice, 1)} RUB|"></span>
                 </div>
             </div>
 
@@ -115,7 +115,7 @@
                                                th:classappend="${#fields.hasErrors('passengers[__${stat.index}__].birthDate')} ? 'error'"
                                                type="text" class="input" placeholder=" " autocomplete="off">
                                         <label th:for="'birthDate-' + ${stat.index}" class="floating-label"
-                                               th:text="${#fields.hasErrors('passengers[__${stat.index}__].birthDate')} ? ${#fields.errors('passengers[__${stat.index}__].birthDate').get(0)} : 'Дата рождения'"></label>
+                                               th:text="${#fields.hasErrors('passengers[__${stat.index}__].birthDate')} ? ${#fields.errors('passengers[__${stat.index}__].birthDate').get(0)} : 'Дата рождения (гггг-мм-дд)'"></label>
                                     </div>
                                 </div>
 

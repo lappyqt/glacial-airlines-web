@@ -1,5 +1,6 @@
 package com.lappyqt.glacialairlines.entities.booking;
 
+import com.lappyqt.glacialairlines.entities.account.LoyaltyTransaction;
 import com.lappyqt.glacialairlines.entities.account.UserAccount;
 import com.lappyqt.glacialairlines.entities.flight.Flight;
 import com.lappyqt.glacialairlines.enums.OrderStatus;
@@ -44,13 +45,18 @@ public class BookingOrder {
     @Column(nullable = false, length = 30)
     private OrderStatus status;
 
+    @Column(name = "base_price", precision = 10, scale = 2)
+    private BigDecimal basePrice;
+
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
     @Column(name = "miles_spent", nullable = false)
+    @Builder.Default
     private Integer milesSpent = 0;
 
     @Column(name = "miles_earned", nullable = false)
+    @Builder.Default
     private Integer milesEarned = 0;
 
     @Column(name = "contact_email", length = 150)
@@ -59,6 +65,9 @@ public class BookingOrder {
     @Column(name = "contact_phone", length = 20)
     private String contactPhone;
 
+    @Column(name = "payment_id", length = 100)
+    private String paymentId;
+
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
     private Instant createdAt;
 
@@ -66,7 +75,12 @@ public class BookingOrder {
     private Instant bookingExpiresAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<OrderPassenger> passengers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<LoyaltyTransaction> loyaltyTransactions = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -75,5 +89,6 @@ public class BookingOrder {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
+    @Builder.Default
     private List<AdditionalService> selectedServices = new ArrayList<>();
 }

@@ -470,24 +470,18 @@ div.booking-section-wide {
         display: flex;
         gap: 15px;
 
-        input[type="radio"] {
-            position: fixed;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        label {
+        .filter-button {
             font-size: 16px;
             font-weight: 600;
             padding: 10.5px 35px;
             border-radius: 50px;
             background-color: var(--color-white);
             transition: all 0.3s;
-        }
 
-        input[type="radio"]:checked + label {
-            color: var(--color-white);
-            background-color: var(--color-blue);
+            &.active {
+                color: var(--color-white);
+                background-color: var(--color-blue);
+            }
         }
     }
 }
@@ -825,6 +819,7 @@ div.booking-section-wide {
             &.free {
                 background-color: transparent;
                 border: 1px solid rgb(160, 160, 160);
+                cursor: pointer;
             }
 
             &.taken {
@@ -833,9 +828,12 @@ div.booking-section-wide {
 
             &.emergency {
                 background-color: rgb(229, 160, 0);
+                cursor: pointer;
             }
 
             &.selected {
+                color: var(--color-white);
+                border: 1px solid var(--color-blue);
                 background-color: var(--color-blue);
             }
         }
@@ -911,8 +909,8 @@ div.booking-section-wide {
                         }
 
                         &.emergency {
-                            color: rgb(229, 160, 0);
-                            background-color: rgb(229, 160, 0);
+                            color: var(--color-black);
+                            border: 1px solid rgb(229, 160, 0);
                         }
 
                         &.selected {
@@ -1090,7 +1088,7 @@ div.booking-section-wide {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
 
-    a:last-child:nth-child(odd) {
+    button:last-child:nth-child(odd) {
          grid-column: 1 / -1;
     }
 }

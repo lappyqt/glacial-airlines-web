@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface FlightInventoryRepository extends JpaRepository<Flight, Long> {
+public interface FlightInventoryRepository extends JpaRepository<FlightInventory, Long> {
     @Query("""
         SELECT fi FROM FlightInventory fi
         JOIN FETCH fi.flight f
