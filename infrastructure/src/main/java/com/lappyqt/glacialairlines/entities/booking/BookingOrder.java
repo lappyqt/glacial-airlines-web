@@ -74,6 +74,9 @@ public class BookingOrder {
     @Column(name = "booking_expires_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
     private Instant bookingExpiresAt;
 
+    @Column(name = "returned_at", columnDefinition = "timestamptz")
+    private Instant returnedAt;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrderPassenger> passengers = new ArrayList<>();

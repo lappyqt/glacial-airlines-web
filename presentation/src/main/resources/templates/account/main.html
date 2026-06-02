@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет | Glacial Airlines</title>
     <link rel="stylesheet" th:href="@{/dist/index.css}">
+    <script th:src="@{/dist/index.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/common.html :: header}"></header>
@@ -12,10 +13,10 @@
     <div class="wrapper booking">
         <div class="content-wrapper booking account">
             <div class="greeting-message booking-section">
-                <span class="text">Добрый вечер, _____</span>
+                <span class="text" th:text="|С возвращением, ${userAccount.firstName}|"></span>
             </div>
             
-            <div class="passenger-card-container booking-section" th:insert="~{fragments/account.html :: passenger-card}"></div>
+            <div class="passenger-card-container booking-section" th:insert="~{fragments/account.html :: passenger-card(${userAccount})}"></div>
 
             <div class="tabs-container booking-section">
                 <div class="tabs">
@@ -25,29 +26,58 @@
                 </div>
             </div>
 
-            <div th:if="${activeTab == 'orders'}" class="order-cards-container booking-section">
-                <div class="order-cards">
-                    <div th:replace="~{fragments/account.html :: order-card}"></div>
+            <th:block th:if="${activeTab == 'orders'}">
+                <div th:if="${not #lists.isEmpty(bookingOrders)}" class="order-cards-container booking-section">
+                    <div class="order-cards">
+                        <th:block th:each="userOrder : ${bookingOrders}">
+                            <div th:replace="~{fragments/account.html :: order-card(${userOrder})}"></div>
+                        </th:block>
+                    </div>
                 </div>
-            </div>
+
+                <th:block th:if="${#lists.isEmpty(bookingOrders)}">
+                    <div th:replace="~{fragments/booking.html :: no-content-section('У вас нет активных заказов. Пожалуйста, перейдите на главную страницу для поиска билетов..')}"></div>
+                </th:block>
+            </th:block>
 
             <div th:if="${activeTab == 'documents'}" class="document-group-container booking-section">
-                <div class="information-note">
-                    Данные из этих форм будут автоматически вставлены при заказе. Чтобы не использовать автозаполнение, оставьте поля пустыми.
-                </div>
+                    <form th:action="@{/account/save-passenger}" th:object="${createPassengerDto}" method="post" id="saveForm">
+                        <div th:if="${param.saved}" class="information-note green">
+                            Данные о пассажире успешно сохранены.
+                        </div>
 
-                <div th:replace="~{fragments/account.html :: documents-form-group}"></div>
+                        <div th:if="${param.deleted}" class="information-note green">
+                            Данные о пассажире успешно удалены.
+                        </div>
 
-                <div class="form-buttons">
-                    <input type="reset" value="Очистить" class="outline-button">
-                    <input type="submit" value="Сохранить" class="outline-button">
-                </div>
+                        <div th:if="${param.saved == null && param.deleted == null}" class="information-note">
+                            Данные из этих форм будут автоматически вставлены при заказе. Чтобы не использовать автозаполнение, оставьте поля пустыми.
+                        </div>
+
+                        <div th:replace="~{fragments/account.html :: documents-form-group}"></div>
+                    </form>
+
+                    <div class="form-buttons">
+                        <form th:action="@{/account/delete-passenger}" method="post">
+                            <button type="submit" class="outline-button">Удалить данные пассажира</button>
+                        </form>
+                        <input type="submit" value="Сохранить" form="saveForm" class="outline-button">
+                    </div>
+
             </div>
 
-            <div th:if="${activeTab == 'history'}" class="miles-history-container booking-section">
-                <div th:replace="~{fragments/account.html :: miles-transaction-row}"></div>
-                <div th:replace="~{fragments/account.html :: miles-transaction-row}"></div>
-            </div>
+            <th:block th:if="${activeTab == 'history'}">
+                <div th:if="${not #lists.isEmpty(userAccount.loyaltyAccount.transactions)}"  class="miles-history-container booking-section">
+                    <th:block th:each="transaction : ${userAccount.loyaltyAccount.transactions}">
+                        <div th:replace="~{fragments/account.html :: miles-transaction-row(${transaction})}"></div>
+                    </th:block>
+                </div>
+
+                <th:block th:if="${#lists.isEmpty(userAccount.loyaltyAccount.transactions)}">
+                    <div th:replace="~{fragments/booking.html :: no-content-section('Здесь будут отображаться транзакции миль по вашим заказам...')}"></div>
+                </th:block>
+            </th:block>
+
         </div>
     </div>
 

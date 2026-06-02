@@ -30,7 +30,7 @@ export class CheckoutPage {
             this.milesSpentElement.textContent = '-';
 
             if (this.payWithMilesCheckbox?.checked) {
-                this.milesSpentElement.textContent = `${this.milesCount} RUB`;
+                this.milesSpentElement.textContent = `${this.milesCount}`;
             }
         }
     }

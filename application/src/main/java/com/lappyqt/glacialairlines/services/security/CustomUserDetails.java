@@ -17,6 +17,7 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
     private final Long id;
     private final String email;
     private final String phoneNumber;
+    private final String firstName;
     private String password;
 
     @Override

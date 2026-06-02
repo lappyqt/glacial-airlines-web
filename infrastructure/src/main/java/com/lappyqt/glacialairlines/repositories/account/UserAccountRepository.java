@@ -14,4 +14,22 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
 
     @Query("SELECT u.loyaltyAccount.miles FROM UserAccount u WHERE u.id = :id")
     Optional<Integer> findMilesByUserId(@Param("id") Long id);
+
+    @Query("""
+        SELECT u FROM UserAccount u
+        LEFT JOIN FETCH u.passenger
+        WHERE u.id = :id
+        """)
+    Optional<UserAccount> findByIdWithPassenger(@Param("id") Long userId);
+
+    @Query("""
+        SELECT u FROM UserAccount u
+        LEFT JOIN FETCH u.loyaltyAccount la
+        LEFT JOIN FETCH u.passenger
+        LEFT JOIN FETCH la.transactions t
+        LEFT JOIN FETCH t.order o
+        WHERE u.id = :id
+        ORDER BY t.id DESC
+        """)
+    Optional<UserAccount> findByIdWithTransactions(@Param("id") Long userId);
 }

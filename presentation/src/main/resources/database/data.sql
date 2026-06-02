@@ -289,17 +289,17 @@ INSERT INTO account.loyalty_account(id, miles, created_at) VALUES
 
 INSERT INTO account.passenger(id, first_name, last_name, middle_name, gender, birth_date, document_type, document_number, contact_email, contact_phone)
     VALUES
-    (1,  'Матвей',    'Воронов',    'Денисович',  'MALE',   '1993-04-21', 'PASSPORT_RUSSIAN', '4323 544217', 'm.voronov@gmail.com',       '+79164328811'),
-    (2,  'Элина',     'Савицкая',   'Романовна',  'FEMALE', '1989-06-01', 'PASSPORT_RUSSIAN', '5676 457568', 'e.savitskaya@outlook.com',  '+79257113455'),
-    (3,  'Родион',    'Кравцов',    'Игоревич',   'MALE',   '2001-11-07', 'PASSPORT_RUSSIAN', '9667 369343', 'r.kravtsov@gmail.com',      '+79031456699'),
-    (4,  'Анастасия', 'Белова',     'Олеговна',   'FEMALE', '1997-03-14', 'PASSPORT_RUSSIAN', '7712 334521', 'a.belova@gmail.com',        '+79652341122'),
-    (5,  'Дмитрий',   'Орлов',      'Павлович',   'MALE',   '1985-09-30', 'PASSPORT_RUSSIAN', '3341 887654', 'd.orlov@yandex.ru',         '+79031122334'),
-    (6,  'Юлия',      'Морозова',   'Александровна','FEMALE','1992-12-05','PASSPORT_RUSSIAN', '6654 221133', 'yu.morozova@gmail.com',     '+79167788990'),
-    (7,  'Артём',     'Соколов',    'Витальевич', 'MALE',   '2000-07-19', 'INTERNATIONAL',    '75 1234567',  'a.sokolov@gmail.com',       '+79993344556'),
-    (8,  'Наталья',   'Громова',    'Сергеевна',  'FEMALE', '1978-02-28', 'PASSPORT_RUSSIAN', '2298 556677', 'n.gromova@outlook.com',     '+79251234567'),
-    (9,  'Кирилл',    'Захаров',    'Михайлович', 'MALE',   '1995-10-11', 'PASSPORT_RUSSIAN', '5543 112233', 'k.zakharov@gmail.com',      '+79671122334'),
-    (10, 'Виктория',  'Лебедева',   'Андреевна',  'FEMALE', '2003-05-22', 'PASSPORT_RUSSIAN', '8821 998877', 'v.lebedeva@yandex.ru',      '+79031987654'),
-    (11, 'Test',      'Test',       'Test',        'MALE',  '2003-05-22', 'PASSPORT_RUSSIAN', '8822 998877', 'test@mail.com',             '+79031987655');
+    (1,  'Матвей',    'Воронов',    'Денисович',  'MALE',   '1993-04-21', 'PASSPORT_RUSSIAN', '4323544217', 'm.voronov@gmail.com',       '+79164328811'),
+    (2,  'Элина',     'Савицкая',   'Романовна',  'FEMALE', '1989-06-01', 'PASSPORT_RUSSIAN', '5676457568', 'e.savitskaya@outlook.com',  '+79257113455'),
+    (3,  'Родион',    'Кравцов',    'Игоревич',   'MALE',   '2001-11-07', 'PASSPORT_RUSSIAN', '9667369343', 'r.kravtsov@gmail.com',      '+79031456699'),
+    (4,  'Анастасия', 'Белова',     'Олеговна',   'FEMALE', '1997-03-14', 'PASSPORT_RUSSIAN', '7712334521', 'a.belova@gmail.com',        '+79652341122'),
+    (5,  'Дмитрий',   'Орлов',      'Павлович',   'MALE',   '1985-09-30', 'PASSPORT_RUSSIAN', '3341887654', 'd.orlov@yandex.ru',         '+79031122334'),
+    (6,  'Юлия',      'Морозова',   'Александровна','FEMALE','1992-12-05','PASSPORT_RUSSIAN', '6654221133', 'yu.morozova@gmail.com',     '+79167788990'),
+    (7,  'Артём',     'Соколов',    'Витальевич', 'MALE',   '2000-07-19', 'INTERNATIONAL',    '751234567',  'a.sokolov@gmail.com',       '+79993344556'),
+    (8,  'Наталья',   'Громова',    'Сергеевна',  'FEMALE', '1978-02-28', 'PASSPORT_RUSSIAN', '2298556677', 'n.gromova@outlook.com',     '+79251234567'),
+    (9,  'Кирилл',    'Захаров',    'Михайлович', 'MALE',   '1995-10-11', 'PASSPORT_RUSSIAN', '5543112233', 'k.zakharov@gmail.com',      '+79671122334'),
+    (10, 'Виктория',  'Лебедева',   'Андреевна',  'FEMALE', '2003-05-22', 'PASSPORT_RUSSIAN', '8821998877', 'v.lebedeva@yandex.ru',      '+79031987654'),
+    (11, 'Test',      'Test',       'Test',        'MALE',  '2003-05-22', 'PASSPORT_RUSSIAN', '8822998877', 'test@mail.com',             '+79031987655');
 
 INSERT INTO
     account.user_account(id, email, phone_number, last_name, first_name, middle_name, password_hash, created_at, email_verified, auth_provider, loyalty_account_id, passenger_id)
@@ -318,7 +318,7 @@ INSERT INTO
 
 -- Схема booking
 INSERT INTO booking.additional_service(id, additional_service_type, name, description, price, is_active) VALUES
-    (1, 'MEAL', 'Питание на борту', 'Горячее блюдо и напиток', 800.00, true),
+    (1, 'MEAL', 'Питание на борту', 'Горячее блюдо и напиток', 4000.00, true),
     (2, 'REFUND', 'Возврат билетов', 'За 24 часа до вылета', 7600.00, true),
     (3, 'EXTRA_BAGGAGE', 'Увеличенный вес багажа', '+10 кг к весу одной сумки', 3400.00, true);
 
@@ -361,7 +361,8 @@ INSERT INTO account.loyalty_transaction(id, loyalty_account_id, order_id, transa
     (6, 4, 4, 'EARNED', 34,  '2026-04-15 11:00:00+00'),
     (7, 5, 5, 'EARNED', 250, '2026-04-10 08:00:00+00'),
     (8, 6, 6, 'EARNED', 225, '2026-05-05 16:00:00+00'),
-    (9, 8, 7, 'EARNED', 1150,'2026-03-01 12:00:00+00');
+    (9, 8, 7, 'EARNED', 1150,'2026-03-01 12:00:00+00'),
+    (10, 11, 7, 'EARNED', 150,'2026-03-01 12:00:00+00');
 
 SELECT setval('public.loyalty_account_id_seq',       (SELECT MAX(id) FROM account.loyalty_account));
 SELECT setval('public.passenger_id_seq',             (SELECT MAX(id) FROM account.passenger));

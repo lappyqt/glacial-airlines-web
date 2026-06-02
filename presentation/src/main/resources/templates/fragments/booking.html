@@ -294,5 +294,11 @@
             Изменить место
         </div>
     </div>
+
+    <div th:fragment="no-content-section(message)" class="no-content-section booking-section">
+        <p class="message" th:text="${message}"></p>
+        <br>
+        <p><a class="link" th:href="@{/}">Главная страница</a></p>
+    </div>
 </body>
 </html>

@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             userAccount.getId(),
             userAccount.getPhoneNumber(),
             userAccount.getEmail(),
+            userAccount.getFirstName(),
             userAccount.getPasswordHash()
         );
     }

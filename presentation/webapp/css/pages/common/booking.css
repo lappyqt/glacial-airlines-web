@@ -74,6 +74,27 @@ div.booking-section.previous-flight {
     }
 }
 
+div.no-content-section {
+    display: grid;
+    justify-content: center;
+
+    .message {
+        font-size: 18px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    p {
+        text-align: center;
+
+        .link {
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+    }
+}
+
 div.booking-section-wide {
     width: 100%;
 }

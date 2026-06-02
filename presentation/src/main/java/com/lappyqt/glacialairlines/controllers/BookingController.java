@@ -1,5 +1,6 @@
 package com.lappyqt.glacialairlines.controllers;
 
+import com.lappyqt.glacialairlines.entities.account.Passenger;
 import com.lappyqt.glacialairlines.entities.account.UserAccount;
 import com.lappyqt.glacialairlines.entities.booking.AdditionalService;
 import com.lappyqt.glacialairlines.entities.booking.BookingOrder;
@@ -73,6 +74,7 @@ public class BookingController {
         model.addAttribute("searchRequestDto", bookingSession.getSearchRequest());
 
         UserAccount userAccount = userAccountService.findById(userDetails.getId());
+        Passenger profilePassenger = userAccount.getPassenger();
         BookingOrder order = bookingService.getOrCreateDraft(
                 bookingSession.getOrderId(),
                 bookingSession.getOutboundFlightId(),
@@ -93,8 +95,8 @@ public class BookingController {
         model.addAttribute("isRoundTrip", bookingSession.getReturnFlightId() != null);
 
         PassengersFormDto form = new PassengersFormDto();
-        form.setContactEmail(order.getContactEmail());
-        form.setContactPhone(order.getContactPhone());
+        form.setContactEmail(order.getContactEmail() == null ? profilePassenger.getContactEmail() : order.getContactEmail());
+        form.setContactPhone(order.getContactPhone() == null ? profilePassenger.getContactPhone() : order.getContactPhone());
         form.setPassengers(order.getPassengers().stream()
                 .map(p -> {
                     PassengerDto dto = new PassengerDto();

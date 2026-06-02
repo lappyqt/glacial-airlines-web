@@ -2,14 +2,16 @@ package com.lappyqt.glacialairlines.services;
 
 import com.lappyqt.glacialairlines.entities.account.LoyaltyAccount;
 import com.lappyqt.glacialairlines.entities.account.LoyaltyTransaction;
+import com.lappyqt.glacialairlines.entities.account.Passenger;
 import com.lappyqt.glacialairlines.entities.account.UserAccount;
 import com.lappyqt.glacialairlines.entities.booking.AdditionalService;
 import com.lappyqt.glacialairlines.entities.booking.BookingOrder;
 import com.lappyqt.glacialairlines.entities.booking.OrderPassenger;
-import com.lappyqt.glacialairlines.entities.flight.FlightInventory;
-import com.lappyqt.glacialairlines.entities.flight.SeatAvailability;
+import com.lappyqt.glacialairlines.entities.flight.*;
 import com.lappyqt.glacialairlines.enums.*;
+import com.lappyqt.glacialairlines.exceptions.RefundUnavailableException;
 import com.lappyqt.glacialairlines.exceptions.SeatAlreadyOccupiedException;
+import com.lappyqt.glacialairlines.repositories.account.LoyaltyTransactionRepository;
 import com.lappyqt.glacialairlines.repositories.booking.AdditionalServiceRepository;
 import com.lappyqt.glacialairlines.repositories.booking.BookingOrderRepository;
 import com.lappyqt.glacialairlines.repositories.flight.FlightInventoryRepository;
@@ -24,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,12 +41,12 @@ public class BookingService {
     private final BookingOrderRepository bookingOrderRepository;
     private final SeatAvailabilityRepository seatAvailabilityRepository;
     private final FlightInventoryRepository flightInventoryRepository;
+    private final LoyaltyTransactionRepository loyaltyTransactionRepository;
 
     @Transactional(readOnly = true)
     public BookingOrder getOrder(Long orderId) {
         BookingOrder order = bookingOrderRepository.findByIdWithPassengers(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Заказ (%d) не найден", orderId)));
-
         bookingOrderRepository.findByIdWithServices(orderId);
         return order;
     }
@@ -52,7 +56,12 @@ public class BookingService {
         BookingOrder order = bookingOrderRepository.findByIdWithPassengersAndFlights(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Заказ (%d) не найден", orderId)));
 
-        bookingOrderRepository.findByIdWithServices(orderId);
+        order.setSelectedServices(
+                bookingOrderRepository.findByIdWithServices(orderId)
+                        .map(BookingOrder::getSelectedServices)
+                        .orElse(List.of())
+        );
+
         return order;
     }
 
@@ -68,7 +77,7 @@ public class BookingService {
                 ? flightRepository.getReferenceById(returnFlightId)
                 : null);
 
-            syncPassengers(order, searchRequest);
+            syncPassengers(order, searchRequest, userAccount);
             return bookingOrderRepository.save(order);
         }
 
@@ -95,7 +104,7 @@ public class BookingService {
         order.setCreatedAt(Instant.now());
         order.setBookingExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES));
 
-        syncPassengers(order, searchRequest);
+        syncPassengers(order, searchRequest, userAccount);
         return order;
     }
 
@@ -125,7 +134,7 @@ public class BookingService {
         bookingOrderRepository.save(order);
     }
 
-    private void syncPassengers(BookingOrder order, SearchRequestDto searchRequest) {
+    private void syncPassengers(BookingOrder order, SearchRequestDto searchRequest, UserAccount userAccount) {
         int adultsCountRequired = searchRequest.getAdultsCount();
         int childrenCountRequired = searchRequest.getChildrenCount();
 
@@ -137,11 +146,18 @@ public class BookingService {
         if (currentAdultsCount != adultsCountRequired || currentChildrenCount != childrenCountRequired) {
             order.getPassengers().clear();
 
+            boolean isFirstAdult = true;
+
             for (long i = 0; i < adultsCountRequired; i++) {
                 OrderPassenger adultPassenger = new OrderPassenger();
                 adultPassenger.setOrder(order);
                 adultPassenger.setPassengerType(PassengerType.ADULT);
                 order.getPassengers().add(adultPassenger);
+
+                if (isFirstAdult && userAccount != null && userAccount.getPassenger() != null && userAccount.getPassenger().getFirstName() != null) {
+                    mapProfileToOrderPassenger(userAccount.getPassenger(), adultPassenger);
+                    isFirstAdult = false;
+                }
             }
 
             for (long i = 0; i < childrenCountRequired; i++) {
@@ -151,6 +167,16 @@ public class BookingService {
                 order.getPassengers().add(childPassenger);
             }
         }
+    }
+
+    private void mapProfileToOrderPassenger(Passenger profilePassenger, OrderPassenger orderPassenger) {
+        orderPassenger.setFirstName(profilePassenger.getFirstName());
+        orderPassenger.setLastName(profilePassenger.getLastName());
+        orderPassenger.setMiddleName(profilePassenger.getMiddleName());
+        orderPassenger.setGender(profilePassenger.getGender());
+        orderPassenger.setBirthDate(profilePassenger.getBirthDate());
+        orderPassenger.setDocumentType(profilePassenger.getDocumentType());
+        orderPassenger.setDocumentNumber(profilePassenger.getDocumentNumber());
     }
 
     @Transactional
@@ -210,10 +236,18 @@ public class BookingService {
         if (order.getStatus() != OrderStatus.PENDING_PAYMENT) {
             FlightInventory inventory = flightInventoryRepository
                     .findByFlightIdAndSeatClass(order.getOutboundFlight().getId(), order.getSeatClass())
-                    .orElseThrow(() -> new IllegalArgumentException("FlightInventory not found"));
-            inventory.setAvailableSeats(inventory.getAvailableSeats() - order.getPassengers().size());
+                    .orElseThrow(() -> new IllegalArgumentException("Инвентарь рейса не найден"));
 
+            inventory.setAvailableSeats(inventory.getAvailableSeats() - order.getPassengers().size());
             flightInventoryRepository.save(inventory);
+
+            if (order.getReturnFlight() != null) {
+                FlightInventory returnInventory = flightInventoryRepository
+                        .findByFlightIdAndSeatClass(order.getReturnFlight().getId(), order.getSeatClass())
+                        .orElseThrow(() -> new IllegalArgumentException("Инвентарь обратного рейса не найден"));
+                returnInventory.setAvailableSeats(returnInventory.getAvailableSeats() - order.getPassengers().size());
+                flightInventoryRepository.save(returnInventory);
+            }
         }
 
         order.setTotalPrice(total);
@@ -263,7 +297,7 @@ public class BookingService {
             spentTransaction.setTransactionType(LoyaltyTransactionType.SPENT);
             spentTransaction.setMiles(milesSpent);
             spentTransaction.setCreatedAt(now);
-            loyaltyAccount.getTransactions().add(spentTransaction);
+            loyaltyTransactionRepository.save(spentTransaction);
         }
 
         int milesEarned = bookingOrder.getTotalPrice()
@@ -282,7 +316,7 @@ public class BookingService {
             earnedTransaction.setTransactionType(LoyaltyTransactionType.EARNED);
             earnedTransaction.setMiles(milesEarned);
             earnedTransaction.setCreatedAt(now);
-            loyaltyAccount.getTransactions().add(earnedTransaction);
+            loyaltyTransactionRepository.save(earnedTransaction);
         }
 
         bookingOrder.setPaymentId(UUID.randomUUID().toString());
@@ -290,5 +324,92 @@ public class BookingService {
         bookingOrderRepository.save(bookingOrder);
 
         log.info("Заказ {} успешно оплачен", bookingOrder.getId());
+    }
+
+    @Transactional
+    public void addServicesToOrder(Long orderId, List<Long> newServiceIds) {
+        BookingOrder bookingOrder = bookingOrderRepository.findByIdWithServicesAndOutboundFlight(orderId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Заказ (%d) не найден", orderId)));
+
+        checkServiceChangeAvailability(bookingOrder);
+
+        List<AdditionalService> newServices = additionalServiceRepository.findAllById(newServiceIds);
+        List<AdditionalService> servicesToAdd = newServices.stream()
+                .filter(service -> !bookingOrder.getSelectedServices().contains(service))
+                .toList();
+
+        if (!servicesToAdd.isEmpty()) {
+            bookingOrder.getSelectedServices().addAll(servicesToAdd);
+
+            BigDecimal extraCost = servicesToAdd.stream()
+                    .map(AdditionalService::getPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            bookingOrder.setTotalPrice(bookingOrder.getTotalPrice().add(extraCost));
+        }
+
+        bookingOrderRepository.save(bookingOrder);
+    }
+
+    @Transactional
+    public void refundBookingOrder(Long orderId) {
+        BookingOrder bookingOrder = bookingOrderRepository.findByIdForRefund(orderId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Заказ (%d) не найден", orderId)));
+
+        checkServiceChangeAvailability(bookingOrder);
+
+        boolean containsRefundService = bookingOrderRepository.hasRefundService(orderId);
+        if (!containsRefundService) {
+            throw new RefundUnavailableException("Опция возврата заказа требует приобретения соответствующей дополнительной услуги");
+        }
+
+        List<Long> seatIds = bookingOrderRepository.findPassengerSeatIds(orderId);
+        if (!seatIds.isEmpty()) {
+            List<SeatAvailability> seats = seatAvailabilityRepository.findByIdsWithLock(seatIds);
+            seats.forEach(sa -> sa.setStatus(SeatStatus.AVAILABLE));
+        }
+
+        FlightInventory inventory = flightInventoryRepository
+                .findByFlightIdAndSeatClass(bookingOrder.getOutboundFlight().getId(), bookingOrder.getSeatClass())
+                .orElseThrow(() -> new IllegalArgumentException("Инвентарь рейса не найден"));
+        inventory.setAvailableSeats(inventory.getAvailableSeats() + bookingOrder.getPassengers().size());
+        flightInventoryRepository.save(inventory);
+
+        if (bookingOrder.getReturnFlight() != null) {
+            FlightInventory returnInventory = flightInventoryRepository
+                    .findByFlightIdAndSeatClass(bookingOrder.getReturnFlight().getId(), bookingOrder.getSeatClass())
+                    .orElseThrow(() -> new IllegalArgumentException("Инвентарь обратного рейса не найден"));
+            returnInventory.setAvailableSeats(returnInventory.getAvailableSeats() + bookingOrder.getPassengers().size());
+            flightInventoryRepository.save(returnInventory);
+        }
+
+        Instant now = Instant.now();
+        LoyaltyAccount loyaltyAccount = bookingOrder.getUserAccount().getLoyaltyAccount();
+        int milesCount = bookingOrder.getTotalPrice().setScale(0, RoundingMode.HALF_UP).intValue();
+
+        LoyaltyTransaction loyaltyTransaction = new LoyaltyTransaction();
+        loyaltyTransaction.setLoyaltyAccount(loyaltyAccount);
+        loyaltyTransaction.setOrder(bookingOrder);
+        loyaltyTransaction.setTransactionType(LoyaltyTransactionType.RETURNED);
+        loyaltyTransaction.setMiles(milesCount);
+        loyaltyTransaction.setCreatedAt(now);
+        loyaltyTransactionRepository.save(loyaltyTransaction);
+
+        loyaltyAccount.setMiles(loyaltyAccount.getMiles() + milesCount);
+        bookingOrder.setStatus(OrderStatus.RETURNED);
+        bookingOrder.setReturnedAt(now);
+
+        bookingOrderRepository.save(bookingOrder);
+    }
+
+    private void checkServiceChangeAvailability(BookingOrder order) throws IllegalStateException {
+        Airport departureAirport = order.getOutboundFlight().getRoute().getDepartureAirport();
+        ZoneOffset airportOffset = ZoneOffset.ofHours(departureAirport.getOffsetUTC());
+        LocalDateTime nowAtDepartureAirport = LocalDateTime.now(airportOffset);
+        LocalDateTime departureTime = order.getOutboundFlight().getDepartureTime();
+
+        if (nowAtDepartureAirport.plusHours(24).isAfter(departureTime)) {
+            throw new IllegalStateException("До вылета осталось меньше 24 часов. Изменение услуг, возврат невозможны.");
+        }
     }
 }

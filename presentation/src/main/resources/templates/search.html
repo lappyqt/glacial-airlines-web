@@ -24,6 +24,10 @@
                     </div>
                 </th:block>
             </div>
+
+            <th:block th:if="${#lists.isEmpty(flightOffers)}">
+                <div th:replace="~{fragments/booking.html :: no-content-section('Рейсы на эту дату не найдены, начните поиск заново.')}"></div>
+            </th:block>
         </div>
     </div>
 

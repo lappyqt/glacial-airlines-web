@@ -4,7 +4,9 @@ import com.lappyqt.glacialairlines.entities.flight.Flight;
 import com.lappyqt.glacialairlines.entities.flight.FlightInventory;
 import com.lappyqt.glacialairlines.enums.FlightStatus;
 import com.lappyqt.glacialairlines.enums.SeatClass;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 

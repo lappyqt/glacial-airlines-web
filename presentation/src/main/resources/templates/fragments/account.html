@@ -1,57 +1,154 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <div th:fragment="passenger-card" class="passenger-card">
+    <div th:fragment="passenger-card(account)" class="passenger-card">
         <div class="left-side">
-            <div class="profile-icon">И</div>
+            <div class="profile-icon" th:text="${account.firstName.charAt(0)}"></div>
 
             <div class="user-credentials">
-                <div class="fullname">Фамилия Имя Отчество</div>
-                <div class="email">passenger@gmail.com</div>
+                <div class="fullname" th:text="|${account.lastName} ${account.firstName} ${account.middleName}|"></div>
+                <div class="email" th:text="${account.email}"></div>
             </div>
         </div>
         <div class="right-side">
             <div class="miles-accumulated">
-                <div class="amount-of-miles">1644</div>
+                <div class="amount-of-miles" th:text="${currentMiles}"></div>
                 <div class="underline-label">бонусных миль</div>
             </div>
         </div>
     </div>
 
-    <div th:fragment="order-card" class="order-card">
+    <div th:fragment="order-card(userOrder)" class="order-card">
         <div class="content-block">
             <div class="header">
-                <span class="title">Заказ №5434</span>
-                <span class="subtitle">Оплачен 02.05.2026</span>
+                <span class="title" th:text="'Заказ №' + ${userOrder.bookingOrder.id}"></span>
+                <span class="subtitle" th:text="${userOrder.bookingOrder.status.name() == 'PAID'} ?
+                    'Оплачен ' + ${#temporals.format(userOrder.bookingOrder.createdAt, 'dd.MM.yyyy')} :
+                    ${userOrder.bookingOrder.status.name()}"></span>
             </div>
 
             <div class="content column-flex-container medium-gap">
-                <div th:replace="~{/fragments/booking.html :: flight-segment}"></div>
-                <div class="divider dashed"></div>
-                <div th:replace="~{/fragments/booking.html :: flight-segment}"></div>
+                <div th:replace="~{fragments/booking.html :: flight-segment(${userOrder.outboundFlight})}"></div>
+                <th:block th:if="${userOrder.returnFlight != null}">
+                    <div class="divider dashed"></div>
+                    <div th:replace="~{fragments/booking.html :: flight-segment(${userOrder.returnFlight})}"></div>
+                </th:block>
                 
                 <div class="services">
-                    <div class="service">Фамилия И. • 6А</div>
-                    <div class="service">Питание на борту</div>
-                    <div class="service">Возврат</div>
+                    <th:block th:each="passenger : ${userOrder.bookingOrder.passengers}">
+                        <div class="service" th:text="${passenger.lastName + ' ' + passenger.firstName.charAt(0) + '. • ' +
+                        (passenger.outboundSeatAvailability != null ? passenger.outboundSeatAvailability.seat.seatNumber : 'Авто')}">
+                        </div>
+                    </th:block>
+                    <th:block th:each="service : ${userOrder.bookingOrder.selectedServices}">
+                        <div class="service" th:text="${service.name}"></div>
+                    </th:block>
                 </div>
 
                 <div class="divider"></div>
 
                 <div class="button-row">
-                    <div class="service-buttons">
-                        <div class="outline-button">Добавить услуги</div>
-                        <div class="outline-button">Оформить возврат</div>
-                    </div>
+                    <th:block th:if="${userOrder.isEditable}">
+                        <div class="service-buttons">
+                            <div th:unless="${#lists.isEmpty(userOrder.availableServices)}" class="outline-button add-services-button">Добавить услуги</div>
+                            <div th:if="${userOrder.refundAvailable}" class="outline-button refund-button">Оформить возврат</div>
+                        </div>
+                    </th:block>
+                    <th:block th:unless="${userOrder.isEditable}">
+                        <p class="not-editable-message">До вылета менее 24 часов. Выбор услуг заблокирован.</p>
+                    </th:block>
 
                     <input type="button" class="default-button" value="Скачать маршрутную квитанцию" />
                 </div>
 
             </div>
+
+            <th:block th:if="${userOrder.isEditable}">
+                <div class="whole-page-modal additional-services-modal" data-trigger="add-services-button">
+                    <form th:action="@{/account/order/services}" method="post">
+                        <input type="hidden" name="orderId" th:value="${userOrder.bookingOrder.id}" />
+
+                        <div class="modal-window">
+                            <div class="modal-header">
+                                <span class="title">Добавить услуги</span>
+                                <div class="close-button"></div>
+                            </div>
+
+                            <div class="modal-content service-group">
+                                <th:block th:each="service : ${userOrder.availableServices}">
+                                    <div class="service">
+                                        <div class="checkbox-line">
+                                            <div class="label" th:text="${service.name}"></div>
+                                            <input type="checkbox" name="serviceIds" th:value="${service.id}">
+                                        </div>
+                                        <div class="price-line">
+                                            <div class="label" th:text="${service.description}"></div>
+                                            <div class="price" th:text="|${#numbers.formatInteger(service.price, 1)} RUB|"></div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+
+
+                            <input type="submit" class="outline-button" value="Добавить услуги">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="whole-page-modal additional-services-modal" data-trigger="refund-button">
+                    <form th:action="@{/account/order/refund}" method="post">
+                        <input type="hidden" name="orderId" th:value="${userOrder.bookingOrder.id}" />
+
+                        <div class="modal-window">
+                            <div class="modal-header">
+                                <span class="title">Оформление возврата</span>
+                                <div class="close-button"></div>
+                            </div>
+
+                            <div class="modal-content service-group">
+                                <span class="refund-description">
+                                    <b>Уверены, что хотите вернуть заказ?</b> Мы сразу зачислим баллы на ваш счет.
+                                    <p th:text="|Сумма возврата: ${#numbers.formatInteger(userOrder.bookingOrder.totalPrice, 1)} ед. миль|"></p>
+                                </span>
+                            </div>
+
+                            <input type="submit" class="outline-button" value="Вернуть билеты">
+                        </div>
+                    </form>
+                </div>
+            </th:block>
+
+
         </div>
     </div>
 
     <div th:fragment="documents-form-group" class="documents-form-group">
+        <div class="content-block">
+            <div class="header">
+                <span class="title">Контактные данные заказа</span>
+                <span class="subtitle"></span>
+            </div>
+
+            <div class="content">
+                <div class="row">
+                    <div class="floating-input-group">
+                        <input id="contact-email" th:field="*{contactEmail}"
+                               th:classappend="${#fields.hasErrors('contactEmail')} ? 'error'"
+                               type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="contact-email" class="floating-label"
+                               th:text="${#fields.hasErrors('contactEmail')} ? ${#fields.errors('contactEmail').get(0)} : 'Контактная почта'"></label>
+                    </div>
+                    <div class="floating-input-group">
+                        <input id="contact-phone" th:field="*{contactPhone}"
+                               th:classappend="${#fields.hasErrors('contactPhone')} ? 'error'"
+                               type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="contact-phone" class="floating-label"
+                               th:text="${#fields.hasErrors('contactPhone')} ? ${#fields.errors('contactPhone').get(0)} : 'Контактный телефон'"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="content-block">
             <div class="header">
                 <span class="title">Пассажир 1</span>
@@ -61,74 +158,73 @@
             <div class="content column-flex-container">
                 <div class="row">
                      <div class="floating-input-group">
-                        <input id="lastname" type="text" class="input" placeholder=" " autocomplete="off">
-                        <label for="lastname" class="floating-label">Фамилия</label>
+                         <input id="lastname" th:field="*{lastName}"
+                                th:classappend="${#fields.hasErrors('lastName')} ? 'error'"
+                                type="text" class="input" placeholder=" " autocomplete="off">
+                         <label for="lastname" class="floating-label"
+                                th:text="${#fields.hasErrors('lastName')} ? ${#fields.errors('lastName').get(0)} : 'Фамилия'"></label>
                     </div>
                     <div class="floating-input-group">
-                        <input id="firstname" type="text" class="input" placeholder=" " autocomplete="off">
-                        <label for="firstname" class="floating-label">Имя</label>
+                        <input id="firstname" th:field="*{firstName}"
+                               th:classappend="${#fields.hasErrors('firstName')} ? 'error'"
+                               type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="firstname" class="floating-label"
+                               th:text="${#fields.hasErrors('firstName')} ? ${#fields.errors('firstName').get(0)} : 'Имя'"></label>
                     </div>
                     <div class="floating-input-group">
-                        <input id="middlename" type="text" class="input" placeholder=" " autocomplete="off">
-                        <label for="middlename" class="floating-label">Отчество</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <select class="select" id="sex">
-                        <option value="male">Мужской</option>
-                        <option value="female">Женский</option>
-                    </select>
-
-                    <div class="floating-input-group">
-                        <input id="birthDate" type="text" class="input" placeholder=" " autocomplete="off">
-                        <label for="birthDate" class="floating-label">Дата рождения</label>
+                        <input id="middlename" th:field="*{middleName}"
+                               th:classappend="${#fields.hasErrors('middleName')} ? 'error'"
+                               type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="middlename" class="floating-label"
+                               th:text="${#fields.hasErrors('middleName')} ? ${#fields.errors('middleName').get(0)} : 'Отчество'"></label>
                     </div>
                 </div>
 
                 <div class="row">
-                    <select class="select" id="document-type">
-                        <option value="passport">Паспорт РФ</option>
-                        <option value="international-passport">Загранпаспорт</option>
-                        <option value="birth-certificate">Свидетельство о рождении</option>
+                    <select class="select" id="sex" th:field="*{gender}">
+                        <option value="MALE">Мужской</option>
+                        <option value="FEMALE">Женский</option>
                     </select>
 
                     <div class="floating-input-group">
-                        <input id="documentNumber" type="text" class="input" placeholder=" " autocomplete="off">
-                        <label for="documentNumber" class="floating-label">Серия и номер</label>
+                        <input id="birthDate" th:field="*{birthDate}"
+                               th:classappend="${#fields.hasErrors('birthDate')} ? 'error'"
+                               th:value="${createPassengerDto.birthDate != null} ? ${#temporals.format(createPassengerDto.birthDate, 'yyyy-MM-dd')} : ''"
+                               type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="birthDate" class="floating-label"
+                               th:text="${#fields.hasErrors('birthDate')} ? ${#fields.errors('birthDate').get(0)} : 'Дата рождения (гггг-мм-дд)'"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <select id="document-type" th:field="*{documentType}" class="select">
+                        <option value="PASSPORT_RUSSIAN">Паспорт РФ</option>
+                        <option value="INTERNATIONAL">Загранпаспорт</option>
+                    </select>
+
+                    <div class="floating-input-group">
+                        <input id="documentNumber" th:field="*{documentNumber}"
+                               th:classappend="${#fields.hasErrors('documentNumber')} ? 'error'"
+                               type="text" class="input" placeholder=" " autocomplete="off">
+                        <label for="documentNumber" class="floating-label"
+                               th:text="${#fields.hasErrors('documentNumber')} ? ${#fields.errors('documentNumber').get(0)} : 'Серия и номер'"></label>
                     </div> 
-                </div>
-            </div>
-        </div>
-
-        <div class="content-block">
-            <div class="header">
-                <span class="title">Контактные данные заказа</span>
-                <span class="subtitle"></span>
-            </div>
-        
-            <div class="content">
-                <div class="row">
-                    <div class="floating-input-group">
-                        <input id="contact-email" type="text" class="input" placeholder=" " autocomplete="off">
-                        <label for="contact-email" class="floating-label">Контактная почта</label>
-                    </div>
-                    <div class="floating-input-group">
-                        <input id="contact-phone" type="text" class="input" placeholder=" " autocomplete="off">
-                        <label for="contact-phone" class="floating-label">Контактный телефон</label>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div th:fragment="miles-transaction-row" class="miles-transaction-row">
+    <div th:fragment="miles-transaction-row(transaction)" class="miles-transaction-row" th:with="type=${transaction.transactionType.name()}">
         <div class="left-side">
-            <p class="order-id">Заказ №5434</p>
-            <p class="payment-date">Оплачен 2.05.2026</p>
+            <p class="order-id" th:text="|Заказ №${transaction.order.id}|"></p>
+            <p class="payment-date" th:text="${type != 'RETURNED'} ?
+                 'Оплачен ' + ${#temporals.format(transaction.order.createdAt, 'dd.MM.yyyy')}
+                 : 'Возвращён ' + ${#temporals.format(transaction.order.returnedAt, 'dd.MM.yyyy')}"></p>
         </div>
         <div class="right-side">
-            <p class="miles-amount top-upped">+ 354 мили</p>
+            <p class="miles-amount"
+                th:classappend="${type == 'EARNED' || type == 'RETURNED'} ? 'top-upped' : 'written-off'"
+                th:text="${type == 'EARNED' || type == 'RETURNED' ? '+ ' : '- '} + ${transaction.miles} + ' ед. миль'"></p>
         </div>
     </div>
 </body>

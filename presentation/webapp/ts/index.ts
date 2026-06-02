@@ -1,4 +1,5 @@
 import "../css/index.css";
+import { AccountPage } from "./pages/accountPage";
 import { CheckoutPage } from "./pages/checkoutPage";
 import { OffersPage } from "./pages/offersPage";
 import { ServicesPage } from "./pages/servicesPage";
@@ -14,5 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (document.querySelector('.aside.checkout')) {
         new CheckoutPage();
+    }
+
+    if (document.querySelector('.order-cards')) {
+        new AccountPage().init();
     }
 });
