@@ -10,7 +10,10 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+// Репозиторий для работы со схемой мест самолета в базе данных
 public interface SeatAvailabilityRepository extends JpaRepository<SeatAvailability, Long> {
+
+    // Получение всех мест рейса с сортировкой по рядам и буквам для отрисовки карты мест
     @Query("""
         SELECT sa FROM SeatAvailability sa
         JOIN FETCH sa.seat s
@@ -19,6 +22,7 @@ public interface SeatAvailabilityRepository extends JpaRepository<SeatAvailabili
     """)
     List<SeatAvailability> findByFlightIdAndSeatClass(@Param("flightId") Long flightId);
 
+    // Получение списка мест по их идентификаторам вместе с данными кресел
     @Query("""
         SELECT sa FROM SeatAvailability sa
         JOIN FETCH sa.seat
@@ -26,6 +30,7 @@ public interface SeatAvailabilityRepository extends JpaRepository<SeatAvailabili
     """)
     List<SeatAvailability> findByIdsWithSeat(@Param("ids") List<Long> ids);
 
+    // Блокировка выбранных мест в БД (Pessimistic Write) для предотвращения их одновременной покупки
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
     SELECT sa FROM SeatAvailability sa

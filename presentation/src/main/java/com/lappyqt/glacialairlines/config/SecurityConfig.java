@@ -29,7 +29,13 @@ public class SecurityConfig {
                         .key(rememberMeKey)
                         .tokenValiditySeconds(86400 * 7)
                         .alwaysRemember(true))
-                .logout(logout -> logout.logoutSuccessUrl("/"));
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                );
 
         return http.build();
     }

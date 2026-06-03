@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 
+// Сервисный класс фоновой очистки просроченных черновиков заказов и возврата мест в инвентарь рейсов
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -20,21 +21,28 @@ public class BookingCleanupService {
     private final BookingOrderRepository bookingOrderRepository;
     private final FlightInventoryRepository flightInventoryRepository;
 
+    // Метод фонового планировщика для регулярного удаления истекших бронирований (запуск раз в 60 секунд)
     @Scheduled(fixedDelay = 60_000)
     @Transactional
     public void cleanupExpiredOrders() {
+        // Поиск в репозитории всех заказов, у которых время брони меньше текущего момента времени
         List<BookingOrder> expired = bookingOrderRepository.findExpiredOrders(Instant.now());
 
+        // Итерация по списку просроченных заказов для их аннулирования
         for (BookingOrder order: expired) {
+            // Если заказ дошел до этапа ожидания оплаты, значит места на рейс уже были заблокированы в инвентаре
             if (order.getStatus() == OrderStatus.PENDING_PAYMENT) {
+                // Поиск инвентаря для конкретного вылетающего рейса и класса обслуживания
                 flightInventoryRepository.findByFlightIdAndSeatClass(
                         order.getOutboundFlight().getId(), order.getSeatClass())
                         .ifPresent(inv -> {
+                            // Возврат забронированных мест обратно в продажу
                             inv.setAvailableSeats(inv.getAvailableSeats() + order.getPassengers().size());
                             flightInventoryRepository.save(inv);
                         });
             }
 
+            // Физическое удаление записи просроченного черновика
             bookingOrderRepository.delete(order);
         }
 

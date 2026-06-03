@@ -2,17 +2,240 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Маршрутная квитанция</title>
+    <title th:text="${'Маршрутная квитанция № ' + order.id}">Маршрутная квитанция</title>
     <style>
-        body { font-family: 'Arial', sans-serif; padding: 20px; }
-        h1 { color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        @font-face { font-family: 'Raleway'; font-weight: 400; font-style: normal; }
+        @font-face { font-family: 'Raleway'; font-weight: 500; font-style: normal; }
+        @font-face { font-family: 'Raleway'; font-weight: 700; font-style: normal; }
+
+        @page {
+            size: A4;
+            margin: 20mm 15mm 20mm 15mm;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #2D3748;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        td {
+            vertical-align: top;
+            padding: 6px;
+        }
+
+        .text-right { text-align: right; }
+        .text-bold { font-weight: 700; }
+        .text-muted { color: #718096; font-size: 9.5pt; }
+
+        .header-text-sub { font-size: 10.5pt; color: #E2E8F0; }
+        .header-status-sub { font-size: 10pt; color: #E2E8F0; }
+
+        .header-block {
+            background-color: rgb(30, 136, 229);
+            color: #ffffff;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .header-block h1 {
+            margin: 0;
+            font-size: 22pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-title {
+            font-size: 12pt;
+            font-weight: 700;
+            color: rgb(30, 136, 229);
+            border-bottom: 2px solid rgb(30, 136, 229);
+            padding-bottom: 4px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .data-table th {
+            background-color: #EDF2F7;
+            text-align: left;
+            padding: 8px;
+            font-weight: 700;
+            font-size: 9.5pt;
+            border-bottom: 1px solid #CBD5E0;
+        }
+
+        .data-table td {
+            border-bottom: 1px solid #E2E8F0;
+            padding: 8px;
+            font-size: 10.5pt;
+        }
+
+        .flight-zone {
+            background-color: #F7FAFC;
+            border-left: 4px solid rgb(30, 136, 229);
+            padding: 12px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
-<h1>Счет № <span>12345</span></h1>
-<p>Уважаемый(ая) <span>Клиент</span>, спасибо за ваш заказ!</p>
+
+    <div class="header-block">
+        <table style="margin: 0;">
+            <tr>
+                <td>
+                    <h1>Glacial Airlines</h1>
+                    <span class="header-text-sub">Электронный билет / Itinerary Receipt</span>
+                </td>
+                <td class="text-right" style="font-size: 12pt;">
+                    <div class="text-bold">Заказ № <span th:text="${order.id}">12345</span></div>
+                    <div class="header-status-sub" th:text="${'Статус: ' + order.status}">Статус: PAID</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section-title">Информация о бронировании / Booking Information</div>
+    <table>
+        <tr>
+            <td width="33%">
+                <span class="text-muted">Класс обслуживания / Class</span><br/>
+                <span class="text-bold" th:text="${order.seatClass}">ЭКОНОМ</span>
+            </td>
+            <td width="33%">
+                <span class="text-muted">Дата оформления / Date</span><br/>
+                <span class="text-bold" th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}">03.06.2026</span>
+            </td>
+            <td width="34%" class="text-right">
+                <span class="text-muted">Email связи / Contact</span><br/>
+                <span class="text-bold" th:text="${order.contactEmail}">user@example.com</span>
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">Пассажиры / Passengers</div>
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th width="5%">№</th>
+            <th width="50%">Имя Пассажира / Passenger Name</th>
+            <th width="30%">Документ / Document</th>
+            <th width="15%" class="text-right">Место / Seat</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="op, iter : ${order.passengers}">
+            <td th:text="${iter.count}">1</td>
+            <td class="text-bold">
+                <span th:text="${op.lastName + ' ' + op.firstName}">ФАМИЛИЯ ИМЯ</span>
+                <span th:if="${op.middleName != null}" th:text="${' ' + op.middleName}">ОТЧЕСТВО</span>
+                <span class="text-muted" style="font-weight: normal;" th:text="${' (' + op.passengerType + ')'}">(ADULT)</span>
+            </td>
+            <td>
+                <span th:text="${op.documentType}">ПАСПОРТ</span>
+                <span th:text="${op.documentNumber}">45** ******</span>
+            </td>
+            <td class="text-right text-bold" style="color: rgb(30, 136, 229);">
+                        <span th:if="${op.outboundSeatAvailability != null and op.outboundSeatAvailability.seat != null}"
+                              th:text="${op.outboundSeatAvailability.seat.seatNumber}">12A</span>
+                <span th:unless="${op.outboundSeatAvailability != null and op.outboundSeatAvailability.seat != null}">—</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="section-title">Рейс Туда / Outbound Flight</div>
+    <div class="flight-zone">
+        <table>
+            <tr>
+                <td width="25%">
+                    <div class="text-muted">Рейс / Flight</div>
+                    <div class="text-bold" style="font-size: 16pt; color: rgb(30, 136, 229);" th:text="${order.outboundFlight.flightNumber}">GL-102</div>
+                    <div class="text-muted" th:text="${'ВС: ' + order.outboundFlight.aircraft.model}">Boeing 737</div>
+                </td>
+                <td width="37%">
+                    <div class="text-muted">Вылет / Departure</div>
+                    <div class="text-bold" style="font-size: 11.5pt;" th:text="${order.outboundFlight.route.departureAirport.city + ' (' + order.outboundFlight.route.departureAirport.iataCode + ')'}">МОСКВА (DME)</div>
+                    <div style="font-size: 9.5pt; color: #4A5568;" th:text="${order.outboundFlight.route.departureAirport.name}">Домодедово</div>
+                    <div class="text-bold" style="margin-top: 6px; color: rgb(30, 136, 229);"
+                         th:text="${#temporals.format(order.outboundFlight.departureTime, 'dd.MM.yyyy HH:mm')}">03.06.2026 10:00</div>
+                </td>
+                <td width="38%">
+                    <div class="text-muted">Прилет / Arrival</div>
+                    <div class="text-bold" style="font-size: 11.5pt;" th:text="${order.outboundFlight.route.arrivalAirport.city + ' (' + order.outboundFlight.route.arrivalAirport.iataCode + ')'}">САНКТ-ПЕТЕРБУРГ (LED)</div>
+                    <div style="font-size: 9.5pt; color: #4A5568;" th:text="${order.outboundFlight.route.arrivalAirport.name}">Пулково</div>
+                    <div class="text-bold" style="margin-top: 6px;"
+                         th:text="${#temporals.format(order.outboundFlight.arrivalTime, 'dd.MM.yyyy HH:mm')}">03.06.2026 11:30</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div th:if="${order.returnFlight != null}">
+        <div class="section-title">Обратный рейс / Return Flight</div>
+        <div class="flight-zone" style="border-left-color: #4A5568;">
+            <table>
+                <tr>
+                    <td width="25%">
+                        <div class="text-muted">Рейс / Flight</div>
+                        <div class="text-bold" style="font-size: 16pt;" th:text="${order.returnFlight.flightNumber}">GА-101</div>
+                        <div class="text-muted" th:text="${'ВС: ' + order.returnFlight.aircraft.model}">Boeing 737</div>
+                    </td>
+                    <td width="37%">
+                        <div class="text-muted">Вылет / Departure</div>
+                        <div class="text-bold" style="font-size: 11.5pt;" th:text="${order.returnFlight.route.departureAirport.city + ' (' + order.returnFlight.route.departureAirport.iataCode + ')'}">САНКТ-ПЕТЕРБУРГ (LED)</div>
+                        <div style="font-size: 9.5pt; color: #4A5568;" th:text="${order.returnFlight.route.departureAirport.name}">Кольцово</div>
+                        <div class="text-bold" style="margin-top: 6px;"
+                             th:text="${#temporals.format(order.returnFlight.departureTime, 'dd.MM.yyyy HH:mm')}">10.06.2026 18:00</div>
+                    </td>
+                    <td width="38%">
+                        <div class="text-muted">Прилет / Arrival</div>
+                        <div class="text-bold" style="font-size: 11.5pt;" th:text="${order.returnFlight.route.arrivalAirport.city + ' (' + order.returnFlight.route.arrivalAirport.iataCode + ')'}">МОСКВА (DME)</div>
+                        <div style="font-size: 9.5pt; color: #4A5568;" th:text="${order.returnFlight.route.arrivalAirport.name}">Домодедово</div>
+                        <div class="text-bold" style="margin-top: 6px; color: rgb(30, 136, 229);"
+                             th:text="${#temporals.format(order.returnFlight.arrivalTime, 'dd.MM.yyyy HH:mm')}">10.06.2026 19:30</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(order.selectedServices)}">
+        <div class="section-title">Дополнительные услуги / Additional Services</div>
+        <table class="data-table" style="margin-bottom: 25px;">
+            <tr th:each="service : ${order.selectedServices}">
+                <td class="text-bold" th:text="${service.name}">Дополнительный багаж 23кг</td>
+                <td class="text-right text-bold" width="20%" th:text="${service.price + ' RUB'}">1500 RUB</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section-title">Оплата / Payment Details</div>
+    <table style="margin-top: 10px;">
+        <tr>
+            <td>
+                <span class="text-muted">Тариф / Base Price:</span> <span th:text="${order.basePrice + ' RUB'}">10000 RUB</span><br/>
+                <span class="text-muted" th:text="${'Списано миль / Miles spent: ' + order.milesSpent}">0</span>
+            </td>
+            <td class="text-right" style="vertical-align: bottom;">
+                <div style="font-size: 14pt; margin-bottom: 3px;">
+                    <span>ИТОГО ОПЛАЧЕНО: </span>
+                    <span class="text-bold" style="color: rgb(30, 136, 229);" th:text="${order.totalPrice + ' RUB'}">10000 RUB</span>
+                </div>
+                <div class="text-bold" style="color: #48BB78; font-size: 9.5pt;" th:text="${'Начислено миль / Miles earned: +' + order.milesEarned}">+500 миль</div>
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>

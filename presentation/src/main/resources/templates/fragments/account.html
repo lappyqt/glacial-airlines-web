@@ -58,7 +58,7 @@
                         <p class="not-editable-message">До вылета менее 24 часов. Выбор услуг заблокирован.</p>
                     </th:block>
 
-                    <input type="button" class="default-button" value="Скачать маршрутную квитанцию" />
+                    <a class="default-button" target="_blank" th:href="@{/pdf/order/{id}(id=${userOrder.bookingOrder.id})}">Скачать маршрутную квитанцию</a>
                 </div>
 
             </div>

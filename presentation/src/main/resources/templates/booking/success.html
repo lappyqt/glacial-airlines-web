@@ -23,7 +23,7 @@
                 <div class="navigation-buttons">
                     <a th:href="@{/account}" class="outline-button">Перейти в личный кабинет</a>
                     <a th:href="@{/}" class="outline-button">На главную</a>
-                    <a class="outline-button">Скачать квитанцию</a>
+                    <a class="outline-button" th:href="@{/pdf/order/{id}(id=${orderId})}">Скачать квитанцию</a>
                 </div>
             </div>
         </div>

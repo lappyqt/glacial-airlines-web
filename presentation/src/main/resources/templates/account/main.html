@@ -15,6 +15,12 @@
             <div class="greeting-message booking-section">
                 <span class="text" th:text="|С возвращением, ${userAccount.firstName}|"></span>
             </div>
+
+            <div class="logout-form-container booking-section">
+                <form th:action="@{/auth/logout}" method="post">
+                    <button type="submit" class="logout-button">Выйти из аккаунта</button>
+                </form>
+            </div>
             
             <div class="passenger-card-container booking-section" th:insert="~{fragments/account.html :: passenger-card(${userAccount})}"></div>
 
@@ -67,13 +73,13 @@
             </div>
 
             <th:block th:if="${activeTab == 'history'}">
-                <div th:if="${not #lists.isEmpty(userAccount.loyaltyAccount.transactions)}"  class="miles-history-container booking-section">
-                    <th:block th:each="transaction : ${userAccount.loyaltyAccount.transactions}">
+                <div th:if="${not #lists.isEmpty(transactions)}"  class="miles-history-container booking-section">
+                    <th:block th:each="transaction : ${transactions}">
                         <div th:replace="~{fragments/account.html :: miles-transaction-row(${transaction})}"></div>
                     </th:block>
                 </div>
 
-                <th:block th:if="${#lists.isEmpty(userAccount.loyaltyAccount.transactions)}">
+                <th:block th:if="${#lists.isEmpty(transactions)}">
                     <div th:replace="~{fragments/booking.html :: no-content-section('Здесь будут отображаться транзакции миль по вашим заказам...')}"></div>
                 </th:block>
             </th:block>

@@ -11,6 +11,9 @@
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .rounded-button-primary {

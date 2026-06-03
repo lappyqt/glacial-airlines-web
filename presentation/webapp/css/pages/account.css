@@ -12,6 +12,22 @@
         }
     }
 
+    .logout-form-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .logout-button {
+            outline: none;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+
     .passenger-card {
         width: 100%;
         min-height: 100px;

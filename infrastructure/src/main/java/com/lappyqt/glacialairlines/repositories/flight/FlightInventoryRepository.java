@@ -1,6 +1,5 @@
 package com.lappyqt.glacialairlines.repositories.flight;
 
-import com.lappyqt.glacialairlines.entities.flight.Flight;
 import com.lappyqt.glacialairlines.entities.flight.FlightInventory;
 import com.lappyqt.glacialairlines.enums.FlightStatus;
 import com.lappyqt.glacialairlines.enums.SeatClass;
@@ -14,7 +13,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+// Репозиторий для контроля доступных тарифов и количества свободных мест на рейсах
 public interface FlightInventoryRepository extends JpaRepository<FlightInventory, Long> {
+    // Поиск доступных рейсов по городам, дате, классу обслуживания и числу пассажиров
     @Query("""
         SELECT fi FROM FlightInventory fi
         JOIN FETCH fi.flight f
@@ -38,6 +39,7 @@ public interface FlightInventoryRepository extends JpaRepository<FlightInventory
             @Param("date")               LocalDate date
     );
 
+    // Получение информации о наличии свободных мест конкретного класса на рейсе
     @Query("""
         SELECT fi FROM FlightInventory fi
         JOIN FETCH fi.flight f
@@ -49,6 +51,23 @@ public interface FlightInventoryRepository extends JpaRepository<FlightInventory
           AND fi.seatClass = :seatClass
     """)
     Optional<FlightInventory> findByFlightIdAndSeatClass(
+            @Param("flightId") Long flightId,
+            @Param("seatClass") SeatClass seatClass
+    );
+
+    // Блокировка счетчика мест в БД (Pessimistic Write) на время списания доступных билетов при покупке
+    @Query("""
+        SELECT fi FROM FlightInventory fi
+        JOIN FETCH fi.flight f
+        JOIN FETCH f.aircraft
+        JOIN FETCH f.route r
+        JOIN FETCH r.departureAirport
+        JOIN FETCH r.arrivalAirport
+        WHERE f.id = :flightId
+          AND fi.seatClass = :seatClass
+    """)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<FlightInventory> findByFlightIdAndSeatClassWithLock(
             @Param("flightId") Long flightId,
             @Param("seatClass") SeatClass seatClass
     );

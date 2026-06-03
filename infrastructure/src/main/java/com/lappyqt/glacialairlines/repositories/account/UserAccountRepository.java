@@ -26,10 +26,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
         SELECT u FROM UserAccount u
         LEFT JOIN FETCH u.loyaltyAccount la
         LEFT JOIN FETCH u.passenger
-        LEFT JOIN FETCH la.transactions t
-        LEFT JOIN FETCH t.order o
         WHERE u.id = :id
-        ORDER BY t.id DESC
         """)
-    Optional<UserAccount> findByIdWithTransactions(@Param("id") Long userId);
+    Optional<UserAccount> findByIdWithPassengerAndLoyalty(@Param("id") Long userId);
 }

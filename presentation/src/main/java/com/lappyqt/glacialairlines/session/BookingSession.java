@@ -11,6 +11,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+// Компонент Spring, управляющий состоянием процесса оформления и покупки авиабилета.
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Getter
