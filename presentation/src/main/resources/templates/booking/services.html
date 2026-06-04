@@ -12,7 +12,7 @@
 
     <div class="wrapper booking">
         <div class="content-wrapper booking">
-            <div class="step-indicator-container booking-section" th:insert="~{/fragments/booking.html :: step-indicator(2)}"></div>
+            <div class="step-indicator-container booking-section" th:insert="~{fragments/booking.html :: step-indicator(2)}"></div>
 
             <form th:action="@{/booking/services}" th:object="${servicesForm}" method="post">
                 <input type="hidden" name="skipSeats" id="skipSeats" value="false">
@@ -53,7 +53,7 @@
 
                                 <div class="seat-map">
                                     <th:block th:each="group : ${seatGroups}">
-                                        <div th:replace="~{/fragments/booking.html :: seat-group(group=${group})}"></div>
+                                        <div th:replace="~{fragments/booking.html :: seat-group(group=${group})}"></div>
                                     </th:block>
                                 </div>
                             </div>
@@ -68,7 +68,7 @@
 
                             <div class="content column-flex-container medium-gap">
                                 <th:block th:each="passenger, stat : ${bookingOrder.passengers}">
-                                    <div th:replace="~{/fragments/booking.html :: seat-selection-block(passenger=${passenger}, seatClassName=${seatClassName}, index=${stat.index})}"></div>
+                                    <div th:replace="~{fragments/booking.html :: seat-selection-block(passenger=${passenger}, seatClassName=${seatClassName}, index=${stat.index})}"></div>
                                 </th:block>
 
                             </div>

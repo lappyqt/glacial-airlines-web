@@ -40,6 +40,7 @@ public class UserAccount {
     private Instant createdAt;
 
     @Column(name = "email_verified", nullable = false)
+    @Builder.Default
     private Boolean emailVerified = false;
 
     @Column(name = "auth_provider", nullable = false, length = 20)

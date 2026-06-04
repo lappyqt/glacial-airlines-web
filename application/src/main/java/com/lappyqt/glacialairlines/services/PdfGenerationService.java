@@ -4,11 +4,15 @@ import com.lappyqt.glacialairlines.entities.booking.BookingOrder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 // Сервисный класс для динамической генерации PDF-документов (маршрутных квитанций/билетов) на основе HTML-шаблонов
 @Service
@@ -30,11 +34,11 @@ public class PdfGenerationService {
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.useFastMode();
 
-            // Добавляем собственные шрифты
-            builder.useFont(new ClassPathResource("fonts/Raleway-Regular.ttf").getFile(), "Raleway", 400, PdfRendererBuilder.FontStyle.NORMAL, true);
-            builder.useFont(new ClassPathResource("fonts/Raleway-Medium.ttf").getFile(), "Raleway", 500, PdfRendererBuilder.FontStyle.NORMAL, true);
-            builder.useFont(new ClassPathResource("fonts/Raleway-Bold.ttf").getFile(), "Raleway", 700, PdfRendererBuilder.FontStyle.NORMAL, true);
+            ResourceLoader loader = new DefaultResourceLoader();
 
+            builder.useFont(() -> getFontStream(loader, "classpath:fonts/Raleway-Regular.ttf"), "Raleway", 400, PdfRendererBuilder.FontStyle.NORMAL, true);
+            builder.useFont(() -> getFontStream(loader, "classpath:fonts/Raleway-Medium.ttf"), "Raleway", 500, PdfRendererBuilder.FontStyle.NORMAL, true);
+            builder.useFont(() -> getFontStream(loader, "classpath:fonts/Raleway-Bold.ttf"), "Raleway", 700, PdfRendererBuilder.FontStyle.NORMAL, true);
             builder.withHtmlContent(htmlContent, "file:///");
             builder.toStream(os);
             builder.run();
@@ -42,6 +46,14 @@ public class PdfGenerationService {
             return os.toByteArray();
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при генерации PDF", e);
+        }
+    }
+
+    private InputStream getFontStream(ResourceLoader loader, String path) {
+        try {
+            return loader.getResource(path).getInputStream();
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка чтения шрифта: " + path, e);
         }
     }
 }

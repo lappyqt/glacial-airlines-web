@@ -243,7 +243,7 @@
 
         <div class="rows">
             <th:block th:each="entry : ${group.rows}">
-                <div th:replace="~{/fragments/booking.html :: seat-row(
+                <div th:replace="~{fragments/booking.html :: seat-row(
                 rowNumber=${entry.key},
                 seats=${entry.value}
             )}"></div>

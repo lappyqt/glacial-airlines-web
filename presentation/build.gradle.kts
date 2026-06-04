@@ -9,7 +9,7 @@ dependencies {
     implementation(project(":infrastructure"))
     implementation(project(":domain"))
 
-    developmentOnly(libs.spring.boot.docker.compose)
+    implementation(libs.spring.boot.docker.compose)
     developmentOnly(libs.spring.boot.dev.tools)
 
     implementation(libs.bundles.spring.boot.web)

@@ -12,7 +12,7 @@
 
     <div class="wrapper booking">
         <div class="content-wrapper booking">
-            <div class="step-indicator-container booking-section" th:insert="~{/fragments/booking.html :: step-indicator(3)}"></div>
+            <div class="step-indicator-container booking-section" th:insert="~{fragments/booking.html :: step-indicator(3)}"></div>
 
             <div class="booking-section two-columns">
                 <div class="main">
@@ -38,7 +38,7 @@
 
                             <div class="passengers-info flex-column">
                                 <th:block th:each="passenger : ${bookingOrder.passengers}">
-                                    <div th:replace="~{/fragments/booking.html :: passenger-info-checkout(${passenger})}"></div>
+                                    <div th:replace="~{fragments/booking.html :: passenger-info-checkout(${passenger})}"></div>
                                 </th:block>
                             </div>
 
