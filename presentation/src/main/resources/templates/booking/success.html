@@ -21,9 +21,18 @@
                 </div>
 
                 <div class="navigation-buttons">
-                    <a th:href="@{/account}" class="outline-button">Перейти в личный кабинет</a>
-                    <a th:href="@{/}" class="outline-button">На главную</a>
-                    <a class="outline-button" th:href="@{/pdf/order/{id}(id=${orderId})}">Скачать квитанцию</a>
+                    <a th:href="@{/account}" class="outline-button">
+                        <span>Перейти в личный кабинет</span>
+                        <img src="/images/icons/arrow_forward_icon.svg" />
+                    </a>
+                    <a th:href="@{/}" class="outline-button">
+                        <img src="/images/icons/arrow_back_icon.svg" />
+                        <span>На главную</span>
+                    </a>
+                    <a class="outline-button" th:href="@{/pdf/order/{id}(id=${orderId})}">
+                        <span>Скачать квитанцию</span>
+                        <img src="/images/icons/download_icon.svg" />
+                    </a>
                 </div>
             </div>
         </div>

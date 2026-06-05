@@ -11,9 +11,6 @@
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .rounded-button-primary {
@@ -57,13 +54,22 @@
     height: 42px;
     border: 1px solid rgb(140, 140, 140);
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
     background-color: transparent;
 
     &.no-padding {
         padding: 0;
+    }
+}
+
+.default-button, .outline-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    img {
+        width: 20px;
+        height: 20px;
     }
 }

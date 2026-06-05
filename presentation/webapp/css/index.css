@@ -87,3 +87,16 @@ form {
         gap: 15px;
     }
 }
+
+@media screen and (max-width: 1500px) {
+    :root {
+        --booking-content-width: 70%;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    :root {
+        --booking-content-width: 80%;
+        --content-padding: 50px;
+    }
+}

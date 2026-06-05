@@ -144,9 +144,13 @@
 
                     <div class="navigation-row">
                         <a th:href="${isRoundTrip} ? @{/booking/return-flight} : @{'/search?' + ${searchRequestDto.toQueryString('search')}}" class="outline-button">
-                            Назад к рейсам
+                            <img src="/images/icons/arrow_back_icon.svg" />
+                            <span>Назад к рейсам</span>
                         </a>
-                        <button type="submit" class="outline-button">Перейти к услугам</button>
+                        <button type="submit" class="outline-button">
+                            <span>Перейти к услугам</span>
+                            <img src="/images/icons/arrow_forward_icon.svg" />
+                        </button>
                     </div>
 
                 </form>

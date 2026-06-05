@@ -129,10 +129,19 @@
                         </div>
 
                         <div class="button-group">
-                            <a th:href="@{/booking/passengers}" class="outline-button no-padding">К пассажирам</a>
-                            <button type="submit" class="outline-button no-padding">Перейти к оплате</button>
+                            <a th:href="@{/booking/passengers}" class="outline-button no-padding">
+                                <img src="/images/icons/arrow_back_icon.svg" />
+                                <span>К пассажирам</span>
+                            </a>
+                            <button type="submit" class="outline-button no-padding">
+                                <span>Перейти к оплате</span>
+                                <img src="/images/icons/arrow_forward_icon.svg" />
+                            </button>
                             <button type="submit" class="outline-button no-padding"
-                                    onclick="document.getElementById('skipSeats').value='true'">Пропустить выбор мест</button>
+                                    onclick="document.getElementById('skipSeats').value='true'">
+                                <span>Пропустить выбор мест</span>
+                                <img src="/images/icons/arrow_forward_icon.svg" />
+                            </button>
                         </div>
                     </div>
                 </div>
