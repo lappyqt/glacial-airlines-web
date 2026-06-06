@@ -14,7 +14,8 @@ INSERT INTO flight.route(id, departure_airport_id, arrival_airport_id) VALUES
 
 INSERT INTO flight.aircraft(id, registration_number, model, economy_seats, emergency_seats, business_seats) VALUES
     (1, 'RA-73598', 'Airbus A320', 66, 12, 36),
-    (2, 'RA-73599', 'Boeing 737 MAX', 96, 12, 12);
+    (2, 'RA-73599', 'Boeing 737 MAX', 96, 12, 12),
+    (3, 'RA-73600', 'Airbus A320', 66, 12, 36);;
 
 -- Airbus A320
 INSERT INTO flight.seat (id, aircraft_id, seat_number, row_number, seat_letter, seat_class) VALUES
@@ -108,6 +109,50 @@ INSERT INTO flight.seat (id, aircraft_id, seat_number, row_number, seat_letter, 
     (229,2,'20A',20,'A','ECONOMY'),(230,2,'20B',20,'B','ECONOMY'),(231,2,'20C',20,'C','ECONOMY'),
     (232,2,'20D',20,'D','ECONOMY'),(233,2,'20E',20,'E','ECONOMY'),(234,2,'20F',20,'F','ECONOMY');
 
+INSERT INTO flight.seat (id, aircraft_id, seat_number, row_number, seat_letter, seat_class) VALUES
+    -- Бизнес (ряды 1-6)
+    (235,3,'1A',1,'A','BUSINESS'),(236,3,'1B',1,'B','BUSINESS'),(237,3,'1C',1,'C','BUSINESS'),
+    (238,3,'1D',1,'D','BUSINESS'),(239,3,'1E',1,'E','BUSINESS'),(240,3,'1F',1,'F','BUSINESS'),
+    (241,3,'2A',2,'A','BUSINESS'),(242,3,'2B',2,'B','BUSINESS'),(243,3,'2C',2,'C','BUSINESS'),
+    (244,3,'2D',2,'D','BUSINESS'),(245,3,'2E',2,'E','BUSINESS'),(246,3,'2F',2,'F','BUSINESS'),
+    (247,3,'3A',3,'A','BUSINESS'),(248,3,'3B',3,'B','BUSINESS'),(249,3,'3C',3,'C','BUSINESS'),
+    (250,3,'3D',3,'D','BUSINESS'),(251,3,'3E',3,'E','BUSINESS'),(252,3,'3F',3,'F','BUSINESS'),
+    (253,3,'4A',4,'A','BUSINESS'),(254,3,'4B',4,'B','BUSINESS'),(255,3,'4C',4,'C','BUSINESS'),
+    (256,3,'4D',4,'D','BUSINESS'),(257,3,'4E',4,'E','BUSINESS'),(258,3,'4F',4,'F','BUSINESS'),
+    (259,3,'5A',5,'A','BUSINESS'),(260,3,'5B',5,'B','BUSINESS'),(261,3,'5C',5,'C','BUSINESS'),
+    (262,3,'5D',5,'D','BUSINESS'),(263,3,'5E',5,'E','BUSINESS'),(264,3,'5F',5,'F','BUSINESS'),
+    (265,3,'6A',6,'A','BUSINESS'),(266,3,'6B',6,'B','BUSINESS'),(267,3,'6C',6,'C','BUSINESS'),
+    (268,3,'6D',6,'D','BUSINESS'),(269,3,'6E',6,'E','BUSINESS'),(270,3,'6F',6,'F','BUSINESS'),
+    -- Эконом (ряды 7-11)
+    (271,3,'7A', 7,'A','ECONOMY'),(272,3,'7B', 7,'B','ECONOMY'),(273,3,'7C', 7,'C','ECONOMY'),
+    (274,3,'7D', 7,'D','ECONOMY'),(275,3,'7E', 7,'E','ECONOMY'),(276,3,'7F', 7,'F','ECONOMY'),
+    (277,3,'8A', 8,'A','ECONOMY'),(278,3,'8B', 8,'B','ECONOMY'),(279,3,'8C', 8,'C','ECONOMY'),
+    (280,3,'8D', 8,'D','ECONOMY'),(281,3,'8E', 8,'E','ECONOMY'),(282,3,'8F', 8,'F','ECONOMY'),
+    (283,3,'9A', 9,'A','ECONOMY'),(284,3,'9B', 9,'B','ECONOMY'),(285,3,'9C', 9,'C','ECONOMY'),
+    (286,3,'9D', 9,'D','ECONOMY'),(287,3,'9E', 9,'E','ECONOMY'),(288,3,'9F', 9,'F','ECONOMY'),
+    (289,3,'10A',10,'A','ECONOMY'),(290,3,'10B',10,'B','ECONOMY'),(291,3,'10C',10,'C','ECONOMY'),
+    (292,3,'10D',10,'D','ECONOMY'),(293,3,'10E',10,'E','ECONOMY'),(294,3,'10F',10,'F','ECONOMY'),
+    (295,3,'11A',11,'A','ECONOMY'),(296,3,'11B',11,'B','ECONOMY'),(297,3,'11C',11,'C','ECONOMY'),
+    (298,3,'11D',11,'D','ECONOMY'),(299,3,'11E',11,'E','ECONOMY'),(300,3,'11F',11,'F','ECONOMY'),
+    -- Аварийные (ряды 12, 14)
+    (301,3,'12A',12,'A','EMERGENCY'),(302,3,'12B',12,'B','EMERGENCY'),(303,3,'12C',12,'C','EMERGENCY'),
+    (304,3,'12D',12,'D','EMERGENCY'),(305,3,'12E',12,'E','EMERGENCY'),(306,3,'12F',12,'F','EMERGENCY'),
+    (307,3,'14A',14,'A','EMERGENCY'),(308,3,'14B',14,'B','EMERGENCY'),(309,3,'14C',14,'C','EMERGENCY'),
+    (310,3,'14D',14,'D','EMERGENCY'),(311,3,'14E',14,'E','EMERGENCY'),(312,3,'14F',14,'F','EMERGENCY'),
+    -- Эконом (ряды 15-20)
+    (313,3,'15A',15,'A','ECONOMY'),(314,3,'15B',15,'B','ECONOMY'),(315,3,'15C',15,'C','ECONOMY'),
+    (316,3,'15D',15,'D','ECONOMY'),(317,3,'15E',15,'E','ECONOMY'),(318,3,'15F',15,'F','ECONOMY'),
+    (319,3,'16A',16,'A','ECONOMY'),(320,3,'16B',16,'B','ECONOMY'),(321,3,'16C',16,'C','ECONOMY'),
+    (322,3,'16D',16,'D','ECONOMY'),(323,3,'16E',16,'E','ECONOMY'),(324,3,'16F',16,'F','ECONOMY'),
+    (325,3,'17A',17,'A','ECONOMY'),(326,3,'17B',17,'B','ECONOMY'),(327,3,'17C',17,'C','ECONOMY'),
+    (328,3,'17D',17,'D','ECONOMY'),(329,3,'17E',17,'E','ECONOMY'),(330,3,'17F',17,'F','ECONOMY'),
+    (331,3,'18A',18,'A','ECONOMY'),(332,3,'18B',18,'B','ECONOMY'),(333,3,'18C',18,'C','ECONOMY'),
+    (334,3,'18D',18,'D','ECONOMY'),(335,3,'18E',18,'E','ECONOMY'),(336,3,'18F',18,'F','ECONOMY'),
+    (337,3,'19A',19,'A','ECONOMY'),(338,3,'19B',19,'B','ECONOMY'),(339,3,'19C',19,'C','ECONOMY'),
+    (340,3,'19D',19,'D','ECONOMY'),(341,3,'19E',19,'E','ECONOMY'),(342,3,'19F',19,'F','ECONOMY'),
+    (343,3,'20A',20,'A','ECONOMY'),(344,3,'20B',20,'B','ECONOMY'),(345,3,'20C',20,'C','ECONOMY'),
+    (346,3,'20D',20,'D','ECONOMY'),(347,3,'20E',20,'E','ECONOMY'),(348,3,'20F',20,'F','ECONOMY');
+
 INSERT INTO flight.flight(id, route_id, aircraft_id, flight_number, departure_time, arrival_time, status) VALUES
     -- Airbus A320: DME - SVX (внутренние)
     -- Время в пути: 2ч 25м
@@ -148,6 +193,13 @@ INSERT INTO flight.flight(id, route_id, aircraft_id, flight_number, departure_ti
     (15, 2, 2, 'GA 203', '2026-06-24 09:00:00+03', '2026-06-24 12:05:00+02', 'SCHEDULED'),
     -- Время в пути: 4ч 10м
     (16, 5, 2, 'GA 204', '2026-06-24 14:00:00+02', '2026-06-24 19:10:00+03', 'SCHEDULED');
+
+INSERT INTO flight.flight(id, route_id, aircraft_id, flight_number, departure_time, arrival_time, status) VALUES
+    -- Время в пути: 7ч 30м
+    (17, 4, 3, 'GA 205', '2026-06-12 10:30:00+05', '2026-06-12 16:00:00+02', 'SCHEDULED'),
+    -- Время в пути: 7ч 40м
+    (18, 6, 3, 'GA 206', '2026-06-17 12:30:00+02', '2026-06-17 23:10:00+05', 'SCHEDULED');
+
 
 INSERT INTO flight.flight_inventory(id, flight_id, seat_class, available_seats, price, child_seat_discount) VALUES
     -- Рейс 1 (GA 101, 26 мая, Airbus)
@@ -216,6 +268,16 @@ INSERT INTO flight.flight_inventory(id, flight_id, seat_class, available_seats, 
     (47, 16,'EMERGENCY', 12, 49000.00, 0.75),
     (48, 16,'BUSINESS',  12, 100000.00,0.75);
 
+INSERT INTO flight.flight_inventory(id, flight_id, seat_class, available_seats, price, child_seat_discount) VALUES
+    -- Рейс 17 (GA 205, SVX-FRA, Airbus)
+    (49, 17, 'ECONOMY',   66, 45000.00, 0.75),
+    (50, 17, 'EMERGENCY', 12, 47000.00, 0.75),
+    (51, 17, 'BUSINESS',  36, 120000.00, 0.75),
+    -- Рейс 18 (GA 206, FRA-SVX, Airbus)
+    (52, 18, 'ECONOMY',   66, 45000.00, 0.75),
+    (53, 18, 'EMERGENCY', 12, 47000.00, 0.75),
+    (54, 18, 'BUSINESS',  36, 120000.00, 0.75);
+
 -- Рейсы Airbus A320
 INSERT INTO flight.seat_availability(id, flight_id, seat_id, status)
     SELECT ROW_NUMBER() OVER() + 114 * 0, 1, s.id, 'AVAILABLE' FROM flight.seat s WHERE s.aircraft_id = 1;
@@ -252,6 +314,19 @@ INSERT INTO flight.seat_availability(id, flight_id, seat_id, status)
 INSERT INTO flight.seat_availability(id, flight_id, seat_id, status)
     SELECT ROW_NUMBER() OVER() + 114 * 10 + 120 * 5, 16, s.id, 'AVAILABLE' FROM flight.seat s WHERE s.aircraft_id = 2;
 
+-- Рейс 17
+INSERT INTO flight.seat_availability(id, flight_id, seat_id, status)
+    SELECT ROW_NUMBER() OVER(ORDER BY s.id) + 114 * 10 + 120 * 6,
+           17, s.id, 'AVAILABLE'
+    FROM flight.seat s WHERE s.aircraft_id = 3;
+
+-- Рейс 18
+INSERT INTO flight.seat_availability(id, flight_id, seat_id, status)
+    SELECT ROW_NUMBER() OVER(ORDER BY s.id) + 114 * 10 + 120 * 6 + 114,
+           18, s.id, 'AVAILABLE'
+    FROM flight.seat s WHERE s.aircraft_id = 3;
+
+
 -- Рейс 9
 UPDATE flight.seat_availability SET status = 'OCCUPIED'
 WHERE flight_id = 9 AND seat_id IN (
@@ -270,6 +345,30 @@ WHERE flight_id = 10 AND seat_id IN (
                         '3A','3B','4C','5D','6E','7F','8A','9B','10C',
                         '13A','13B','13D','14C','14F',
                         '15A','16B','17C','18D','19E','20F')
+);
+
+-- Рейс 17
+UPDATE flight.seat_availability SET status = 'OCCUPIED'
+WHERE flight_id = 17 AND seat_id IN (
+    SELECT id FROM flight.seat WHERE aircraft_id = 3
+    AND seat_number IN (
+        '1F','2D','3A','4B','4E','5B','5D','6A','6C',
+        '7A','8B','8D','10A','10C','10D','10E','11B',
+        '15A','15B','15D','16D','17A','17B','17D','18B','19B','20F',
+        '12A','12B','12C','12E'
+    )
+);
+
+-- Рейс 18
+UPDATE flight.seat_availability SET status = 'OCCUPIED'
+WHERE flight_id = 18 AND seat_id IN (
+    SELECT id FROM flight.seat WHERE aircraft_id = 3
+    AND seat_number IN (
+        '2A','2C','3B','5A','6B','6F',
+        '8D','9C','9D','9E','10B','10F','11E',
+        '15E','16D','16E','16F','17A','17B','17E','19B','19E',
+        '14A','14C','14D'
+    )
 );
 
 -- Рейс 9
@@ -291,6 +390,26 @@ WHERE flight_id = 10 AND seat_class = 'ECONOMY';
 
 UPDATE flight.flight_inventory SET available_seats = available_seats - 5
 WHERE flight_id = 10 AND seat_class = 'EMERGENCY';
+
+-- Рейс 17
+UPDATE flight.flight_inventory SET available_seats = available_seats - 9
+WHERE flight_id = 17 AND seat_class = 'BUSINESS';
+
+UPDATE flight.flight_inventory SET available_seats = available_seats - 18
+WHERE flight_id = 17 AND seat_class = 'ECONOMY';
+
+UPDATE flight.flight_inventory SET available_seats = available_seats - 4
+WHERE flight_id = 17 AND seat_class = 'EMERGENCY';
+
+-- Рейс 18
+UPDATE flight.flight_inventory SET available_seats = available_seats - 6
+WHERE flight_id = 18 AND seat_class = 'BUSINESS';
+
+UPDATE flight.flight_inventory SET available_seats = available_seats - 16
+WHERE flight_id = 18 AND seat_class = 'ECONOMY';
+
+UPDATE flight.flight_inventory SET available_seats = available_seats - 3
+WHERE flight_id = 18 AND seat_class = 'EMERGENCY';
 
 -- Схема account
 INSERT INTO account.loyalty_account(id, miles, created_at) VALUES

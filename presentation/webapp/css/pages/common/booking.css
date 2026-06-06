@@ -6,7 +6,11 @@
 
 .wrapper.success {
     box-sizing: border-box;
-    padding-top: 150px;
+    justify-content: center;
+
+    .content-wrapper {
+        margin-bottom: 80px;
+    }
 }
 
 .content-wrapper.booking {

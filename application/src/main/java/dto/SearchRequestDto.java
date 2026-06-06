@@ -17,6 +17,7 @@ public class SearchRequestDto {
     private Long outboundAirportId;
 
     @Positive(message = "Номер аэропорта прибытия должен быть положительным")
+    @NotNull(message = "Аэропорт прибытия не может быть пустым")
     private Long returnAirportId;
 
     @NotNull(message = "Дата вылета обязательна для заполнения")
